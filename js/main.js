@@ -36,7 +36,7 @@
      (the hero) must keep their 0-1 mapping to the scroll. */
   function E(vars) {
     var t = gsap.timeline(vars);
-    if (window.AMP_PHONE) t.timeScale(12);
+    if (window.AMP_PHONE) t.timeScale(12); else if (window.AMP_ETS > 1) t.timeScale(window.AMP_ETS);
     return t;
   }
   var isTouch = window.matchMedia("(hover: none)").matches || window.innerWidth < 860;
@@ -502,7 +502,9 @@
          memory, everything else is released */
       if (cur < 0) window.ampSrc(videoLayers[0]);
       else for (i = 0; i < videoLayers.length; i++) {
-        if (Math.abs(i - cur) <= 1) window.ampSrc(videoLayers[i]);
+        if (!window.AMP_PHONE && i >= cur - 1 && i <= cur + window.AMP_AHEAD) window.ampSrc(videoLayers[i]);
+        else if (!window.AMP_PHONE && window.AMP_KEEP && i < cur - 1) { /* kept loaded: no teardown while scrolling */ }
+        else if (window.AMP_PHONE && Math.abs(i - cur) <= 1) window.ampSrc(videoLayers[i]);
         /* A layer that is still fading out must not be released: the release empties
            it, so a video sitting at 20 % opacity used to VANISH in one frame - the pop
            at every hand-over. It is freed once it is really gone (computers only;

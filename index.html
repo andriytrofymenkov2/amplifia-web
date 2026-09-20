@@ -15,8 +15,10 @@
   window.AMP_LITE = m ? m[1] === "lite" :
     (window.innerWidth <= 860 || (navigator.hardwareConcurrency || 8) <= 4 ||
      (navigator.deviceMemory || 8) <= 4 || !!c.saveData || /(^|-)[23]g$/.test(c.effectiveType || ""));
-  /* AV1 files (same look, about a third of the weight) only where the device
-     decodes AV1 in hardware; everyone else keeps the H.264 files. */
+  /* AV1 is OFF by default now (?av1=1 turns it on). Measured: every loaded AV1 10-bit video
+     holds ~106 MB (H.264 HD ~24 MB, lite ~7 MB) and creating one stalls the GPU for
+     120-133 ms - the pronounced hitch at Frentes / Roadmap / Empresas. With H.264 the
+     same moments cost 27-53 ms. The files are bigger to download; they run smoother. */
   /* phones / touch screens get a lighter set of effects; and every heavy
      group can be switched off from the address, to find what slows a device:
      ?off=videos,orb,glow,shadow,filters,anim */
@@ -55,6 +57,9 @@
      its own thread, so it stays smooth even when the page is busy; a JavaScript-simulated
      smooth scroll (Lenis) inherits every hiccup of the main thread. ?lenis=1 brings it back. */
   window.AMP_NATIVE = !/[?&]lenis=1/.test(location.search);
+  window.AMP_ETS = +((/[?&]ets=(\d+)/.exec(location.search) || [0, 1])[1]) || 1;   /* entrance speed on computers (experiment) */
+  window.AMP_KEEP = /[?&]keep=1/.test(location.search);                                   /* never release videos already loaded (experiment) */
+  window.AMP_AHEAD = +((/[?&]ahead=(\d)/.exec(location.search) || [0, 1])[1]) || 1;      /* how many videos ahead are prepared (experiment) */
   window.AMP_AV1 = false;
   window.ampReady = Promise.resolve();
   try {
@@ -62,7 +67,7 @@
       window.ampReady = navigator.mediaCapabilities.decodingInfo({
         type: "file",
         video: { contentType: 'video/mp4; codecs="av01.0.05M.10"', width: 1920, height: 1080, bitrate: 3000000, framerate: 60 }
-      }).then(function (r) { window.AMP_AV1 = !!(r.supported && r.smooth && r.powerEfficient); }).catch(function () {});
+      }).then(function (r) { window.AMP_AV1 = !!(r.supported && r.smooth && r.powerEfficient) && /[?&]av1=1/.test(location.search); }).catch(function () {});
     }
   } catch (e) {}
   function play(v) { if (v._on || v.hasAttribute("autoplay")) { var p = v.play(); if (p && p.catch) p.catch(function () {}); } }
@@ -629,6 +634,6 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.18/dist/lenis.min.js"></script>
-<script src="js/main.js?v=160"></script>
+<script src="js/main.js?v=162"></script>
 </body>
 </html>
