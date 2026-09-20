@@ -303,7 +303,7 @@
     var frentes = document.getElementById("frentes");
     var whoEl = document.getElementById("consultora");
 
-    gsap.set([layerInk, layerDrops, layerLight, layerThreads, layerMist, layerFil, layerDust, layerBoke, layerRise], { autoAlpha: 0 });
+    [layerInk, layerDrops, layerLight, layerThreads, layerMist, layerFil, layerDust, layerBoke, layerRise].forEach(function (l) { setLayer(l, 0); });
 
     /* Every one of these triggers reports progress 0 for its entire
        "not reached yet" range and progress 1 for its entire "already
@@ -319,6 +319,9 @@
        "active" tick near 1, which would otherwise leave the layers stuck
        at whatever the previous tick set (e.g. ink still 1, drops still 0
        when "Qué hacemos" is already on screen). */
+    /* Cada capa recuerda su propia opacidad: leerla con getProperty/getComputedStyle
+       obliga a calcular estilos en pleno scroll (en celular, nueve veces por cuadro). */
+    function setLayer(el, v) { el._op = v; gsap.set(el, { autoAlpha: v }); }
     function crossfade(from, into, start, end) {
       var state = "before";
       return function (self) {
@@ -327,15 +330,15 @@
         if (s === "active") {
           state = s;
           var t = Math.max(0, Math.min(1, (self.progress - st) / (end - st)));
-          if (from) gsap.set(from, { autoAlpha: 1 - t });
-          gsap.set(into, { autoAlpha: t });
+          if (from) setLayer(from, 1 - t);
+          setLayer(into, t);
           return;
         }
         if (s === state) return;
         state = s;
         var rest = s === "after" ? 1 : 0;
-        if (from) gsap.set(from, { autoAlpha: 1 - rest });
-        gsap.set(into, { autoAlpha: rest });
+        if (from) setLayer(from, 1 - rest);
+        setLayer(into, rest);
       };
     }
 
@@ -390,11 +393,11 @@
         /* whichever layer is the most visible right now is the one that plays;
            the one fading out freezes. There is always exactly one video
            decoding, and the image on screen never stops moving. */
-        var inkOp = gsap.getProperty(videoLayers[0], "opacity");
+        var inkOp = videoLayers[0]._op || 0;
         var heroOp = heroST.progress < 1 ? 1 - inkOp : 0;
         var vis = -1, best = heroOp, op, i;
         for (i = 0; i < videoLayers.length; i++) {
-          op = gsap.getProperty(videoLayers[i], "opacity");
+          op = videoLayers[i]._op || 0;
           if (op > best) { best = op; vis = i; }
         }
         for (i = 0; i < videoLayers.length; i++) setPlaying(videoLayers[i], i === vis);
@@ -458,10 +461,14 @@
        values once on leaving it. */
     function handOver(section, fromLayer, toLayer) {
       var state = "before";
-      var start = function () {
-        var H = section.offsetHeight;
-        return H / (H + window.innerHeight);
-      };
+      /* Se mide una vez (y en cada refresh), no en cada tick de scroll: leer
+         offsetHeight justo despues de escribir el estilo de una capa obliga al
+         navegador a re-maquetar de forma sincronica, nueve veces por tick. */
+      var H = 0, VH = 0;
+      function measure() { H = section.offsetHeight; VH = window.innerHeight; }
+      measure();
+      ScrollTrigger.addEventListener("refresh", measure);
+      var start = function () { return H / (H + VH); };
       var st = ScrollTrigger.create({
         trigger: section,
         start: "top bottom",
@@ -472,23 +479,23 @@
           if (p <= a) {
             if (state !== "before") {
               state = "before";
-              gsap.set(fromLayer, { autoAlpha: 1 });
-              if (toLayer) gsap.set(toLayer, { autoAlpha: 0 });
+              setLayer(fromLayer, 1);
+              if (toLayer) setLayer(toLayer, 0);
             }
             return;
           }
           if (p >= 1) {
             if (state !== "after") {
               state = "after";
-              gsap.set(fromLayer, { autoAlpha: 0 });
-              if (toLayer) gsap.set(toLayer, { autoAlpha: 1 });
+              setLayer(fromLayer, 0);
+              if (toLayer) setLayer(toLayer, 1);
             }
             return;
           }
           state = "active";
           var t = (p - a) / (1 - a);
-          gsap.set(fromLayer, { autoAlpha: 1 - t });
-          if (toLayer) gsap.set(toLayer, { autoAlpha: t });
+          setLayer(fromLayer, 1 - t);
+          if (toLayer) setLayer(toLayer, t);
         }
       });
       return { st: st, start: start, state: function () { return state; } };
@@ -1099,10 +1106,14 @@
         apply();
       }
 
+      var applyN = 0;
       function apply() {
         /* a slight look-down tilt so the far side of the ring rises above the near
            side and the whole cylinder reads in 3D */
         ring.style.transform = "rotateX(-9deg) translateZ(" + (-R).toFixed(1) + "px) rotateY(" + rot.toFixed(3) + "deg)";
+        /* the ring itself turns every frame; the per-face opacity (48 inline style
+           writes) changes slowly, so on a phone it is refreshed every 4th call */
+        if (window.AMP_PHONE && (applyN++ & 3)) return;
         for (var i = 0; i < N; i++) {
           var a = ((i * STEP + rot) % 360 + 540) % 360 - 180;       /* -180..180, 0 = facing us */
           var c = Math.cos(a * Math.PI / 180);

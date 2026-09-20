@@ -2839,3 +2839,28 @@ html { overscroll-behavior-y: none; }
 /* un panel abierto manda sobre la barra: si no, la barra tapaba su X de cerrar */
 .has-dialog .site-header { opacity: 0; pointer-events: none; transition: opacity 0.25s ease; }
 .who-detail, .c3d-modal { z-index: 600; }
+
+/* ---------------- Celular: sombras, en un solo lugar y para todo ----------------
+   Medido con un perfilador (Chrome real, modo celular, render por software y CPU
+   limitada): quitar las sombras baja el costo de dibujar el Roadmap un 64 %.
+   Las que yo habia reducido a mano eran solo algunas clases; quedaban las del
+   Roadmap, del abanico de "El problema", del formulario, del panel de perfil,
+   y sobre todo las 24 caras del carrusel (50 px de desenfoque cada una) y su
+   cara frontal (70 px). Una sola regla cubre todo, y los titulares conservan
+   una sombra minima para leerse sobre el video. Al final del archivo a proposito. */
+@media (hover: none), (max-width: 860px) {
+  *, *::before, *::after { box-shadow: none !important; text-shadow: none !important; }
+
+  .section-problem .offer-heading, .problem-statement, .problem-close,
+  .section-fronts .offer-heading, .fronts-statement, .fronts-sub,
+  .section-roadmap .offer-heading, .roadmap-statement, .roadmap-sub,
+  .section-who .offer-heading, .who-statement, .who-close,
+  .section-offer .offer-heading, .offer-closing,
+  .section-trust .offer-heading, .c3d-hint,
+  .proj-head .offer-heading, .proj-statement,
+  .faq-intro .offer-heading, .faq-statement, .faq-sub,
+  .section-contact .offer-heading, .contact-statement, .contact-sub, .contact-steps, .contact-direct,
+  .hero-copy .wordmark { text-shadow: 0 1px 2px rgba(0, 0, 0, 0.95) !important; }
+
+  .wa-float { box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5) !important; }
+}
