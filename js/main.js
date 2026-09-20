@@ -354,12 +354,18 @@
       phonePending = true;
       requestAnimationFrame(function () {
         phonePending = false;
-        var vis = -1, i;
+        /* whichever layer is the most visible right now is the one that plays;
+           the one fading out freezes. There is always exactly one video
+           decoding, and the image on screen never stops moving. */
+        var inkOp = gsap.getProperty(videoLayers[0], "opacity");
+        var heroOp = heroST.progress < 1 ? 1 - inkOp : 0;
+        var vis = -1, best = heroOp, op, i;
         for (i = 0; i < videoLayers.length; i++) {
-          if (gsap.getProperty(videoLayers[i], "opacity") > 0.995) vis = i;
+          op = gsap.getProperty(videoLayers[i], "opacity");
+          if (op > best) { best = op; vis = i; }
         }
         for (i = 0; i < videoLayers.length; i++) setPlaying(videoLayers[i], i === vis);
-        setPlaying(heroVideo, vis < 0 && heroST.progress < 0.85);
+        setPlaying(heroVideo, vis < 0 && heroOp > 0);
       });
     }
     function syncVideos() {
@@ -827,6 +833,11 @@
     }
     function schedule() {
       clearTimeout(timer);
+      /* On a phone the panels are stacked and open by growing: animating a
+         height re-lays out everything below it, and doing that on a loop
+         every few seconds is what made this section drag. Here it opens on
+         a tap instead, so the page only reflows when somebody asks it to. */
+      if (window.AMP_PHONE) return;
       if (started && onScreen && !held) timer = setTimeout(function () { show((current + 1) % N); schedule(); }, 3400);
     }
     function pick(i) { if (!started) return; held = true; clearTimeout(timer); show(i); }
@@ -944,6 +955,7 @@
       document.getElementById("wdLabelB").textContent = d.labelB;
       document.getElementById("wdTextB").textContent = d.textB;
       detail.hidden = false;
+      document.documentElement.classList.add("has-panel");
       var body = detail.querySelectorAll(".wd-tag, h3, .wd-role, .wd-intro, .wd-block:not([hidden])");
       gsap.fromTo(detail, { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.55, ease: "power3.out", overwrite: true });
       gsap.fromTo(detail.querySelector(".wd-photo img"), { scale: 1.12 }, { scale: 1, duration: 1.4, ease: "power2.out", overwrite: true });
@@ -952,6 +964,7 @@
       xBtn.focus({ preventScroll: true });
     }
     function shut() {
+      document.documentElement.classList.remove("has-panel");
       if (detail.hidden) return;
       gsap.to(detail, { opacity: 0, y: 16, duration: 0.3, ease: "power2.in", overwrite: true, onComplete: function () { detail.hidden = true; } });
       if (lenis) lenis.start();
@@ -1131,10 +1144,12 @@
         document.getElementById("c3dModalName").textContent = card.getAttribute("data-name") || "";
         document.getElementById("c3dModalDesc").textContent = card.getAttribute("data-desc") || "";
         modal.hidden = false;
+        document.documentElement.classList.add("has-panel");
         gsap.fromTo(modal.querySelector(".c3d-modal-card"), { opacity: 0, y: 30, scale: 0.96 }, { opacity: 1, y: 0, scale: 1, duration: 0.5, ease: "power3.out" });
         gsap.fromTo(modal, { opacity: 0 }, { opacity: 1, duration: 0.35 });
       }
       function closeModal() {
+        document.documentElement.classList.remove("has-panel");
         if (modal.hidden) return;
         gsap.to(modal, { opacity: 0, duration: 0.3, onComplete: function () { modal.hidden = true; } });
       }
@@ -1634,10 +1649,14 @@
   var mobileNav = document.getElementById("mobileNav");
   navToggle.addEventListener("click", function () {
     var isOpen = mobileNav.classList.toggle("is-open");
+    document.documentElement.classList.toggle("has-panel", isOpen);
     navToggle.setAttribute("aria-expanded", isOpen ? "true" : "false");
   });
   mobileNav.addEventListener("click", function (e) {
-    if (e.target.tagName === "A") mobileNav.classList.remove("is-open");
+    if (e.target.tagName === "A") {
+      mobileNav.classList.remove("is-open");
+      document.documentElement.classList.remove("has-panel");
+    }
   });
 
   /* ---------------- Recalculate once layout has fully settled ----------------

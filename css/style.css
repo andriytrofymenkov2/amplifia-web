@@ -76,7 +76,10 @@ html { background: var(--ink); }
 
 body {
   margin: 0;
-  background: var(--paper);
+  /* dark, like every section: on Android the address bar collapses as you
+     scroll and for a moment the document's own background shows through at
+     the bottom — in near-white that read as a bright line */
+  background: var(--ink);
   color: var(--ink);
   font-family: var(--font-sans);
   font-weight: 400;
@@ -2745,4 +2748,43 @@ a { color: inherit; }
     border-color: rgba(215, 242, 74, 0.3);
     background-image: linear-gradient(180deg, #151515 0%, #070707 64%);
   }
+}
+
+
+/* The shared background is fixed to the viewport, and on Android the viewport
+   grows when the address bar rolls away: sized to the large viewport it always
+   covers, with no strip left over at the bottom. */
+.bg-bridge { bottom: auto; height: 100vh; }
+@supports (height: 100lvh) { .bg-bridge { height: 100lvh; } }
+html { overscroll-behavior-y: none; }
+
+/* Anything that opens over the page owns the screen: the floating buttons get
+   out of the way instead of sitting on top of a dialog and its close button. */
+.has-panel .orb,
+.has-panel .wa-float,
+.has-panel .social {
+  opacity: 0 !important;
+  pointer-events: none !important;
+  transition: opacity 0.25s ease;
+}
+
+/* A tap on a touch screen leaves :hover stuck on the element, which is why one
+   of the two "+" buttons stayed lit while the other did not. */
+@media (hover: none) {
+  .who-hot:hover .hot-plus { background: var(--ink); transform: none; }
+  .who-hot:hover .hot-plus::before,
+  .who-hot:hover .hot-plus::after { background: var(--accent); }
+  .who-x:hover { border-color: rgba(255, 255, 255, 0.3); background: rgba(8, 8, 8, 0.8); }
+  .who-x:hover i::before, .who-x:hover i::after { background: #fff; }
+  .proj-btn:hover { border-color: rgba(255, 255, 255, 0.3); color: #fff; }
+  .proj-btn.is-main:hover { background: var(--accent); border-color: var(--accent); color: #0a0a0a; }
+  .wa-float:hover { background: #25d366; }
+  .wa-float:hover span { max-width: 0; margin-left: 0; }
+}
+
+@media (hover: none), (max-width: 860px) {
+  /* a panel's own growth stays its own problem, not the whole page's */
+  .front { contain: layout paint; }
+  .front-open,
+  .front.is-active .front-open { transition-duration: 0.42s; }
 }
