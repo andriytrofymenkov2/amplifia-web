@@ -1711,6 +1711,50 @@
     })(performance.now());
   }
 
+
+  /* ---------------- ?diag=1 : who is actually eating the frames ----------------
+     Chrome reports every frame that took too long together with the scripts that
+     ran in it and how much of it went into style and layout. Scrolling the page
+     with this on tells us, from the real phone, whether the cost is our
+     JavaScript or the browser re-laying out the page — and which function. */
+  if (/[?&]diag=1/.test(location.search)) {
+    var dbox = document.createElement("div");
+    dbox.style.cssText = "position:fixed;left:6px;top:6px;right:6px;z-index:99999;background:rgba(0,0,0,.88);color:#d7f24a;font:600 11px/1.5 monospace;padding:8px 10px;border-radius:8px;pointer-events:none;white-space:pre-wrap";
+    dbox.textContent = "midiendo… scrolleá 15 segundos";
+    document.body.appendChild(dbox);
+    var agg = {}, nLong = 0, worstMs = 0, styleMs = 0, scriptMs = 0, t0 = performance.now();
+    function draw() {
+      var rows = Object.keys(agg).map(function (k) { return [k, agg[k]]; });
+      rows.sort(function (a, b) { return b[1] - a[1]; });
+      var secs = Math.max(1, (performance.now() - t0) / 1000);
+      dbox.textContent =
+        "cuadros largos: " + nLong + "  peor: " + Math.round(worstMs) + "ms\n" +
+        "maqueta/estilo: " + Math.round(styleMs) + "ms   scripts: " + Math.round(scriptMs) + "ms\n" +
+        "en " + Math.round(secs) + "s\n" +
+        rows.slice(0, 6).map(function (r) { return "  " + Math.round(r[1]) + "ms  " + r[0]; }).join("\n");
+    }
+    try {
+      new PerformanceObserver(function (list) {
+        list.getEntries().forEach(function (e) {
+          nLong++;
+          if (e.duration > worstMs) worstMs = e.duration;
+          if (e.styleAndLayoutStart) styleMs += e.startTime + e.duration - e.styleAndLayoutStart;
+          (e.scripts || []).forEach(function (sc) {
+            var k = (sc.sourceFunctionName || sc.invoker || sc.name || "?") + "";
+            var url = (sc.sourceURL || "").split("/").pop().split("?")[0];
+            k = (k + (url ? " @" + url : "")).slice(0, 44);
+            agg[k] = (agg[k] || 0) + sc.duration;
+            scriptMs += sc.duration;
+          });
+        });
+        draw();
+      }).observe({ type: "long-animation-frame", buffered: true });
+      setInterval(draw, 1000);
+    } catch (err) {
+      dbox.textContent = "este navegador no informa cuadros largos";
+    }
+  }
+
   /* ---------------- Recalculate once layout has fully settled ----------------
      The Fraunces webfont changes text (and therefore document) height once
      it loads, which shifts every scroll-track's true position after
