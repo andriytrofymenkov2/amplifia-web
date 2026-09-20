@@ -2788,3 +2788,6 @@ html { overscroll-behavior-y: none; }
   .front-open,
   .front.is-active .front-open { transition-duration: 0.42s; }
 }
+
+/* the ring only exists as two dozen 3-D layers while it is on screen */
+.c3d-stage.is-off .c3d-ring { visibility: hidden; }

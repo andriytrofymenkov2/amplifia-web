@@ -3,6 +3,29 @@
 
   gsap.registerPlugin(ScrollTrigger);
 
+  /* On Android the address bar slides away as you scroll, which fires a resize.
+     By default ScrollTrigger answers a resize with a full refresh: it measures
+     every trigger on the page again, i.e. a complete layout, in the middle of
+     the scroll. That alone can turn a smooth page into a slideshow, and it
+     happens whether or not there is a video on screen. */
+  ScrollTrigger.config({ ignoreMobileResize: true, limitCallbacks: true });
+
+  /* A 120 Hz phone asks for 120 frames a second, so every scrubbed timeline and
+     every ticker below would run twice as often as on a 60 Hz screen, for
+     motion nobody can tell apart. Capped, the phone has room to actually draw. */
+  if (window.AMP_PHONE) gsap.ticker.fps(60);
+
+  /* Our own resize work has the same problem: on a phone only a real width
+     change is a layout change — the address bar is not. */
+  function onResize(fn) {
+    var w = window.innerWidth;
+    window.addEventListener("resize", function () {
+      if (window.AMP_PHONE && window.innerWidth === w) return;
+      w = window.innerWidth;
+      fn();
+    });
+  }
+
   var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   var isTouch = window.matchMedia("(hover: none)").matches || window.innerWidth < 860;
 
@@ -1167,9 +1190,13 @@
       gsap.ticker.add(tick);
       ScrollTrigger.create({
         trigger: sec, start: "top 90%", end: "bottom 10%",
-        onToggle: function (self) { running = self.isActive; if (!running) closeModal(); }
+        onToggle: function (self) {
+          running = self.isActive;
+          stage.classList.toggle("is-off", !self.isActive);
+          if (!running) closeModal();
+        }
       });
-      window.addEventListener("resize", layout);
+      onResize(layout);
       ScrollTrigger.addEventListener("refresh", layout);
       layout();
 
@@ -1267,7 +1294,7 @@
         row.style.setProperty("--vt", Math.max(13, size).toFixed(1) + "px");
       }
       fit();
-      window.addEventListener("resize", fit);
+      onResize(fit);
       window.addEventListener("load", fit);
       if (document.fonts && document.fonts.ready) document.fonts.ready.then(fit);
       ScrollTrigger.addEventListener("refresh", fit);
@@ -1513,7 +1540,7 @@
       }
       /* smoothed inputs for the shader (low-pass, so nothing ever jumps) */
       var sv = { x: 0, y: 0 }, sk = 0, talk = 0, look = { x: 0, y: 0, tx: 0, ty: 0 }, kick = 0;
-      window.addEventListener("resize", function () { geo = measure(); go(spot); sizeGL(); });
+      onResize(function () { geo = measure(); go(spot); sizeGL(); });
       sizeGL();
       /* Motion: an exact (frame-rate independent) damped spring toward the
          section's spot - no per-frame jitter, a soft settle instead of a
@@ -1658,6 +1685,31 @@
       document.documentElement.classList.remove("has-panel");
     }
   });
+
+  /* ---------------- ?fps=1 : on-screen frame-rate readout ---------------- */
+  if (/[?&]fps=1/.test(location.search)) {
+    var box = document.createElement("div");
+    box.style.cssText = "position:fixed;left:8px;top:8px;z-index:9999;background:rgba(0,0,0,.82);color:#d7f24a;font:600 12px/1.45 monospace;padding:7px 10px;border-radius:8px;pointer-events:none;white-space:pre";
+    document.body.appendChild(box);
+    var ids = ["hero", "problema", "que-hacemos", "frentes", "metodo", "consultora", "proyectos", "clientes", "faq", "contacto"];
+    var n = 0, worst = 0, last = performance.now(), since = last;
+    (function loop(now) {
+      var d = now - last; last = now;
+      n++; if (d > worst) worst = d;
+      if (now - since >= 700) {
+        var mid = window.innerHeight / 2, where = "";
+        for (var k = 0; k < ids.length; k++) {
+          var el = document.getElementById(ids[k]);
+          if (!el) continue;
+          var r = el.getBoundingClientRect();
+          if (r.top <= mid && r.bottom >= mid) { where = ids[k]; break; }
+        }
+        box.textContent = Math.round(n * 1000 / (now - since)) + " fps   peor " + Math.round(worst) + " ms\n" + where;
+        n = 0; worst = 0; since = now;
+      }
+      requestAnimationFrame(loop);
+    })(performance.now());
+  }
 
   /* ---------------- Recalculate once layout has fully settled ----------------
      The Fraunces webfont changes text (and therefore document) height once
