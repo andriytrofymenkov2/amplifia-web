@@ -2835,3 +2835,7 @@ html { overscroll-behavior-y: none; }
 /* el anillo solo reserva memoria de video mientras esta cerca de la pantalla */
 .c3d-ring { will-change: auto; }
 .c3d-stage:not(.is-off) .c3d-ring { will-change: transform; }
+
+/* un panel abierto manda sobre la barra: si no, la barra tapaba su X de cerrar */
+.has-dialog .site-header { opacity: 0; pointer-events: none; transition: opacity 0.25s ease; }
+.who-detail, .c3d-modal { z-index: 600; }

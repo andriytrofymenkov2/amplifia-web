@@ -988,7 +988,7 @@
       document.getElementById("wdLabelB").textContent = d.labelB;
       document.getElementById("wdTextB").textContent = d.textB;
       detail.hidden = false;
-      document.documentElement.classList.add("has-panel");
+      document.documentElement.classList.add("has-panel", "has-dialog");
       var body = detail.querySelectorAll(".wd-tag, h3, .wd-role, .wd-intro, .wd-block:not([hidden])");
       gsap.fromTo(detail, { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.55, ease: "power3.out", overwrite: true });
       gsap.fromTo(detail.querySelector(".wd-photo img"), { scale: 1.12 }, { scale: 1, duration: 1.4, ease: "power2.out", overwrite: true });
@@ -997,7 +997,7 @@
       xBtn.focus({ preventScroll: true });
     }
     function shut() {
-      document.documentElement.classList.remove("has-panel");
+      document.documentElement.classList.remove("has-panel", "has-dialog");
       if (detail.hidden) return;
       gsap.to(detail, { opacity: 0, y: 16, duration: 0.3, ease: "power2.in", overwrite: true, onComplete: function () { detail.hidden = true; } });
       if (lenis) lenis.start();
@@ -1177,12 +1177,12 @@
         document.getElementById("c3dModalName").textContent = card.getAttribute("data-name") || "";
         document.getElementById("c3dModalDesc").textContent = card.getAttribute("data-desc") || "";
         modal.hidden = false;
-        document.documentElement.classList.add("has-panel");
+        document.documentElement.classList.add("has-panel", "has-dialog");
         gsap.fromTo(modal.querySelector(".c3d-modal-card"), { opacity: 0, y: 30, scale: 0.96 }, { opacity: 1, y: 0, scale: 1, duration: 0.5, ease: "power3.out" });
         gsap.fromTo(modal, { opacity: 0 }, { opacity: 1, duration: 0.35 });
       }
       function closeModal() {
-        document.documentElement.classList.remove("has-panel");
+        document.documentElement.classList.remove("has-panel", "has-dialog");
         if (modal.hidden) return;
         gsap.to(modal, { opacity: 0, duration: 0.3, onComplete: function () { modal.hidden = true; } });
       }
