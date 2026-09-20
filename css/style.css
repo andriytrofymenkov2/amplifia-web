@@ -2831,3 +2831,7 @@ html { overscroll-behavior-y: none; }
 /* interruptor de diagnostico: apaga el carrusel 3D entero */
 .off-3d .c3d,
 .off-3d .c3d-stage { display: none; }
+
+/* el anillo solo reserva memoria de video mientras esta cerca de la pantalla */
+.c3d-ring { will-change: auto; }
+.c3d-stage:not(.is-off) .c3d-ring { will-change: transform; }

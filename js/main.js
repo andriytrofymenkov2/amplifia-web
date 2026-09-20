@@ -1202,9 +1202,16 @@
         trigger: sec, start: "top 90%", end: "bottom 10%",
         onToggle: function (self) {
           running = self.isActive;
-          stage.classList.toggle("is-off", !self.isActive);
           if (!running) closeModal();
         }
+      });
+      /* Las 24 caras del anillo son capas 3D que el navegador mantiene en
+         memoria de video. Creadas al cargar, competian por esa memoria durante
+         toda la pagina y por eso todo iba peor cuanto mas se bajaba. Aqui
+         aparecen una pantalla antes de llegar y se sueltan al alejarse. */
+      ScrollTrigger.create({
+        trigger: sec, start: "top bottom+=100%", end: "bottom top-=100%",
+        onToggle: function (self) { stage.classList.toggle("is-off", !self.isActive); }
       });
       onResize(layout);
       ScrollTrigger.addEventListener("refresh", layout);
