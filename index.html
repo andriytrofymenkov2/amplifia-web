@@ -17,6 +17,14 @@
      (navigator.deviceMemory || 8) <= 4 || !!c.saveData || /(^|-)[23]g$/.test(c.effectiveType || ""));
   /* AV1 files (same look, about a third of the weight) only where the device
      decodes AV1 in hardware; everyone else keeps the H.264 files. */
+  /* phones / touch screens get a lighter set of effects; and every heavy
+     group can be switched off from the address, to find what slows a device:
+     ?off=videos,orb,glow,shadow,filters,anim */
+  window.AMP_PHONE = window.matchMedia("(hover: none)").matches || window.innerWidth <= 860;
+  var offm = /[?&]off=([^&]*)/.exec(location.search);
+  window.AMP_OFF = offm ? offm[1].split(",") : [];
+  window.AMP_OFF.forEach(function (k) { document.documentElement.classList.add("off-" + k); });
+  window.ampOff = function (k) { return window.AMP_OFF.indexOf(k) > -1; };
   window.AMP_AV1 = false;
   window.ampReady = Promise.resolve();
   try {
@@ -29,7 +37,7 @@
   } catch (e) {}
   function play(v) { if (v._on || v.hasAttribute("autoplay")) { var p = v.play(); if (p && p.catch) p.catch(function () {}); } }
   window.ampSrc = function (v) {
-    if (!v || v.getAttribute("src") || v._want) return;
+    if (!v || v.getAttribute("src") || v._want || window.ampOff("videos")) return;
     v._want = true;
     window.ampReady.then(function () {
       if (!v._want || v.getAttribute("src")) return;
@@ -59,7 +67,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=173">
+<link rel="stylesheet" href="css/style.css?v=174">
 </head>
 <body>
 
@@ -562,6 +570,6 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.18/dist/lenis.min.js"></script>
-<script src="js/main.js?v=129"></script>
+<script src="js/main.js?v=130"></script>
 </body>
 </html>

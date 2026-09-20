@@ -2695,3 +2695,24 @@ a { color: inherit; }
 .contact-sub,
 .contact-steps,
 .contact-direct { text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9), 0 0 22px rgba(0, 0, 0, 0.8); }
+
+
+/* ---------------- Phones / touch: fewer costly effects ---------------- */
+@media (hover: none), (max-width: 860px) {
+  .offer-card::after { display: none; }                       /* masked halo: re-rasterised on every change */
+  .wa-float.is-on { animation: none; }                        /* box-shadow pulse repaints every frame */
+  .section-who.is-live .who-hot .hot-plus { animation: none; }
+  .road-link { animation: none; }
+  .offer-card, .proj-card, .front, .faq-item, .who-card { box-shadow: 0 10px 22px rgba(0, 0, 0, 0.45); }
+  .section-trust .offer-heading, .c3d-hint, .offer-closing, .proj-head .offer-heading, .proj-statement,
+  .faq-intro .offer-heading, .faq-statement, .faq-sub, .section-contact .offer-heading, .contact-statement,
+  .contact-sub, .contact-steps, .contact-direct { text-shadow: 0 1px 2px rgba(0, 0, 0, 0.9); }
+}
+
+/* diagnostic switches (?off=...) */
+.off-glow .offer-card::before, .off-glow .offer-card::after, .off-glow .proj-card::before { display: none; }
+.off-orb .orb { display: none !important; }
+.off-shadow *, .off-shadow *::before, .off-shadow *::after { text-shadow: none !important; box-shadow: none !important; }
+.off-filters *, .off-filters *::before, .off-filters *::after { filter: none !important; backdrop-filter: none !important; mix-blend-mode: normal !important; }
+.off-anim *, .off-anim *::before, .off-anim *::after { animation: none !important; }
+.off-videos .bridge-layer, .off-videos #heroVideo { display: none !important; }

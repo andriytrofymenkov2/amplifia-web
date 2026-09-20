@@ -646,8 +646,10 @@
     }, { passive: true });
     document.documentElement.addEventListener("mouseleave", function () { usingPointer = false; });
     window.addEventListener("scroll", function () { if (active && usingPointer) queue(); }, { passive: true });
+    var paintedOnce = false;
     gsap.ticker.add(function (time) {
-      if (!active || usingPointer) return;
+      if (!active || usingPointer || window.ampOff("glow")) return;
+      if (window.AMP_PHONE) { if (paintedOnce) return; paintedOnce = true; }
         if (window.AMP_LITE && (gsap.ticker.frame & 1)) return;
       /* ambient drift across the cards */
       var r = track.getBoundingClientRect(), t = reduceGlow ? 0 : time;
@@ -657,7 +659,7 @@
     });
     ScrollTrigger.create({
       trigger: track, start: "top 90%", end: "bottom 10%",
-      onToggle: function (self) { active = self.isActive; if (active) queue(); }
+      onToggle: function (self) { active = self.isActive; if (active) { paintedOnce = false; queue(); } }
     });
   })();
 
@@ -1165,8 +1167,10 @@
       }, { passive: true });
       document.documentElement.addEventListener("mouseleave", function () { usingPointer = false; });
       window.addEventListener("scroll", function () { if (active && usingPointer) queue(); }, { passive: true });
+      var paintedOnce = false;
       gsap.ticker.add(function (time) {
-        if (!active || usingPointer) return;
+        if (!active || usingPointer || window.ampOff("glow")) return;
+        if (window.AMP_PHONE) { if (paintedOnce) return; paintedOnce = true; }
         if (window.AMP_LITE && (gsap.ticker.frame & 1)) return;
         var r = grid.getBoundingClientRect(), t = still ? 0 : time;
         px = window.innerWidth * (0.5 + 0.4 * Math.sin(t * 0.4 + 0.8));
@@ -1175,7 +1179,7 @@
       });
       ScrollTrigger.create({
         trigger: grid, start: "top 92%", end: "bottom 8%",
-        onToggle: function (self) { active = self.isActive; if (active) queue(); }
+        onToggle: function (self) { active = self.isActive; if (active) { paintedOnce = false; queue(); } }
       });
     })();
 
@@ -1460,7 +1464,7 @@
         return { x: target + e * (x0 * c + k * s), v: e * (-wz * (x0 * c + k * s) + (-x0 * al * s + (v + wz * x0) * c)) };
       }
       gsap.ticker.add(function (time, dtms) {
-        if (!orb.classList.contains("is-on")) return;
+        if (!orb.classList.contains("is-on") || window.ampOff("orb")) return;
         var dt = Math.min(dtms, 50) / 1000, f = dt * 60, open = orb.classList.contains("is-open");
         var w = reduce ? 0 : (open ? 0.25 : 1);
 
