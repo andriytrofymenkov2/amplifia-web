@@ -2784,7 +2784,7 @@ html { overscroll-behavior-y: none; }
 
 @media (hover: none), (max-width: 860px) {
   /* a panel's own growth stays its own problem, not the whole page's */
-  .front { contain: layout paint; }
+  .front { contain: layout; }
   .front-open,
   .front.is-active .front-open { transition-duration: 0.42s; }
 }

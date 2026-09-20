@@ -122,7 +122,13 @@
       /* el recorte solo hace falta mientras las palabras suben desde fuera de
          la linea; dejarlo puesto obliga al navegador a mantener una superficie
          de dibujo aparte por cada titular durante toda la pagina */
-      onComplete: function () { el.style.clipPath = "none"; },
+      onComplete: function () {
+        el.style.clipPath = "none";
+        /* cada palabra queda con un transform y una opacidad escritos a mano;
+           son cientos en toda la pagina y cada uno es candidato a que el
+           navegador le reserve una capa propia. Terminada la entrada, fuera. */
+        gsap.set(words, { clearProps: "transform,opacity,willChange" });
+      },
       yPercent: 0,
       opacity: 1,
       stagger: 0.03,
@@ -1459,7 +1465,13 @@
          filtered DOM tree every frame. If WebGL is not available the CSS
          version above stays in place. */
       var gl = null, glU = {}, glCanvas = null;
+      /* Safari de iPhone/iPad devuelve el cuerpo en rojo con este sombreador
+         (el color sale mal por su implementacion de WebGL), asi que ahi se usa
+         la version hecha con CSS, que es igual de fluida en esos equipos. */
+      var isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+        (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
       (function initGL() {
+        if (isIOS && !/[?&]orb=gl/.test(location.search)) return;
         try {
           glCanvas = document.createElement("canvas");
           glCanvas.className = "orb-gl-canvas";
