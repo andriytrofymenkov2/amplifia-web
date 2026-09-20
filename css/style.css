@@ -2791,3 +2791,41 @@ html { overscroll-behavior-y: none; }
 
 /* the ring only exists as two dozen 3-D layers while it is on screen */
 .c3d-stage.is-off .c3d-ring { visibility: hidden; }
+
+/* ---------------- Celular: pintura barata (bloque final a proposito) ----------------
+   El informe del telefono dice que el hilo principal esta casi ocioso y aun asi
+   aparecen cuadros larguisimos: el costo esta en dibujar, no en calcular. Las
+   sombras con mucho desenfoque sobre texto grande son de lo mas caro de
+   rasterizar, asi que en pantallas tactiles quedan en una sombra minima de
+   contraste. Va al final del archivo para ganarle a las reglas anteriores. */
+@media (hover: none), (max-width: 860px) {
+  .section-trust .offer-heading,
+  .c3d-hint,
+  .offer-closing,
+  .proj-head .offer-heading,
+  .proj-statement,
+  .faq-intro .offer-heading,
+  .faq-statement,
+  .faq-sub,
+  .section-contact .offer-heading,
+  .contact-statement,
+  .contact-sub,
+  .contact-steps,
+  .contact-direct,
+  .fronts-statement,
+  .problem-statement { text-shadow: 0 1px 2px rgba(0, 0, 0, 0.95); }
+
+  .offer-card,
+  .proj-card,
+  .front,
+  .faq-item,
+  .who-card,
+  .cf-card { box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5); }
+
+  /* capas que el telefono no necesita mantener vivas todo el tiempo */
+  .c3d-ring,
+  .orb-goo { will-change: auto; }
+}
+
+/* fuera de pantalla el anillo no deja ni una capa atras */
+.c3d-stage.is-off .c3d-ring { display: none; }

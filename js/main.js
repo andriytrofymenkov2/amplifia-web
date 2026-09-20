@@ -1722,15 +1722,14 @@
     dbox.style.cssText = "position:fixed;left:6px;top:6px;right:6px;z-index:99999;background:rgba(0,0,0,.88);color:#d7f24a;font:600 11px/1.5 monospace;padding:8px 10px;border-radius:8px;pointer-events:none;white-space:pre-wrap";
     dbox.textContent = "midiendo… scrolleá 15 segundos";
     document.body.appendChild(dbox);
-    var agg = {}, nLong = 0, worstMs = 0, styleMs = 0, scriptMs = 0, t0 = performance.now();
+    var agg = {}, nLong = 0, worstMs = 0, styleMs = 0, scriptMs = 0, renderMs = 0, blockMs = 0, t0 = performance.now();
     function draw() {
       var rows = Object.keys(agg).map(function (k) { return [k, agg[k]]; });
       rows.sort(function (a, b) { return b[1] - a[1]; });
       var secs = Math.max(1, (performance.now() - t0) / 1000);
       dbox.textContent =
-        "cuadros largos: " + nLong + "  peor: " + Math.round(worstMs) + "ms\n" +
-        "maqueta/estilo: " + Math.round(styleMs) + "ms   scripts: " + Math.round(scriptMs) + "ms\n" +
-        "en " + Math.round(secs) + "s\n" +
+        "cuadros largos: " + nLong + "  peor: " + Math.round(worstMs) + "ms  en " + Math.round(secs) + "s\n" +
+        "tareas " + Math.round(scriptMs) + "  render " + Math.round(renderMs) + "  maqueta " + Math.round(styleMs) + "  bloqueo " + Math.round(blockMs) + "\n" +
         rows.slice(0, 6).map(function (r) { return "  " + Math.round(r[1]) + "ms  " + r[0]; }).join("\n");
     }
     try {
@@ -1738,7 +1737,10 @@
         list.getEntries().forEach(function (e) {
           nLong++;
           if (e.duration > worstMs) worstMs = e.duration;
-          if (e.styleAndLayoutStart) styleMs += e.startTime + e.duration - e.styleAndLayoutStart;
+          var end = e.startTime + e.duration;
+          if (e.styleAndLayoutStart) styleMs += end - e.styleAndLayoutStart;
+          if (e.renderStart) renderMs += end - e.renderStart;
+          blockMs += e.blockingDuration || 0;
           (e.scripts || []).forEach(function (sc) {
             var k = (sc.sourceFunctionName || sc.invoker || sc.name || "?") + "";
             var url = (sc.sourceURL || "").split("/").pop().split("?")[0];
