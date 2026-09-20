@@ -1,0 +1,56 @@
+# Generated: only what the site really uses is versioned
+_respaldo/
+assets/
+*.pdf
+Thumbs.db
+.DS_Store
+
+Imagenes usadas/*
+!Imagenes usadas/av1/
+!Imagenes usadas/lite/
+!Imagenes usadas/
+Imagenes usadas/av1/*
+Imagenes usadas/lite/*
+!Imagenes usadas/Glowing_drops_boomerang.mp4
+!Imagenes usadas/Glowing_drops_poster.jpg
+!Imagenes usadas/Green_bokeh_boomerang_60.mp4
+!Imagenes usadas/Green_bokeh_poster.jpg
+!Imagenes usadas/Green_dust_boomerang_60.mp4
+!Imagenes usadas/Green_dust_poster.jpg
+!Imagenes usadas/Green_filaments_boomerang_60.mp4
+!Imagenes usadas/Green_filaments_poster.jpg
+!Imagenes usadas/Green_ink_diffusing_boomerang_60.mp4
+!Imagenes usadas/Green_light_boomerang_60.mp4
+!Imagenes usadas/Green_light_poster.jpg
+!Imagenes usadas/Green_mist_boomerang_60.mp4
+!Imagenes usadas/Green_mist_poster.jpg
+!Imagenes usadas/Green_rise_boomerang_60.mp4
+!Imagenes usadas/Green_rise_poster.jpg
+!Imagenes usadas/Green_wave_boomerang_60.mp4
+!Imagenes usadas/Green_wave_poster.jpg
+!Imagenes usadas/Lime-green_ink_diffusing_in_water_2K_20260918035618.jpeg
+!Imagenes usadas/av1/bokeh.mp4
+!Imagenes usadas/av1/drops.mp4
+!Imagenes usadas/av1/dust.mp4
+!Imagenes usadas/av1/fil.mp4
+!Imagenes usadas/av1/hero.mp4
+!Imagenes usadas/av1/ink.mp4
+!Imagenes usadas/av1/light.mp4
+!Imagenes usadas/av1/mist.mp4
+!Imagenes usadas/av1/rise.mp4
+!Imagenes usadas/av1/wave.mp4
+!Imagenes usadas/hero_full.mp4
+!Imagenes usadas/hero_poster_1920.jpg
+!Imagenes usadas/hero_poster_960.jpg
+!Imagenes usadas/lite/bokeh.mp4
+!Imagenes usadas/lite/drops.mp4
+!Imagenes usadas/lite/dust.mp4
+!Imagenes usadas/lite/fil.mp4
+!Imagenes usadas/lite/hero.mp4
+!Imagenes usadas/lite/ink.mp4
+!Imagenes usadas/lite/light.mp4
+!Imagenes usadas/lite/mist.mp4
+!Imagenes usadas/lite/rise.mp4
+!Imagenes usadas/lite/wave.mp4
+!Imagenes usadas/who-andriy.jpg
+!Imagenes usadas/who-christian.jpg
