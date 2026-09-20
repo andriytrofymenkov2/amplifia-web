@@ -300,25 +300,24 @@
             if (metodo.offsetHeight <= window.innerHeight * 1.15) stops.push(consultora.offsetTop);
           }
         }
-        var y = window.scrollY;
-        if (y <= 4 || y >= stops[stops.length - 1] - 4) return;
-        var i = 0;
-        while (i < stops.length - 2 && y >= stops[i + 1]) i++;
-        var a = stops[i], b = stops[i + 1];
-        if (Math.abs(y - a) <= 4 || Math.abs(y - b) <= 4) return;
-        var frac = (y - a) / (b - a);
-        var target = dir > 0 ? (frac > 0.1 ? b : a) : (frac < 0.9 ? a : b);
+        var y = window.scrollY, i, best = -1, bd = 1e9;
+        if (y >= stops[stops.length - 1] - 4) return;
+        for (i = 0; i < stops.length; i++) { var dd = Math.abs(y - stops[i]); if (dd < bd) { bd = dd; best = i; } }
+        /* This used to pull the page to the next slide whenever you had scrolled more
+           than 10 % of the way and stopped for a moment - so a short pause in the
+           middle of a slide made the page LEAP several hundred pixels ("the jump from
+           Frentes to Roadmap"). Now it only settles a page that has come to rest
+           already close to a slide (within ~18 % of the screen), and never a page that
+           is mid-way between two: there it stays where you left it. */
+        if (bd <= 4 || bd > window.innerHeight * 0.18) return;
+        var target = stops[best];
         snapping = true;
-        /* The pull toward the slide used to be an ease-OUT: it began at full speed, so
-           the page went from standing still to ~30 px per frame in a single frame -
-           a jolt between every pair of slides. An ease-IN-OUT starts from zero
-           speed, so it reads as the scroll simply carrying on to the slide. */
         lenis.scrollTo(target, {
-          duration: 1.15,
+          duration: 0.9,
           easing: function (t) { return -(Math.cos(Math.PI * t) - 1) / 2; },
           onComplete: function () { snapping = false; lastY = window.scrollY; }
         });
-      }, 140);
+      }, 380);
     }, { passive: true });
   })();
 
@@ -488,7 +487,13 @@
          memory, everything else is released */
       if (cur < 0) window.ampSrc(videoLayers[0]);
       else for (i = 0; i < videoLayers.length; i++) {
-        if (Math.abs(i - cur) <= 1) window.ampSrc(videoLayers[i]); else window.ampFree(videoLayers[i]);
+        if (Math.abs(i - cur) <= 1) window.ampSrc(videoLayers[i]);
+        /* A layer that is still fading out must not be released: the release empties
+           it, so a video sitting at 20 % opacity used to VANISH in one frame - the pop
+           at every hand-over. It is freed once it is really gone (computers only;
+           phones keep their own approved behaviour). */
+        else if (!window.AMP_PHONE && (videoLayers[i]._op || 0) >= 0.02) window.ampSrc(videoLayers[i]);
+        else window.ampFree(videoLayers[i]);
       }
     }
     ScrollTrigger.addEventListener("scrollEnd", syncVideos);
