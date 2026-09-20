@@ -309,9 +309,13 @@
         var frac = (y - a) / (b - a);
         var target = dir > 0 ? (frac > 0.1 ? b : a) : (frac < 0.9 ? a : b);
         snapping = true;
+        /* The pull toward the slide used to be an ease-OUT: it began at full speed, so
+           the page went from standing still to ~30 px per frame in a single frame -
+           a jolt between every pair of slides. An ease-IN-OUT starts from zero
+           speed, so it reads as the scroll simply carrying on to the slide. */
         lenis.scrollTo(target, {
-          duration: 1.0,
-          easing: function (t) { return 1 - Math.pow(1 - t, 3); },
+          duration: 1.15,
+          easing: function (t) { return -(Math.cos(Math.PI * t) - 1) / 2; },
           onComplete: function () { snapping = false; lastY = window.scrollY; }
         });
       }, 140);
@@ -1694,7 +1698,6 @@
         orb.style.translate = rx + "px " + (-ry) + "px";
         var fxy = (dx - rx).toFixed(2) + "px " + (ry - dy).toFixed(2) + "px";
         if (gl) glCanvas.style.translate = fxy; else goo.style.translate = fxy;
-        halo.style.translate = fxy;
 
         var a = 1 - Math.pow(0.82, f);
         sv.x += (vx - sv.x) * a; sv.y += (vy - sv.y) * a;
@@ -1703,7 +1706,9 @@
         talk += ((orb.classList.contains("is-talking") ? 1 : 0) - talk) * (1 - Math.pow(0.9, f));
         look.x += (look.tx - look.x) * (1 - Math.pow(0.9, f)); look.y += (look.ty - look.y) * (1 - Math.pow(0.9, f));
         if (gl) {
-          if (!(window.AMP_PERF >= 1 && (gsap.ticker.frame & 1))) drawBody(time);
+          /* while the page is scrolling nobody watches the blob's morph, and the GPU is
+             busiest: draw it every other frame then (the motion itself stays at 60) */
+          if (!((window.AMP_PERF >= 1 || Math.abs(ds) > 0.4) && (gsap.ticker.frame & 1))) drawBody(time);
         } else {
           var ang = Math.atan2(-sv.y, sv.x) * 57.2958;
           goo.style.transform = sk > 0.004 ? "rotate(" + ang.toFixed(1) + "deg) scale(" + (1 + sk).toFixed(3) + "," + (1 - sk * 0.7).toFixed(3) + ") rotate(" + (-ang).toFixed(1) + "deg)" : "";
