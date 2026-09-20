@@ -2864,3 +2864,30 @@ html { overscroll-behavior-y: none; }
 
   .wa-float { box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5) !important; }
 }
+
+
+/* ============ Calidad adaptativa (solo computadora) ============
+   La pagina mide sus propios cuadros y, si una maquina no llega, baja de nivel.
+   El nivel 0 (por defecto) es el diseno completo y no cambia nada. */
+html.perf-1 .offer-card, html.perf-1 .proj-card, html.perf-1 .front, html.perf-1 .road-step,
+html.perf-1 .fan-card, html.perf-1 .faq-item, html.perf-1 .who-card, html.perf-1 .contact-form,
+html.perf-1 .c3d-card, html.perf-1 .c3d-back, html.perf-1 .who-detail, html.perf-1 .hero-expand-wrap,
+html.perf-1 .orb-bubble, html.perf-1 .orb-panel { box-shadow: 0 8px 18px rgba(0, 0, 0, 0.5) !important; }
+html.perf-1 .c3d-card.is-front { box-shadow: 0 12px 26px rgba(0, 0, 0, 0.55), 0 0 18px rgba(215, 242, 74, 0.25) !important; }
+html.perf-1 .offer-heading, html.perf-1 .problem-statement, html.perf-1 .problem-close,
+html.perf-1 .fronts-statement, html.perf-1 .fronts-sub, html.perf-1 .roadmap-statement, html.perf-1 .roadmap-sub,
+html.perf-1 .who-statement, html.perf-1 .who-close, html.perf-1 .offer-closing, html.perf-1 .c3d-hint,
+html.perf-1 .proj-statement, html.perf-1 .faq-statement, html.perf-1 .faq-sub, html.perf-1 .contact-statement,
+html.perf-1 .contact-sub, html.perf-1 .contact-steps, html.perf-1 .contact-direct, html.perf-1 .wordmark
+  { text-shadow: 0 1px 3px rgba(0, 0, 0, 0.95), 0 0 9px rgba(0, 0, 0, 0.75) !important; }
+html.perf-1 .wa-float.is-on { animation: none; }
+html.perf-1 .section-who.is-live .who-hot .hot-plus { animation: none; }
+
+html.perf-2 .offer-card::before, html.perf-2 .offer-card::after, html.perf-2 .proj-card::before { display: none; }
+html.perf-2 .offer-card, html.perf-2 .proj-card { border-color: rgba(215, 242, 74, 0.3); background-image: linear-gradient(180deg, #151515 0%, #070707 64%); }
+html.perf-2 .c3d-floor { filter: none; opacity: 0.85; }
+
+html.perf-3 *, html.perf-3 *::before, html.perf-3 *::after { box-shadow: none !important; }
+html.perf-3 .offer-heading, html.perf-3 .problem-statement, html.perf-3 .fronts-statement,
+html.perf-3 .roadmap-statement, html.perf-3 .who-statement, html.perf-3 .proj-statement,
+html.perf-3 .faq-statement, html.perf-3 .contact-statement, html.perf-3 .wordmark { text-shadow: 0 1px 2px rgba(0, 0, 0, 0.95) !important; }

@@ -26,6 +26,25 @@
   if (window.AMP_OFF.indexOf("all") > -1) window.AMP_OFF = ["orb", "glow", "shadow", "filters", "anim", "3d"];
   window.AMP_OFF.forEach(function (k) { document.documentElement.classList.add("off-" + k); });
   window.ampOff = function (k) { return window.AMP_OFF.indexOf(k) > -1; };
+  /* Adaptive quality (computers only). The page watches its own frame pacing; if a
+     machine cannot keep up it steps down through levels 1-3 (cheaper shadows, then
+     lighter videos and no masked rings, then no shadows at all). The level is kept
+     for a week so the next visit starts already at the right one. Machines that keep
+     up never leave level 0, so they see the page exactly as designed.
+     ?perf=0..3 forces a level (0 also clears what was remembered). */
+  window.AMP_PERF = 0;
+  if (!window.AMP_PHONE) {
+    try {
+      var pm = /[?&]perf=(\d)/.exec(location.search);
+      if (pm) { window.AMP_PERF = +pm[1]; localStorage.setItem("amp_perf", JSON.stringify({ l: window.AMP_PERF, t: Date.now() })); }
+      else {
+        var po = JSON.parse(localStorage.getItem("amp_perf") || "null");
+        if (po && Date.now() - po.t < 6048e5) window.AMP_PERF = po.l | 0;
+      }
+    } catch (e) {}
+    if (window.AMP_PERF >= 2) window.AMP_LITE = true;
+    for (var pl = 1; pl <= window.AMP_PERF; pl++) document.documentElement.classList.add("perf-" + pl);
+  }
   window.AMP_AV1 = false;
   window.ampReady = Promise.resolve();
   try {
@@ -96,7 +115,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=191">
+<link rel="stylesheet" href="css/style.css?v=192">
 </head>
 <body>
 
@@ -599,6 +618,6 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.18/dist/lenis.min.js"></script>
-<script src="js/main.js?v=151"></script>
+<script src="js/main.js?v=153"></script>
 </body>
 </html>

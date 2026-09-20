@@ -41,6 +41,36 @@
   }
   var isTouch = window.matchMedia("(hover: none)").matches || window.innerWidth < 860;
 
+  /* ---------------- Read phase ----------------
+     Reading layout (scrollY, getBoundingClientRect...) right after another piece
+     of code has written a style forces the browser to recompute the whole page
+     on the spot. Several tickers below do exactly that every frame (Ampli reads
+     the scroll position, each spotlight reads its cards' boxes), so the page was
+     being laid out several times per frame. All the reads now happen once, here,
+     at the very start of the frame, before anybody writes; everyone else uses
+     these cached numbers. (Registered before Lenis so it really is first.) */
+  var FR = { sy: window.scrollY, vw: window.innerWidth, vh: window.innerHeight };
+  /* (computers only: the phone path never read the layout per frame, so it gets no reader) */
+  if (!window.AMP_PHONE) gsap.ticker.add(function () {
+    FR.sy = window.scrollY; FR.vw = window.innerWidth; FR.vh = window.innerHeight;
+  });
+  /* Boxes measured once (document coordinates) and moved by the scroll delta,
+     instead of asking the browser for them every frame. */
+  function BoxCache(els) {
+    var boxes = [];
+    function measure() {
+      boxes = [];
+      for (var i = 0; i < els.length; i++) {
+        var r = els[i].getBoundingClientRect();
+        boxes.push({ left: r.left, top: r.top + window.scrollY, w: r.width, h: r.height });
+      }
+    }
+    measure();
+    ScrollTrigger.addEventListener("refresh", measure);
+    window.addEventListener("resize", measure);
+    return { box: function (i) { var b = boxes[i]; return { left: b.left, top: b.top - FR.sy, width: b.w, height: b.h }; }, measure: measure };
+  }
+
   /* ---------------- Lenis smooth scroll ---------------- */
   var lenis = null;
   if (!reduceMotion && window.Lenis && !window.AMP_PHONE) {
@@ -724,14 +754,17 @@
        at most once per frame, and only while the section is on screen. */
     var px = -9999, py = -9999, usingPointer = false, active = false, pending = false;
     var reduceGlow = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    var cardBoxes = window.AMP_PHONE ? null : BoxCache(Array.prototype.slice.call(steps).concat([track]));
     function paint() {
       pending = false;
-      for (var i = 0; i < steps.length; i++) {
-        var r = steps[i].getBoundingClientRect();
-        steps[i].style.setProperty("--mx", (px - r.left).toFixed(1) + "px");
-        steps[i].style.setProperty("--my", (py - r.top).toFixed(1) + "px");
+      /* reads first, writes after: never interleaved */
+      var rs = [], i;
+      for (i = 0; i < steps.length; i++) rs.push(cardBoxes ? cardBoxes.box(i) : steps[i].getBoundingClientRect());
+      for (i = 0; i < steps.length; i++) {
+        steps[i].style.setProperty("--mx", (px - rs[i].left).toFixed(1) + "px");
+        steps[i].style.setProperty("--my", (py - rs[i].top).toFixed(1) + "px");
       }
-      track.style.setProperty("--xp", Math.max(0, Math.min(1, px / window.innerWidth)).toFixed(3));
+      track.style.setProperty("--xp", Math.max(0, Math.min(1, px / (cardBoxes ? FR.vw : window.innerWidth))).toFixed(3));
     }
     function queue() { if (!pending) { pending = true; requestAnimationFrame(paint); } }
     document.addEventListener("pointermove", function (e) {
@@ -747,8 +780,8 @@
       if (window.AMP_PHONE) { if (paintedOnce) return; paintedOnce = true; }
         if (window.AMP_LITE && (gsap.ticker.frame & 1)) return;
       /* ambient drift across the cards */
-      var r = track.getBoundingClientRect(), t = reduceGlow ? 0 : time;
-      px = window.innerWidth * (0.5 + 0.42 * Math.sin(t * 0.45));
+      var r = cardBoxes ? cardBoxes.box(steps.length) : track.getBoundingClientRect(), t = reduceGlow ? 0 : time;
+      px = (cardBoxes ? FR.vw : window.innerWidth) * (0.5 + 0.42 * Math.sin(t * 0.45));
       py = r.top + r.height * (0.36 + 0.26 * (0.5 + 0.5 * Math.sin(t * 0.33 + 1.2)));
       paint();
     });
@@ -1120,14 +1153,21 @@
         apply();
       }
 
-      var applyN = 0;
+      var applyN = 0, lastFaceRot = 9999;
       function apply() {
         /* a slight look-down tilt so the far side of the ring rises above the near
            side and the whole cylinder reads in 3D */
         ring.style.transform = "rotateX(-9deg) translateZ(" + (-R).toFixed(1) + "px) rotateY(" + rot.toFixed(3) + "deg)";
         /* the ring itself turns every frame; the per-face opacity (48 inline style
            writes) changes slowly, so on a phone it is refreshed every 4th call */
-        if (window.AMP_PHONE && (applyN++ & 3)) return;
+        if (window.AMP_PHONE) { if (applyN++ & 3) return; }
+        else {
+          /* the ring turns ~14 deg/s and the opacity curve is smooth: refreshing the
+             48 faces every frame changes nothing you can see, so only when the turn
+             has moved about a degree (about every 5th frame) */
+          if (Math.abs(rot - lastFaceRot) < 1 && lastFaceRot !== 9999) return;
+          lastFaceRot = rot;
+        }
         for (var i = 0; i < N; i++) {
           var a = ((i * STEP + rot) % 360 + 540) % 360 - 180;       /* -180..180, 0 = facing us */
           var c = Math.cos(a * Math.PI / 180);
@@ -1274,14 +1314,16 @@
 
       var px = -9999, py = -9999, usingPointer = false, active = false, pending = false;
       var still = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      var projBoxes = window.AMP_PHONE ? null : BoxCache(cards.concat([grid]));
       function paint() {
         pending = false;
-        for (var i = 0; i < cards.length; i++) {
-          var r = cards[i].getBoundingClientRect();
-          cards[i].style.setProperty("--mx", (px - r.left).toFixed(1) + "px");
-          cards[i].style.setProperty("--my", (py - r.top).toFixed(1) + "px");
+        var rs = [], i;
+        for (i = 0; i < cards.length; i++) rs.push(projBoxes ? projBoxes.box(i) : cards[i].getBoundingClientRect());
+        for (i = 0; i < cards.length; i++) {
+          cards[i].style.setProperty("--mx", (px - rs[i].left).toFixed(1) + "px");
+          cards[i].style.setProperty("--my", (py - rs[i].top).toFixed(1) + "px");
         }
-        grid.style.setProperty("--xp", Math.max(0, Math.min(1, px / window.innerWidth)).toFixed(3));
+        grid.style.setProperty("--xp", Math.max(0, Math.min(1, px / (projBoxes ? FR.vw : window.innerWidth))).toFixed(3));
       }
       function queue() { if (!pending) { pending = true; requestAnimationFrame(paint); } }
       document.addEventListener("pointermove", function (e) {
@@ -1296,8 +1338,8 @@
         if (!active || usingPointer || window.ampOff("glow")) return;
         if (window.AMP_PHONE) { if (paintedOnce) return; paintedOnce = true; }
         if (window.AMP_LITE && (gsap.ticker.frame & 1)) return;
-        var r = grid.getBoundingClientRect(), t = still ? 0 : time;
-        px = window.innerWidth * (0.5 + 0.4 * Math.sin(t * 0.4 + 0.8));
+        var r = projBoxes ? projBoxes.box(cards.length) : grid.getBoundingClientRect(), t = still ? 0 : time;
+        px = (projBoxes ? FR.vw : window.innerWidth) * (0.5 + 0.4 * Math.sin(t * 0.4 + 0.8));
         py = r.top + r.height * (0.34 + 0.3 * (0.5 + 0.5 * Math.sin(t * 0.3 + 2)));
         paint();
       });
@@ -1630,7 +1672,7 @@
         var w = reduce ? 0 : (open ? 0.25 : 1);
 
         /* scroll speed, per frame, smoothed */
-        var sy = window.scrollY, ds = (sy - prevScroll) / Math.max(f, 0.25); prevScroll = sy;
+        var sy = FR.sy, ds = (sy - prevScroll) / Math.max(f, 0.25); prevScroll = sy;
         scrollLP += (ds - scrollLP) * (1 - Math.pow(0.85, f));
         var push = reduce ? 0 : Math.max(-46, Math.min(46, scrollLP * 0.9));
 
@@ -1661,7 +1703,7 @@
         talk += ((orb.classList.contains("is-talking") ? 1 : 0) - talk) * (1 - Math.pow(0.9, f));
         look.x += (look.tx - look.x) * (1 - Math.pow(0.9, f)); look.y += (look.ty - look.y) * (1 - Math.pow(0.9, f));
         if (gl) {
-          drawBody(time);
+          if (!(window.AMP_PERF >= 1 && (gsap.ticker.frame & 1))) drawBody(time);
         } else {
           var ang = Math.atan2(-sv.y, sv.x) * 57.2958;
           goo.style.transform = sk > 0.004 ? "rotate(" + ang.toFixed(1) + "deg) scale(" + (1 + sk).toFixed(3) + "," + (1 - sk * 0.7).toFixed(3) + ") rotate(" + (-ang).toFixed(1) + "deg)" : "";
@@ -1820,6 +1862,59 @@
     } catch (err) {
       dbox.textContent = "este navegador no informa cuadros largos";
     }
+  }
+
+
+  /* ---------------- Adaptive quality governor (computers only) ----------------
+     Watches the real frame pacing. If a machine keeps missing frames (a full
+     150-frame window with 30 % or more of them slower than 26 ms - under ~38 fps -
+     twice in a row) it steps one level down; see the html.perf-N rules in the CSS.
+     Level 2 also swaps the videos for their lighter versions, live. It only ever
+     goes down (no flip-flopping), remembers the level for a week, and a machine
+     that keeps up is never touched. Phones have their own, approved, path. */
+  if (!window.AMP_PHONE && !reduceMotion && !/[?&]perf=\d/.test(location.search)) {
+    (function governor() {
+      var level = window.AMP_PERF | 0, MAXL = 3;
+      var win = [], strikes = 0, last = 0, born = performance.now(), quiet = 0;
+      function save() { try { localStorage.setItem("amp_perf", JSON.stringify({ l: level, t: Date.now() })); } catch (e) {} }
+      function toLite() {
+        window.AMP_LITE = true;
+        document.querySelectorAll("video").forEach(function (v) {
+          if (!v.getAttribute("src")) return;
+          var on = v._on || v.hasAttribute("autoplay");
+          v._want = false; v.pause(); v.removeAttribute("src"); v.load();
+          v._on = on; window.ampSrc(v);
+        });
+        ScrollTrigger.update();
+      }
+      function stepDown() {
+        if (level >= MAXL) return;
+        level++; window.AMP_PERF = level;
+        document.documentElement.classList.add("perf-" + level);
+        if (level === 2) toLite();
+        save();
+      }
+      document.addEventListener("visibilitychange", function () { last = 0; win.length = 0; quiet = performance.now(); });
+      window.addEventListener("resize", function () { win.length = 0; quiet = performance.now(); });
+      (function loop(now) {
+        requestAnimationFrame(loop);
+        if (document.hidden) { last = 0; return; }
+        if (last) {
+          var d = now - last;
+          /* ignore the load, tab switches and one-off stalls; count the rest */
+          if (now - born > 5000 && now - quiet > 1500 && d < 400) {
+            win.push(d > 26 ? 1 : 0);
+            if (win.length >= 150) {
+              var slow = 0; for (var i = 0; i < win.length; i++) slow += win[i];
+              if (slow / win.length >= 0.30) { if (++strikes >= 2) { strikes = 0; stepDown(); quiet = now; } }
+              else strikes = 0;
+              win.length = 0;
+            }
+          }
+        }
+        last = now;
+      })(performance.now());
+    })();
   }
 
   /* ---------------- Recalculate once layout has fully settled ----------------
