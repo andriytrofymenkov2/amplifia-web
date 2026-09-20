@@ -45,6 +45,12 @@
     if (window.AMP_PERF >= 2) window.AMP_LITE = true;
     for (var pl = 1; pl <= window.AMP_PERF; pl++) document.documentElement.classList.add("perf-" + pl);
   }
+  /* Cross-fades: half of the scroll of every slide is two full-screen videos blended,
+     and two of them decoding at once. With this on, only the one that dominates the
+     frame plays while the other freezes on its last frame (it is on its way out, so
+     it does not show). ?onevid=0 turns it off. */
+  window.AMP_ONEVID = !/[?&]onevid=0/.test(location.search);   /* on by default: measured, it cuts the worst hitch in a cross-fade from 120 ms to 40 ms */
+  window.AMP_SLOWFREE = false;
   window.AMP_AV1 = false;
   window.ampReady = Promise.resolve();
   try {
@@ -102,10 +108,11 @@
     v._want = false;
     if (!v.getAttribute("src")) return;
     v.pause();
-    whenIdle(function () {
+    var free = function () {
       if (v._want || !v.getAttribute("src")) return;
       v._on = false; v.removeAttribute("src"); v.load();
-    });
+    };
+    if (window.AMP_SLOWFREE) setTimeout(function () { whenIdle(free); }, 900); else whenIdle(free);
   };
 })();
 </script>
@@ -618,6 +625,6 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.18/dist/lenis.min.js"></script>
-<script src="js/main.js?v=154"></script>
+<script src="js/main.js?v=156"></script>
 </body>
 </html>

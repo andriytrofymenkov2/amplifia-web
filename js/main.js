@@ -473,7 +473,7 @@
          (which is what made the transitions stutter). Because a frozen layer
          keeps showing the frame it stopped on, and a fresh one starts at 0,
          nothing jumps. */
-      if (window.AMP_PHONE) {
+      if (window.AMP_PHONE || window.AMP_ONEVID) {
         if (h < 1) window.ampSrc(heroVideo); else window.ampFree(heroVideo);
         /* decided on the next frame, once every hand-over has written its
            opacity for this frame — reading them earlier can catch a stale value
