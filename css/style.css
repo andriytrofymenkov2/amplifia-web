@@ -2822,10 +2822,12 @@ html { overscroll-behavior-y: none; }
   .who-card,
   .cf-card { box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5); }
 
-  /* capas que el telefono no necesita mantener vivas todo el tiempo */
-  .c3d-ring,
   .orb-goo { will-change: auto; }
 }
 
 /* fuera de pantalla el anillo no deja ni una capa atras */
-.c3d-stage.is-off .c3d-ring { display: none; }
+.c3d-stage.is-off .c3d-ring { visibility: hidden; }
+
+/* interruptor de diagnostico: apaga el carrusel 3D entero */
+.off-3d .c3d,
+.off-3d .c3d-stage { display: none; }

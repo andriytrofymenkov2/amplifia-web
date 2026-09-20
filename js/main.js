@@ -119,6 +119,10 @@
   function revealWordsTween(el, opts) {
     var words = el.querySelectorAll(".word");
     return gsap.to(words, Object.assign({
+      /* el recorte solo hace falta mientras las palabras suben desde fuera de
+         la linea; dejarlo puesto obliga al navegador a mantener una superficie
+         de dibujo aparte por cada titular durante toda la pagina */
+      onComplete: function () { el.style.clipPath = "none"; },
       yPercent: 0,
       opacity: 1,
       stagger: 0.03,
