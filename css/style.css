@@ -2716,3 +2716,20 @@ a { color: inherit; }
 .off-filters *, .off-filters *::before, .off-filters *::after { filter: none !important; backdrop-filter: none !important; mix-blend-mode: normal !important; }
 .off-anim *, .off-anim *::before, .off-anim *::after { animation: none !important; }
 .off-videos .bridge-layer, .off-videos #heroVideo { display: none !important; }
+
+
+/* ---------------- Phones: the heavy compositing paths ----------------
+   A phone pays for every full-screen layer it has to blend each frame.
+   mix-blend-mode forces the browser to read back everything underneath,
+   which is the single most expensive thing on this page, so the hero's
+   lime grade is done with a plain translucent wash there instead. */
+@media (hover: none), (max-width: 860px) {
+  .hero-network::after,
+  .hero-expand-wrap::after {
+    mix-blend-mode: normal;
+    background: linear-gradient(180deg, #7f9c18, #56700c);
+    opacity: calc(var(--hero-tint, 0) * 0.55);
+  }
+  .orb-bubble { display: none !important; }
+  .c3d-floor { filter: none; opacity: 0.85; }
+}

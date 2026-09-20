@@ -8,7 +8,7 @@
 
   /* ---------------- Lenis smooth scroll ---------------- */
   var lenis = null;
-  if (!reduceMotion && window.Lenis) {
+  if (!reduceMotion && window.Lenis && !window.AMP_PHONE) {
     lenis = new window.Lenis({ duration: 1.1, smoothWheel: true });
     lenis.on("scroll", ScrollTrigger.update);
     gsap.ticker.add(function (time) { lenis.raf(time * 1000); });
@@ -337,13 +337,33 @@
     var heroVideo = document.getElementById("heroVideo");
     var videoLayers = [layerInk, layerDrops, layerThreads, layerLight, layerMist, layerFil, layerDust, layerBoke, layerRise];
     function setPlaying(v, on) {
-      if (!v || v._on === on) return;
+      /* the cached flag alone is not enough: releasing a layer pauses the
+         element behind this function's back, so check what the element is
+         really doing before deciding there is nothing to do */
+      if (!v || (v._on === on && v.paused === !on)) return;
       v._on = on;
-      if (on) { var pr = v.play(); if (pr && pr.catch) pr.catch(function () {}); }
-      else v.pause();
+      if (on) {
+        if (!v.getAttribute("src")) { window.ampSrc(v); return; }
+        var pr = v.play(); if (pr && pr.catch) pr.catch(function () {});
+      } else v.pause();
+    }
+    /* phones: exactly one video decodes — the one that is fully opaque */
+    var phonePending = false;
+    function phoneCheck() {
+      if (phonePending) return;
+      phonePending = true;
+      requestAnimationFrame(function () {
+        phonePending = false;
+        var vis = -1, i;
+        for (i = 0; i < videoLayers.length; i++) {
+          if (gsap.getProperty(videoLayers[i], "opacity") > 0.995) vis = i;
+        }
+        for (i = 0; i < videoLayers.length; i++) setPlaying(videoLayers[i], i === vis);
+        setPlaying(heroVideo, vis < 0 && heroST.progress < 0.85);
+      });
     }
     function syncVideos() {
-      var h = heroST.progress, p = probST.progress;
+      var h = heroST.progress, p = probST.progress, i;
       var on = [
         h > 0.6 && p < 1,
         p > probEnd() - 0.08 && !!queST && queST.progress < 1 && (!qh || qh.state() !== "after"),
@@ -355,14 +375,29 @@
         !!clST && clST.progress > clStart() - 0.12 && !!faST && faST.progress < 1,
         !!faST && faST.progress > faStart() - 0.12
       ];
-      /* hero video: only while the hero is on screen */
-      if (h < 1) window.ampSrc(heroVideo); else window.ampFree(heroVideo);
-      setPlaying(heroVideo, h < 1);
-      /* the furthest layer that is playing = where we are; it and the next
-         one are loaded (just in time), older ones are released */
-      var cur = -1, i;
+      var cur = -1;
       for (i = 0; i < on.length; i++) if (on[i]) cur = i;
-      for (i = 0; i < videoLayers.length; i++) setPlaying(videoLayers[i], on[i]);
+
+      /* Phones decode ONE video at a time. During a hand-over the outgoing
+         layer freezes on its current frame and the incoming one waits on its
+         first frame until it is fully opaque — the crossfade still happens,
+         but the phone never has to decode two full-screen videos at once
+         (which is what made the transitions stutter). Because a frozen layer
+         keeps showing the frame it stopped on, and a fresh one starts at 0,
+         nothing jumps. */
+      if (window.AMP_PHONE) {
+        if (h < 1) window.ampSrc(heroVideo); else window.ampFree(heroVideo);
+        /* decided on the next frame, once every hand-over has written its
+           opacity for this frame — reading them earlier can catch a stale value
+           and leave the visible layer frozen */
+        phoneCheck();
+      } else {
+        if (h < 1) window.ampSrc(heroVideo); else window.ampFree(heroVideo);
+        setPlaying(heroVideo, h < 1);
+        for (i = 0; i < videoLayers.length; i++) setPlaying(videoLayers[i], on[i]);
+      }
+      /* loading budget: the current layer and its two neighbours stay in
+         memory, everything else is released */
       if (cur < 0) window.ampSrc(videoLayers[0]);
       else for (i = 0; i < videoLayers.length; i++) {
         if (Math.abs(i - cur) <= 1) window.ampSrc(videoLayers[i]); else window.ampFree(videoLayers[i]);
@@ -1032,9 +1067,14 @@
         }
       }
 
+      var tickAccum = 0;
       function tick(time, deltaMs) {
         if (!running || tweening) return;
-        var dt = Math.min(0.1, (deltaMs || 16) / 1000);     /* a slow frame never makes it crawl */
+        tickAccum += deltaMs || 16;
+        /* 24 faces re-styled every frame is a lot for a phone; at half rate the
+           ring still turns at exactly the same speed (the skipped time is kept) */
+        if (window.AMP_PHONE && (gsap.ticker.frame & 1)) return;
+        var dt = Math.min(0.1, tickAccum / 1000); tickAccum = 0;
         if (dragging) {
           /* nothing: rot is set by the pointer */
         } else {
@@ -1445,7 +1485,8 @@
       })();
       function sizeGL() {
         if (!gl) return;
-        var dpr = Math.min(window.devicePixelRatio || 1, 2), px = Math.round(geo.o * 1.8 * dpr);
+        var dpr = window.AMP_PHONE ? 1 : Math.min(window.devicePixelRatio || 1, 2);
+        var px = Math.round(geo.o * 1.8 * dpr);
         if (glCanvas.width !== px) { glCanvas.width = px; glCanvas.height = px; gl.viewport(0, 0, px, px); }
       }
       /* smoothed inputs for the shader (low-pass, so nothing ever jumps) */
@@ -1463,8 +1504,29 @@
         var k = (v + wz * x0) / al;
         return { x: target + e * (x0 * c + k * s), v: e * (-wz * (x0 * c + k * s) + (-x0 * al * s + (v + wz * x0) * c)) };
       }
+      function drawBody(time) {
+        if (!gl) return;
+        gl.clear(gl.COLOR_BUFFER_BIT);
+        gl.uniform2f(glU.uRes, glCanvas.width, glCanvas.height);
+        gl.uniform1f(glU.uTime, reduce ? 3 : time % 600);
+        gl.uniform2f(glU.uVel, Math.max(-0.6, Math.min(0.6, sv.x * 0.02)), Math.max(-0.6, Math.min(0.6, sv.y * 0.02)));
+        gl.uniform2f(glU.uLook, look.x, look.y);
+        gl.uniform1f(glU.uK, sk);
+        gl.uniform1f(glU.uTalk, talk);
+        gl.drawArrays(gl.TRIANGLES, 0, 3);
+      }
       gsap.ticker.add(function (time, dtms) {
         if (!orb.classList.contains("is-on") || window.ampOff("orb")) return;
+        /* On a phone Ampli stays in its corner: it never travels over the text
+           (where its bubble used to cover it) and the page keeps the whole GPU
+           for the scroll. Only its body keeps living, at half frame rate. */
+        if (window.AMP_PHONE) {
+          if (gsap.ticker.frame & 1) return;
+          sv.x = sv.y = sk = 0;
+          talk += ((orb.classList.contains("is-talking") ? 1 : 0) - talk) * 0.12;
+          drawBody(time);
+          return;
+        }
         var dt = Math.min(dtms, 50) / 1000, f = dt * 60, open = orb.classList.contains("is-open");
         var w = reduce ? 0 : (open ? 0.25 : 1);
 
@@ -1500,14 +1562,7 @@
         talk += ((orb.classList.contains("is-talking") ? 1 : 0) - talk) * (1 - Math.pow(0.9, f));
         look.x += (look.tx - look.x) * (1 - Math.pow(0.9, f)); look.y += (look.ty - look.y) * (1 - Math.pow(0.9, f));
         if (gl) {
-          gl.clear(gl.COLOR_BUFFER_BIT);
-          gl.uniform2f(glU.uRes, glCanvas.width, glCanvas.height);
-          gl.uniform1f(glU.uTime, reduce ? 3 : time % 600);
-          gl.uniform2f(glU.uVel, Math.max(-0.6, Math.min(0.6, sv.x * 0.02)), Math.max(-0.6, Math.min(0.6, sv.y * 0.02)));
-          gl.uniform2f(glU.uLook, look.x, look.y);
-          gl.uniform1f(glU.uK, sk);
-          gl.uniform1f(glU.uTalk, talk);
-          gl.drawArrays(gl.TRIANGLES, 0, 3);
+          drawBody(time);
         } else {
           var ang = Math.atan2(-sv.y, sv.x) * 57.2958;
           goo.style.transform = sk > 0.004 ? "rotate(" + ang.toFixed(1) + "deg) scale(" + (1 + sk).toFixed(3) + "," + (1 - sk * 0.7).toFixed(3) + ") rotate(" + (-ang).toFixed(1) + "deg)" : "";
@@ -1516,7 +1571,8 @@
         if (right !== side) { side = right; orb.classList.toggle("is-right", right); }
       });
       function say(text) {
-        if (orb.classList.contains("is-open")) return;
+        /* no speech bubbles on a phone: they sat on top of the copy */
+        if (window.AMP_PHONE || orb.classList.contains("is-open")) return;
         bubble.textContent = text;
         bubble.classList.add("is-on");
         orb.classList.add("is-talking");
