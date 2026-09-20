@@ -1398,7 +1398,14 @@
         spots = { hero: home, home: home, problema: lmid, "que-hacemos": rmid, frentes: low, metodo: lhigh, consultora: rmid, proyectos: lhigh, clientes: lmid, faq: low, contacto: home };
         return { left0: left0, o: o, vw: vw, freeW: freeW, up: up };
       }
-      var geo = measure(), spot = "home";
+      var geo = measure(), spot = "home", phoneScrolling = false, scrollIdle = 0;
+      if (window.AMP_PHONE) {
+        window.addEventListener("scroll", function () {
+          phoneScrolling = true;
+          clearTimeout(scrollIdle);
+          scrollIdle = setTimeout(function () { phoneScrolling = false; }, 220);
+        }, { passive: true });
+      }
       function go(id) { spot = spots[id] ? id : "home"; tx = spots[spot].x; ty = spots[spot].y; if (reduce) { ox = tx; oy = ty; } }
       /* WebGL body: one tiny fragment shader draws the liquid (a morphing
          blob + three droplets fused with a smooth union, shaded like a lit
@@ -1521,7 +1528,9 @@
            (where its bubble used to cover it) and the page keeps the whole GPU
            for the scroll. Only its body keeps living, at half frame rate. */
         if (window.AMP_PHONE) {
-          if (gsap.ticker.frame & 1) return;
+          /* while the finger is moving the page, the GPU belongs to the scroll:
+             Ampli's body stops redrawing and picks up again once it settles */
+          if (phoneScrolling || (gsap.ticker.frame & 1)) return;
           sv.x = sv.y = sk = 0;
           talk += ((orb.classList.contains("is-talking") ? 1 : 0) - talk) * 0.12;
           drawBody(time);

@@ -2733,3 +2733,16 @@ a { color: inherit; }
   .orb-bubble { display: none !important; }
   .c3d-floor { filter: none; opacity: 0.85; }
 }
+
+@media (hover: none), (max-width: 860px) {
+  /* The cursor light cannot exist without a cursor, and its ring is drawn with
+     a composited mask — an off-screen pass per card, per paint. On a phone the
+     same contour is a plain border, which costs nothing. */
+  .offer-card::before,
+  .proj-card::before { display: none; }
+  .offer-card,
+  .proj-card {
+    border-color: rgba(215, 242, 74, 0.3);
+    background-image: linear-gradient(180deg, #151515 0%, #070707 64%);
+  }
+}
