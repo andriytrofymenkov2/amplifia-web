@@ -73,19 +73,34 @@
 
   /* ---------------- Lenis smooth scroll ---------------- */
   var lenis = null;
-  if (!reduceMotion && window.Lenis && !window.AMP_PHONE) {
+  if (!reduceMotion && window.Lenis && !window.AMP_PHONE && !window.AMP_NATIVE) {
     lenis = new window.Lenis({ duration: 1.1, smoothWheel: true });
     lenis.on("scroll", ScrollTrigger.update);
     gsap.ticker.add(function (time) { lenis.raf(time * 1000); });
     gsap.ticker.lagSmoothing(0);
   }
 
+  /* Menu / footer links: with the native scroll the smooth glide is reserved for clicks on
+     an anchor (as on the Lideres Aumentados site); everything else scrolls natively. */
+  if (!window.AMP_PHONE && window.AMP_NATIVE && !reduceMotion) {
+    document.addEventListener("click", function (e) {
+      var a = e.target.closest && e.target.closest('a[href^="#"]');
+      if (!a || a.getAttribute("href").length < 2) return;
+      var t = document.getElementById(a.getAttribute("href").slice(1));
+      if (!t) return;
+      e.preventDefault();
+      t.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+  }
+
   /* ---------------- Custom cursor ---------------- */
   var cursorDot = document.getElementById("cursorDot");
   if (cursorDot && !isTouch) {
     var cx = window.innerWidth / 2, cy = window.innerHeight / 2;
-    var dotX = gsap.quickTo(cursorDot, "x", { duration: 0.35, ease: "power3.out" });
-    var dotY = gsap.quickTo(cursorDot, "y", { duration: 0.35, ease: "power3.out" });
+    /* The system cursor is hidden and this dot IS the cursor, so any easing shows up as lag
+       (it used to trail the mouse by 0.35 s). It now follows within a single frame. */
+    var dotX = gsap.quickTo(cursorDot, "x", { duration: 0.05, ease: "none" });
+    var dotY = gsap.quickTo(cursorDot, "y", { duration: 0.05, ease: "none" });
     window.addEventListener("mousemove", function (e) {
       cx = e.clientX; cy = e.clientY;
       dotX(cx); dotY(cy);
