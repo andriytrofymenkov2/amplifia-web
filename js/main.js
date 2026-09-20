@@ -27,6 +27,18 @@
   }
 
   var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  /* One-shot entrance reveals (a card, its shadow and each of its children
+     fading and sliding, staggered over 1-2 s) fire while the visitor is still
+     scrolling, on top of the background hand-over. On a phone they finish in a
+     few frames instead, so the containers are simply there when they arrive.
+     Only timelines declared with `once: true` go through here: scrubbed ones
+     (the hero) must keep their 0-1 mapping to the scroll. */
+  function E(vars) {
+    var t = gsap.timeline(vars);
+    if (window.AMP_PHONE) t.timeScale(12);
+    return t;
+  }
   var isTouch = window.matchMedia("(hover: none)").matches || window.innerWidth < 860;
 
   /* ---------------- Lenis smooth scroll ---------------- */
@@ -600,7 +612,9 @@
            integer-pixel translate and stays razor sharp. */
         card.style.willChange = "transform, opacity";
         function settle() {
-          card.style.willChange = "auto";
+          /* on a phone the five cards keep their layer for good: creating and
+             dropping it every 1.9 s re-rasterises the 3-D text each time */
+          if (!window.AMP_PHONE) card.style.willChange = "auto";
           if (off === 0) gsap.set(card, { transformPerspective: 0, force3D: false });
         }
         if (off !== 0) gsap.set(card, { transformPerspective: 1100 });
@@ -662,7 +676,7 @@
       onToggle: function (self) { onScreen = self.isActive; schedule(); }
     });
 
-    var intro = gsap.timeline({
+    var intro = E({
       scrollTrigger: { trigger: track, start: "top 60%", once: true }
     });
     intro.to(heading, { opacity: 1, y: 0, duration: 0.8, ease: "power3.out" }, 0.1)
@@ -690,7 +704,7 @@
     steps.forEach(function (card) { gsap.set(card.children, { opacity: 0, y: 16 }); });
     gsap.set(closing, { opacity: 0, y: 22 });
 
-    var tl = gsap.timeline({
+    var tl = E({
       scrollTrigger: { trigger: track, start: "top 60%", once: true },
       defaults: { force3D: true }
     });
@@ -817,7 +831,7 @@
        the slide to finish drawing itself, and it starts as soon as the
        slide begins to enter rather than when it is mostly on screen */
     var T0 = 0.45, GAP = 0.26;
-    var tl = gsap.timeline({ scrollTrigger: { trigger: track, start: "top 78%", once: true } });
+    var tl = E({ scrollTrigger: { trigger: track, start: "top 78%", once: true } });
     tl.to(heading, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, 0)
       .to(heading, { "--u": 1, duration: 0.6, ease: "power3.inOut" }, 0.1)
       .add(revealWordsTween(statement, { duration: 0.7, stagger: 0.05, ease: "power4.out" }), 0.1)
@@ -892,7 +906,7 @@
     row.addEventListener("mouseleave", release);
     row.addEventListener("focusout", function (e) { if (!row.contains(e.relatedTarget)) release(); });
 
-    var tl = gsap.timeline({ scrollTrigger: { trigger: track, start: "top 60%", once: true } });
+    var tl = E({ scrollTrigger: { trigger: track, start: "top 60%", once: true } });
     tl.to(heading, { opacity: 1, y: 0, duration: 0.8, ease: "power3.out" }, 0.1)
       .to(heading, { "--u": 1, duration: 0.9, ease: "power3.inOut" }, 0.3)
       .add(revealWordsTween(statement, { duration: 1.1, stagger: 0.08, ease: "power4.out" }), 0.45)
@@ -940,7 +954,7 @@
     gsap.set(hots, { opacity: 0, scale: 0.6 });
     gsap.set(cards, { opacity: 0, y: 40 });
 
-    var tl = gsap.timeline({ scrollTrigger: { trigger: track, start: "top 60%", once: true } });
+    var tl = E({ scrollTrigger: { trigger: track, start: "top 60%", once: true } });
     tl.to(heading, { opacity: 1, y: 0, duration: 0.8, ease: "power3.out" }, 0.1)
       .to(heading, { "--u": 1, duration: 0.9, ease: "power3.inOut" }, 0.3)
       .add(revealWordsTween(statement, { duration: 1.1, stagger: 0.08, ease: "power4.out" }), 0.45)
@@ -1234,7 +1248,7 @@
       gsap.set(stage, { opacity: 0, y: 40 });
       var spin = { r: -70 };
       rot = spin.r; tweening = true; apply();
-      gsap.timeline({ scrollTrigger: { trigger: sec, start: "top 78%", once: true } })
+      E({ scrollTrigger: { trigger: sec, start: "top 78%", once: true } })
         .to(heading, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, 0)
         .to(heading, { "--u": 1, duration: 0.6, ease: "power3.inOut" }, 0.1)
         .to(stage, { opacity: 1, y: 0, duration: 0.8, ease: "power3.out" }, 0.1)
@@ -1252,7 +1266,7 @@
       var cards = Array.prototype.slice.call(sec.querySelectorAll(".proj-card"));
       var grid = document.getElementById("projGrid");
       gsap.set(heading, { opacity: 0, y: 14, "--u": 0 });
-      gsap.timeline({ scrollTrigger: { trigger: sec, start: "top 65%", once: true } })
+      E({ scrollTrigger: { trigger: sec, start: "top 65%", once: true } })
         .to(heading, { opacity: 1, y: 0, duration: 0.8, ease: "power3.out" }, 0.1)
         .to(heading, { "--u": 1, duration: 0.9, ease: "power3.inOut" }, 0.3)
         .add(revealWordsTween(statement, { duration: 1.1, stagger: 0.08, ease: "power4.out" }), 0.45)
@@ -1348,7 +1362,7 @@
           if (willOpen) toggle(it, true);
         });
       });
-      gsap.timeline({ scrollTrigger: { trigger: sec, start: "top 65%", once: true } })
+      E({ scrollTrigger: { trigger: sec, start: "top 65%", once: true } })
         .to(heading, { opacity: 1, y: 0, duration: 0.8, ease: "power3.out" }, 0.1)
         .to(heading, { "--u": 1, duration: 0.9, ease: "power3.inOut" }, 0.3)
         .add(revealWordsTween(statement, { duration: 1.1, stagger: 0.08, ease: "power4.out" }), 0.45)
@@ -1369,7 +1383,7 @@
       gsap.set(steps, { opacity: 0, x: -16 });
       gsap.set(direct, { opacity: 0, y: 14 });
       gsap.set(form, { opacity: 0, y: 44 });
-      gsap.timeline({ scrollTrigger: { trigger: sec, start: "top 62%", once: true } })
+      E({ scrollTrigger: { trigger: sec, start: "top 62%", once: true } })
         .to(heading, { opacity: 1, y: 0, duration: 0.8, ease: "power3.out" }, 0.1)
         .to(heading, { "--u": 1, duration: 0.9, ease: "power3.inOut" }, 0.3)
         .add(revealWordsTween(statement, { duration: 1.1, stagger: 0.08, ease: "power4.out" }), 0.45)
@@ -1756,6 +1770,22 @@
     dbox.style.cssText = "position:fixed;left:6px;top:6px;right:6px;z-index:99999;background:rgba(0,0,0,.88);color:#d7f24a;font:600 11px/1.5 monospace;padding:8px 10px;border-radius:8px;pointer-events:none;white-space:pre-wrap";
     dbox.textContent = "midiendo… scrolleá 15 segundos";
     document.body.appendChild(dbox);
+    var vidNote = "";
+    setInterval(function () {
+      var v = null, best = 0;
+      document.querySelectorAll("video").forEach(function (e) {
+        var op = e._op !== undefined ? e._op : (e.id === "heroVideo" ? 1 : 0);
+        if (e.getAttribute("src") && !e.paused && op >= best) { best = op; v = e; }
+      });
+      if (!v || !v.getVideoPlaybackQuality) { vidNote = "video: ninguno reproduciendo"; return; }
+      var q = v.getVideoPlaybackQuality();
+      var key = v.id || "hero";
+      var prev = v._q || { t: performance.now(), tot: q.totalVideoFrames, drop: q.droppedVideoFrames };
+      var dt = (performance.now() - prev.t) / 1000 || 1;
+      var fps = (q.totalVideoFrames - prev.tot) / dt, dr = q.droppedVideoFrames - prev.drop;
+      v._q = { t: performance.now(), tot: q.totalVideoFrames, drop: q.droppedVideoFrames };
+      vidNote = "video " + key.replace("bridge", "") + ": " + fps.toFixed(0) + " fps  descartados " + dr + "  estado " + v.readyState + "  " + v.videoWidth + "x" + v.videoHeight;
+    }, 1000);
     var agg = {}, nLong = 0, worstMs = 0, styleMs = 0, scriptMs = 0, renderMs = 0, blockMs = 0, t0 = performance.now();
     function draw() {
       var rows = Object.keys(agg).map(function (k) { return [k, agg[k]]; });
@@ -1763,6 +1793,7 @@
       var secs = Math.max(1, (performance.now() - t0) / 1000);
       dbox.textContent =
         "cuadros largos: " + nLong + "  peor: " + Math.round(worstMs) + "ms  en " + Math.round(secs) + "s\n" +
+        vidNote + "\n" +
         "tareas " + Math.round(scriptMs) + "  render " + Math.round(renderMs) + "  maqueta " + Math.round(styleMs) + "  bloqueo " + Math.round(blockMs) + "\n" +
         rows.slice(0, 6).map(function (r) { return "  " + Math.round(r[1]) + "ms  " + r[0]; }).join("\n");
     }
