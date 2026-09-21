@@ -606,3 +606,24 @@ html[data-hdr="light"] .nav a.is-on { color: var(--olive); }
 }
 @media (max-width: 1240px) and (min-width: 861px) { .nav-cta { display: none; } }
 .menu-open .social { opacity: 0 !important; pointer-events: none !important; }
+
+/* ---------- Empresas: fluidez (menos peso por cuadro) ---------- */
+.trust-bg { contain: strict; transform: translateZ(0); }
+.trust-bg video { will-change: auto; }
+.c3d-card, .c3d-back { box-shadow: none; }
+.c3d-card.is-front { box-shadow: 0 0 26px rgba(215,242,74,0.22); }
+.c3d-floor { filter: none; }
+.c3d-card { transition: border-color 0.5s ease; }
+
+/* ---------- Texto en negrita nítido (Inter 600 real, no sintetizado) ---------- */
+.nav-cta, .btn { font-weight: 600; -webkit-font-smoothing: subpixel-antialiased; text-rendering: geometricPrecision; color: #000; }
+.nav-cta { letter-spacing: 0.01em; }
+
+/* ---------- Roadmap: energía que corre por el cable ---------- */
+.rm-spark { width: 20px; height: 20px; margin-left: -10px; top: -9px; background: #fff;
+  box-shadow: 0 0 12px 4px #fff, 0 0 26px 9px #d7f24a, 0 0 60px 20px rgba(215,242,74,0.55); }
+.rm-spark::before, .rm-spark::after { top: 9px; width: 170px; height: 3px; border-radius: 3px; }
+.rm-spark::before { background: linear-gradient(90deg, rgba(215,242,74,0), rgba(215,242,74,0.95)); }
+.rm-spark::after { background: linear-gradient(90deg, rgba(215,242,74,0.95), rgba(215,242,74,0)); }
+.rm-col::before { transition: transform 0.35s cubic-bezier(0.3, 1.7, 0.5, 1), box-shadow 0.35s ease, background 0.35s ease; }
+.rm-col.hit::before { transform: scale(2.2); background: #fff; box-shadow: 0 0 0 6px rgba(215,242,74,0.55), 0 0 26px 10px rgba(215,242,74,0.9); animation: none; }

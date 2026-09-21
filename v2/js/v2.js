@@ -188,13 +188,23 @@
           .to(rw[i], { yPercent: 0, opacity: 1, duration: 0.8, ease: "power4.out" }, t + 0.1);
       });
       tl.from(".rm-foot", { opacity: 0, y: 16, duration: 0.8 }, 2.4);
-      /* la luz aparece cuando la línea termina de llenarse y va y viene sin parar */
-      var spark = $(".rm-spark");
-      tl.set(spark, { opacity: 1, left: "0%" }, 2.7);
-      tl.add(function () {
-        var run = gsap.to(spark, { left: "100%", duration: 3, ease: "sine.inOut", repeat: -1, yoyo: true });
-        ScrollTrigger.create({ trigger: "#metodo", start: "top bottom", end: "bottom top", onToggle: function (s) { if (s.isActive) run.resume(); else run.pause(); } });
-      }, 2.7);
+      /* la luz viaja con la línea, enciende cada nodo al pasar y después va y viene sin parar (energía por un cable) */
+      var spark = $(".rm-spark"), active = null;
+      gsap.set(spark, { opacity: 1, left: "0%" });
+      function hits() {
+        var sx = spark.getBoundingClientRect().left + 10;
+        cols.forEach(function (col) {
+          var nx = col.getBoundingClientRect().left + 7.5;
+          if (Math.abs(sx - nx) < 16 && !col._hit) {
+            col._hit = true; col.classList.add("hit");
+            setTimeout(function () { col.classList.remove("hit"); col._hit = false; }, 520);
+          }
+        });
+      }
+      active = gsap.to(spark, { left: "100%", duration: 2.6, ease: "power1.inOut", onUpdate: hits, onComplete: function () {
+        active = gsap.to(spark, { left: "0%", duration: 3.4, ease: "sine.inOut", repeat: -1, yoyo: true, onUpdate: hits });
+      } });
+      ScrollTrigger.create({ trigger: "#metodo", start: "top bottom", end: "bottom top", onToggle: function (s) { if (active) { if (s.isActive) active.resume(); else active.pause(); } } });
     }, "top 75%");
 
     /* 07 · nosotros: dos contenedores negros con "+" (mismo mecanismo que la página anterior) */
