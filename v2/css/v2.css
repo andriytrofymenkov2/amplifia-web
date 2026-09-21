@@ -774,3 +774,40 @@ input, textarea { -webkit-appearance: none; appearance: none; border-radius: 0; 
 .menu-open .ampli, .has-panel .ampli { opacity: 0; pointer-events: none; }
 @media (prefers-reduced-motion: reduce) { .ampli-btn { animation: none; } }
 .vfreeze { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: none; }
+
+/* ---------- Ampli v2: ejecutivo de traje verde que camina entre secciones ---------- */
+.ampli { left: 0; bottom: clamp(10px, 2vh, 22px); gap: 0; align-items: flex-end; will-change: transform; }
+.ampli-btn { width: clamp(62px, 5.4vw, 92px); animation: none; transform: none; }
+.ampli-btn svg { width: 100%; overflow: visible; }
+.ampli-btn:hover { transform: none; }
+.ampli-btn .a-legL, .ampli-btn .a-legR, .ampli-btn .a-armL, .ampli-btn .a-armR { transform-box: fill-box; transform-origin: 50% 0; }
+.ampli-btn svg { animation: ampliIdle 3.4s ease-in-out infinite; transform-origin: 50% 100%; }
+@keyframes ampliIdle { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
+.ampli.is-walking .ampli-btn svg { animation: ampliStep 0.42s ease-in-out infinite; }
+.ampli.is-walking .a-legL, .ampli.is-walking .a-armR { animation: swingA 0.42s ease-in-out infinite; }
+.ampli.is-walking .a-legR, .ampli.is-walking .a-armL { animation: swingB 0.42s ease-in-out infinite; }
+@keyframes ampliStep { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
+@keyframes swingA { 0%, 100% { transform: rotate(-16deg); } 50% { transform: rotate(16deg); } }
+@keyframes swingB { 0%, 100% { transform: rotate(16deg); } 50% { transform: rotate(-16deg); } }
+.ampli.face-left .ampli-btn svg { transform: scaleX(-1); }
+.ampli.face-left.is-walking .ampli-btn svg { animation: none; }
+.ampli-bubble { position: absolute; bottom: 100%; left: 0; margin: 0 0 8px; white-space: normal; width: max-content; }
+.ampli.on-right .ampli-bubble { left: auto; right: 0; border-radius: 14px 14px 4px 14px; transform-origin: 100% 100%; }
+.ampli-panel { position: absolute; bottom: 100%; left: 0; margin-bottom: 10px; width: min(320px, 78vw); padding: 18px 20px; background: #101010; border: 1px solid rgba(215,242,74,0.55); border-radius: 16px; box-shadow: 0 20px 60px rgba(0,0,0,0.7);
+  opacity: 0; visibility: hidden; transform: translateY(10px) scale(0.96); transform-origin: 0 100%; transition: opacity 0.3s ease, transform 0.35s var(--ease), visibility 0s 0.3s; pointer-events: none; }
+.ampli.on-right .ampli-panel { left: auto; right: 0; transform-origin: 100% 100%; }
+.ampli.is-open .ampli-panel { opacity: 1; visibility: visible; transform: none; transition-delay: 0s; pointer-events: auto; }
+.ampli.is-open .ampli-bubble { opacity: 0 !important; }
+.ampli-t { font-size: 14px; line-height: 1.5; margin: 8px 0 14px; opacity: 0.88; }
+.ampli-cta { padding: 12px 20px; font-size: 13px; }
+.ampli-x { position: absolute; top: 8px; right: 12px; font-size: 22px; line-height: 1; opacity: 0.7; }
+.ampli-x:hover { opacity: 1; color: var(--lime); }
+.rail { left: var(--pad); }
+@media (max-width: 860px) { .ampli-btn { width: 46px; } .ampli-panel { width: min(300px, 86vw); } .ampli-bubble { display: none; } }
+@media (prefers-reduced-motion: reduce) { .ampli-btn svg, .ampli.is-walking * { animation: none !important; } }
+
+/* Etiquetas de sección (El problema, Qué hacemos, Juntas…): más grandes, mismo gris */
+.tiny { font-size: clamp(13px, 1.1vw, 17px); letter-spacing: 0.18em; opacity: 0.78; }
+.caps-in > .tiny, .prob-head .tiny, .fr-head .tiny, .rm-head .tiny, .caps-close .tiny, .us-head .tiny, .pj-head .tiny, .mq-label, .faq-side .tiny, .ct-left .tiny { font-size: clamp(15px, 1.35vw, 21px); }
+.fq-n, .who-tag, .wd-tag, .rm-col b { font-size: revert-layer; }
+.fq-n { font-size: 11px; } .who-tag { font-size: 12px; }

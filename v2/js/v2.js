@@ -138,17 +138,46 @@
     faq: "Poné el mouse sobre una pregunta y la ves más grande.",
     contacto: "¿Hablamos? Empezamos por un <b>diagnóstico</b>."
   };
-  var ampliBubble = $("#ampliBubble"), ampliId = null, ampliT = null, ampliShown = null;
+  var ampli = $("#ampli"), ampliBubble = $("#ampliBubble"), ampliBtn = $("#ampliBtn"), ampliId = null, ampliT = null, ampliShown = null, ampliX = 0, ampliSide = null;
+  /* lado en que se para Ampli en cada sección (alterna izquierda / derecha) */
+  var AMPLI_SIDE = { hero: "L", manifiesto: "R", problema: "R", "que-hacemos": "L", frentes: "R", metodo: "L", consultora: "R", proyectos: "L", clientes: "R", faq: "L", contacto: "R" };
+  function ampliTarget(side) { var w = ampli.offsetWidth || 90; return side === "R" ? Math.max(12, window.innerWidth - w - (phone ? 12 : 100)) : (phone ? 10 : 20); }
+  function ampliWalk(side, done) {
+    var to = ampliTarget(side);
+    if (ampliSide === null) { gsap.set(ampli, { x: to }); ampliSide = side; ampli.classList.toggle("on-right", side === "R"); if (done) done(); return; }
+    if (side === ampliSide && Math.abs(to - ampliX) < 2) { if (done) done(); return; }
+    ampli.classList.remove("is-open");
+    ampli.classList.toggle("face-left", to < ampliX);
+    ampli.classList.add("is-walking");
+    gsap.to(ampli, { x: to, duration: Math.min(2.4, 0.7 + Math.abs(to - ampliX) / 900), ease: "power1.inOut", onUpdate: function () { ampliX = gsap.getProperty(ampli, "x"); },
+      onComplete: function () { ampliX = to; ampliSide = side; ampli.classList.remove("is-walking", "face-left"); ampli.classList.toggle("on-right", side === "R"); if (done) done(); } });
+  }
   function ampliSay(id) {
     if (!ampliBubble || !AMPLI_LINES[id]) return;
     ampliId = id; clearTimeout(ampliT);
     ampliBubble.classList.remove("is-on");
-    ampliT = setTimeout(function () {
-      ampliBubble.innerHTML = AMPLI_LINES[id]; ampliBubble.classList.add("is-on");
-      ampliT = setTimeout(function () { ampliBubble.classList.remove("is-on"); }, 6500);
-    }, 380);
+    ampliWalk(AMPLI_SIDE[id] || "L", function () {
+      ampliT = setTimeout(function () {
+        if (ampliId !== id) return;
+        ampliBubble.innerHTML = AMPLI_LINES[id]; ampliBubble.classList.add("is-on");
+        ampliT = setTimeout(function () { ampliBubble.classList.remove("is-on"); }, 6500);
+      }, 250);
+    });
   }
-  var ampliBtn = $(".ampli-btn"); if (ampliBtn) ampliBtn.addEventListener("click", function () { ampliSay(ampliId || "hero"); });
+  /* los ojos siguen al mouse */
+  if (!phone) {
+    var pupils = $$(".a-pupil", ampli), ptick = false, mx = 0, my = 0;
+    window.addEventListener("mousemove", function (e) { mx = e.clientX; my = e.clientY; if (!ptick) { ptick = true; requestAnimationFrame(function () { ptick = false;
+      var r = ampliBtn.getBoundingClientRect(), dx = mx - (r.left + r.width / 2), dy = my - (r.top + r.height * 0.2), d = Math.max(1, Math.hypot(dx, dy)), k = Math.min(1, d / 200) * 2.2;
+      pupils.forEach(function (p) { p.style.transform = "translate(" + (dx / d * k).toFixed(2) + "px," + (dy / d * k).toFixed(2) + "px)"; }); }); } }, { passive: true });
+  }
+  /* panel: se abre con un toque y lleva al diagnóstico */
+  function ampliOpen(o) { ampli.classList.toggle("is-open", o); ampliBtn.setAttribute("aria-expanded", o ? "true" : "false"); if (o) { clearTimeout(ampliT); ampliBubble.classList.remove("is-on"); } }
+  ampliBtn.addEventListener("click", function () { if (ampli.classList.contains("is-open")) ampliOpen(false); else if (phone) ampliOpen(true); else { ampliOpen(true); } });
+  $("#ampliX").addEventListener("click", function () { ampliOpen(false); });
+  $(".ampli-cta").addEventListener("click", function () { ampliOpen(false); });
+  document.addEventListener("keydown", function (e) { if (e.key === "Escape") ampliOpen(false); });
+  window.addEventListener("resize", function () { if (ampliSide) { ampliX = ampliTarget(ampliSide); gsap.set(ampli, { x: ampliX }); } });
   gsap.to("#prog", { scaleX: 1, ease: "none", scrollTrigger: { start: 0, end: "max", scrub: 0.2 } });
   ScrollTrigger.create({ trigger: "#hero", start: "bottom 60%", end: "max", onToggle: function (s) { $("#wa").classList.toggle("is-on", s.isActive); $("#social").classList.toggle("is-on", s.isActive); } });
 
