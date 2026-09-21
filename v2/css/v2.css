@@ -900,3 +900,5 @@ input, textarea { -webkit-appearance: none; appearance: none; border-radius: 0; 
 /* Pantalla de carga: logo grande */
 .pre-mark { width: clamp(150px, 18vw, 300px); height: auto; }
 @media (max-width: 860px) { .pre-mark { width: 46vw; } }
+.ampli-bubble { max-width: min(340px, calc(100vw - 28px)); }
+.ampli-panel { width: min(320px, calc(100vw - 28px)); }

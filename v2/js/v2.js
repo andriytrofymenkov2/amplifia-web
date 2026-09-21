@@ -184,7 +184,7 @@
     var dist = Math.hypot(to - x, toY - y), dur = Math.min(1.0, 0.4 + dist / 2200);
     ampli._target = { l: p.l, t: p.t, w: box.w, h: box.h };
     gsap.to(ampli, { x: to, duration: dur, ease: "sine.inOut", overwrite: true });
-    gsap.to(ampli, { y: toY, duration: dur * 1.05, ease: "power2.inOut", onComplete: function () { ampliSide = side; ampli.classList.remove("is-walking"); ampli.classList.toggle("on-right", side === "R"); if (done) done(); } });
+    gsap.to(ampli, { y: toY, duration: dur * 1.05, ease: "power2.inOut", onUpdate: function () { if (ampliBubble.classList.contains("is-on")) ampliFitNow(ampliBubble); }, onComplete: function () { ampliSide = side; ampli.classList.remove("is-walking"); ampli.classList.toggle("on-right", side === "R"); if (ampliBubble.classList.contains("is-on")) { ampliTips(); ampliFit(ampliBubble); } if (done) done(); } });
   }
   function ampliWalk(id, done) {
     if (phone) { if (ampliSide === null) { gsap.set(ampli, { x: 6, y: 0 }); ampliSide = "L"; } if (done) done(); return; }
@@ -203,12 +203,25 @@
     ampli.classList.toggle("tip-below", hd < hu || (hd === hu && b.t < 270));
     ampli.classList.toggle("on-right", right);
   }
-  function ampliFit(el) {
+  function ampliFitNow(el) {
+    el.style.translate = "0 0";
+    var r = el.getBoundingClientRect(), vw = window.innerWidth, vh = window.innerHeight, dx = 0, dy = 0, m = 14;
+    if (r.right > vw - m) dx = vw - m - r.right;
+    if (r.left + dx < m) dx = m - r.left;
+    if (r.bottom > vh - m) dy = vh - m - r.bottom;
+    if (r.top + dy < 90) dy = 90 - r.top;
+    el.style.translate = dx + "px " + dy + "px";
+  }
+  function ampliFit(el, target) {
     el.style.translate = "0 0";
     requestAnimationFrame(function () {
-      var r = el.getBoundingClientRect(), vw = window.innerWidth, vh = window.innerHeight, dx = 0, dy = 0;
-      if (r.right > vw - 14) dx = vw - 14 - r.right; if (r.left + dx < 14) dx = 14 - r.left;
-      if (r.bottom > vh - 14) dy = vh - 14 - r.bottom; if (r.top + dy < 90) dy = 90 - r.top;
+      var r = el.getBoundingClientRect(), vw = window.innerWidth, vh = window.innerHeight, dx = 0, dy = 0, m = 14;
+      /* si Ampli todavía está caminando, se mide donde va a estar (destino), no donde está ahora */
+      if (target) { var cb = ampliBtn.getBoundingClientRect(); var sx = target.l - cb.left, sy = target.t - cb.top; r = { left: r.left + sx, right: r.right + sx, top: r.top + sy, bottom: r.bottom + sy }; }
+      if (r.right > vw - m) dx = vw - m - r.right;
+      if (r.left + dx < m) dx = m - r.left;
+      if (r.bottom > vh - m) dy = vh - m - r.bottom;
+      if (r.top + dy < 90) dy = 90 - r.top;
       el.style.translate = dx + "px " + dy + "px";
     });
   }
@@ -222,7 +235,7 @@
     ampliWalk(id, null);
     ampliT = setTimeout(function () {
       if (ampliId !== id) return;
-      ampliTips(ampli._target); ampliBubble.innerHTML = AMPLI_LINES[id]; ampliBubble.classList.add("is-on"); ampliFit(ampliBubble);
+      ampliTips(ampli._target); ampliBubble.innerHTML = AMPLI_LINES[id]; ampliBubble.classList.add("is-on"); ampliFitNow(ampliBubble);
       ampliT = setTimeout(function () { ampliBubble.classList.remove("is-on"); }, 6500);
     }, 120);
   }
