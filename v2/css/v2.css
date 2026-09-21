@@ -592,3 +592,17 @@ html[data-hdr="light"] .nav a.is-on { color: var(--olive); }
 .faq .faq-side h2 { font-size: clamp(38px, 5.6vw, 100px); }
 .faq .qa-a p { font-size: clamp(14px, 1.05vw, 16px); padding-bottom: 14px; }
 @media (max-width: 1499px) and (min-width: 861px) { .faq { padding-right: calc(var(--pad) + 46px); } }
+
+/* Redes siempre arriba: en notebooks la barra se hace lugar y los íconos van a su derecha, más chicos */
+@media (min-width: 1500px) { .social { top: 34px; } }
+@media (max-width: 1499px) and (min-width: 861px) {
+  .hdr { left: 16px; transform: none; width: calc(100vw - 32px - 104px); }
+  .social { flex-direction: row; gap: 7px; top: 36px; right: 16px; bottom: auto; opacity: 1 !important; transform: none !important; pointer-events: auto !important; }
+  .social a { width: 27px; height: 27px; border-radius: 7px; }
+  .nav { gap: clamp(12px, 1.3vw, 22px); font-size: 12px; letter-spacing: 0.04em; }
+  .nav-cta { padding: 12px 18px; font-size: 12.5px; }
+  .brand { font-size: 20px; }
+  .hdr { gap: 16px; padding-left: 20px; }
+}
+@media (max-width: 1240px) and (min-width: 861px) { .nav-cta { display: none; } }
+.menu-open .social { opacity: 0 !important; pointer-events: none !important; }
