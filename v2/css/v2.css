@@ -503,3 +503,8 @@ html[data-hdr="light"] .rail { color: var(--ink); }
 .hero-word { padding-bottom: 0.14em; }
 .pr-row, .col, .manif-in, .caps-close, .cta, .faq-side, .ct-left, .us-head { overflow: visible; }
 .cols, .who-card { overflow: hidden; }
+
+/* Preguntas: título en verde lima con contorno oscuro muy sutil; los círculos "+" también en verde */
+.faq.paper .faq-side h2 { color: var(--lime); -webkit-text-stroke: 0.9px rgba(7,7,7,0.85); paint-order: stroke fill; text-shadow: none; }
+.faq .qa i { background: var(--lime); border-color: var(--lime); color: var(--ink); }
+.faq .qa.is-open i { background: var(--ink); border-color: var(--ink); color: var(--lime); }
