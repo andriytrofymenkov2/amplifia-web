@@ -756,3 +756,5 @@ input, textarea { -webkit-appearance: none; appearance: none; border-radius: 0; 
 .hero-word { animation: none !important; text-shadow: 0 0 8px rgba(255,255,255,0.9), 0 0 36px rgba(215,242,74,0.5); }
 .hero-media, .hero-copy { will-change: transform; }
 .shade-hero { will-change: auto; }
+
+.col:nth-of-type(3) .col-img img { object-position: 46% 50%; }
