@@ -101,7 +101,7 @@
         root.setAttribute("data-hdr", s.getAttribute("data-hdr") || "dark");
         railN.textContent = pad2(i + 1);
         railT.textContent = s.getAttribute("data-name");
-        railEl.style.opacity = s.matches(".hero,.prob") ? "" : "0";
+        railEl.style.opacity = s.matches(".hero") ? "" : "0";
       }
     });
   });
@@ -127,29 +127,23 @@
     var mw = words($("#manifText"), false);
     onceIn("#manifiesto", function () { gsap.to(mw, { opacity: 1, stagger: 0.07, duration: 0.7, ease: "power2.out" }); }, "top 55%");
 
-    /* 03 · el problema: cada frase entra y sale sola (por tiempo); el scroll solo decide cuál toca */
-    var probTrack = $("#problema .track"), items = $$("#probList .ph-item"), probN = $("#probN");
-    gsap.fromTo("#problema .bgv", { scale: 1.2 }, { scale: 1, ease: "none", scrollTrigger: { trigger: probTrack, start: "top bottom", end: "bottom bottom", scrub: true } });
-    var pw = items.map(function (it) { return words($("h2", it)); });
-    var ps = items.map(function (it) { return $(".sub", it); });
-    gsap.set(pw, { yPercent: 118 }); gsap.set(ps, { opacity: 0, y: 18 });
-    var pCur = -1;
-    function showPhrase(k) {
-      if (k === pCur) return;
-      var prev = pCur, dir = k > prev ? 1 : -1; pCur = k;
-      probN.textContent = pad2(k + 1);
-      if (prev >= 0) {
-        gsap.to(pw[prev], { yPercent: -118 * dir, duration: 0.45, stagger: 0.03, ease: "power2.in", overwrite: true });
-        gsap.to(ps[prev], { opacity: 0, duration: 0.25, overwrite: true });
-      }
-      gsap.set(pw[k], { yPercent: 118 * dir });
-      gsap.to(pw[k], { yPercent: 0, duration: 0.85, stagger: 0.05, ease: "power3.out", delay: prev >= 0 ? 0.4 : 0.1, overwrite: true });
-      gsap.fromTo(ps[k], { opacity: 0, y: 18 }, { opacity: 0.8, y: 0, duration: 0.6, ease: "power2.out", delay: prev >= 0 ? 0.75 : 0.5, overwrite: true });
-    }
-    ScrollTrigger.create({ trigger: probTrack, start: "top top", end: "bottom bottom",
-      onUpdate: function (s) { showPhrase(clamp(Math.floor(s.progress * items.length), 0, items.length - 1)); } });
-    showPhrase(0);
-    feed(probTrack, [$("#problema video")]);
+    /* 03 · el problema: las cinco filas se abren solas (línea, título por palabra, texto de costado) */
+    var prRows = $$("#prList .pr-row");
+    var prT = prRows.map(function (r) { return words($(".pr-t", r)); });
+    prRows.forEach(function (r, i) {
+      gsap.set($(".pr-line", r), { scaleX: 0 });
+      gsap.set(prT[i], { yPercent: 118 });
+      gsap.set($$(".pr-n, .pr-s", r), { opacity: 0, x: i % 2 ? -40 : 40 });
+    });
+    onceIn("#prList", function () {
+      prRows.forEach(function (r, i) {
+        var tl = gsap.timeline({ delay: i * 0.18 });
+        tl.to($(".pr-line", r), { scaleX: 1, duration: 1.1, ease: "power3.inOut" })
+          .to(prT[i], { yPercent: 0, duration: 0.9, stagger: 0.05, ease: "power4.out" }, 0.25)
+          .to($(".pr-n", r), { opacity: 0.55, x: 0, duration: 0.7, ease: "power3.out" }, 0.3)
+          .to($(".pr-s", r), { opacity: 0.7, x: 0, duration: 0.8, ease: "power3.out" }, 0.5);
+      });
+    }, "top 65%");
 
     /* 04 · qué hacemos: las tres columnas se abren solas, una hacia la derecha y otra hacia la izquierda */
     $$("#que-hacemos .col").forEach(function (col, i) {
