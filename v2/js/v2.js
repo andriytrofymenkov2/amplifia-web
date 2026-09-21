@@ -338,6 +338,17 @@
     layout();
   }
 
+
+  /* Las máscaras de palabra recortan mientras la palabra sube; cuando ya llegó a su lugar se libera el
+     recorte, así las letras que bajan (g, p, q, y) nunca quedan cortadas. */
+  setInterval(function () {
+    $$(".w-mask").forEach(function (m) {
+      var w = m.firstElementChild;
+      if (!w || m._free) return;
+      if (gsap.getProperty(w, "yPercent") === 0 && !gsap.isTweening(w)) { m.style.overflow = "visible"; m._free = true; }
+    });
+  }, 600);
+
   /* ---------- preguntas frecuentes ---------- */
   var qas = $$(".qa"), refreshT;
   qas.forEach(function (q) {

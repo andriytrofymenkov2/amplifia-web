@@ -33,7 +33,7 @@ ul, ol { list-style: none; padding: 0; }
 em { font-style: italic; color: var(--lime); }
 .tiny { font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase; font-weight: 500; opacity: 0.72; }
 .sub { font-size: clamp(15px, 1.25vw, 20px); line-height: 1.5; max-width: 40ch; opacity: 0.8; }
-.mk { padding-bottom: 0.16em; margin-bottom: -0.16em; }   /* máscara de SplitText sin cortar los rabitos */
+.w-mask { padding-top: 0.14em; margin-top: -0.14em; padding-bottom: 0.34em; margin-bottom: -0.34em; }   /* máscara de SplitText sin cortar los rabitos */
 .js .split { visibility: hidden; }
 .js .split.is-split { visibility: visible; }
 
@@ -477,14 +477,22 @@ html[data-hdr="light"] .rail { color: var(--ink); }
 
 /* ---------- verde lima en títulos + letras que no se cortan ---------- */
 .faq-side h2, .ct-left h2 { color: var(--lime); }
-.faq { background: var(--ink); color: var(--paper); }
-.qa { border-top-color: rgba(239,236,229,0.18); }
-.qa:last-child { border-bottom-color: rgba(239,236,229,0.18); }
-.qa i { border-color: rgba(239,236,229,0.3); }
-.qa.is-open i { color: var(--ink); }
-.faq em { color: var(--lime); }
 
 /* la máscara de cada palabra deja aire abajo (rabitos de g, p, y, q) y arriba (tildes) */
 .mk { padding-top: 0.12em; margin-top: -0.12em; padding-bottom: 0.3em; margin-bottom: -0.3em; }
 .hero-word { padding-bottom: 0.08em; }
 .cap-title, .pr-t, .who-card h3, .wd-body h3, .fr .card h3, .card-body h3 { padding-bottom: 0.06em; }
+
+/* ---------- más aire entre líneas: nada de letras que se corten ---------- */
+.mega { line-height: 0.98; }
+.xl { line-height: 1.04; }
+.lg { line-height: 1.08; }
+.cap-title { line-height: 1.06; }
+.pr-t { line-height: 1.06; }
+.who-card h3, .wd-body h3 { line-height: 1.1; }
+.fr .card h3, .card-body h3 { line-height: 1.1; }
+.hero-word { line-height: 1; padding-bottom: 0.12em; }
+.w-mask { padding-top: 0.14em; margin-top: -0.14em; padding-bottom: 0.34em; margin-bottom: -0.34em; }
+.qa > button { line-height: 1.25; }
+/* títulos en verde lima sobre fondo claro: un borde oscuro fino para que se lean */
+.paper .faq-side h2, .faq.paper .faq-side h2 { color: var(--lime); text-shadow: 0 0 1px rgba(7,7,7,0.55), 0 2px 12px rgba(7,7,7,0.22); }
