@@ -359,13 +359,58 @@
 
 
 
-  /* ---------- preguntas frecuentes: cada fila se repite 3 veces para que el bucle no tenga huecos ---------- */
+  /* ---------- preguntas frecuentes: cada fila se repite 3 veces (bucle sin huecos) y se desplaza en píxeles exactos ---------- */
+  var fqTracks = [];
   $$(".fq-row").forEach(function (row) {
     var set = $(".fq-set", row), track = document.createElement("div");
     track.className = "fq-track"; track.style.setProperty("--dur", row.getAttribute("data-speed") || "60s");
     row.appendChild(track); track.appendChild(set);
     for (var k = 0; k < 2; k++) { var c = set.cloneNode(true); c.setAttribute("aria-hidden", "true"); track.appendChild(c); }
+    fqTracks.push({ track: track, set: set });
   });
+  function fqMeasure() {
+    fqTracks.forEach(function (t) { t.track.style.setProperty("--shift", "-" + t.set.offsetWidth + "px"); });
+  }
+  fqMeasure();
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(fqMeasure);
+  window.addEventListener("load", fqMeasure);
+  window.addEventListener("resize", fqMeasure);
+  /* lupa: una sola tarjeta ampliada, flotando sobre la original; en pantallas táctiles se abre con un toque */
+  (function fqLupa() {
+    var zoom = $("#fqZoom"), rows = $("#fqRows"), cur = null, hideT = null;
+    if (!zoom || !rows) return;
+    function place(card) {
+      var r = card.getBoundingClientRect();
+      zoom.innerHTML = card.innerHTML;
+      var w = zoom.offsetWidth, h = zoom.offsetHeight;
+      var x = clamp(r.left + r.width / 2 - w / 2, 12, window.innerWidth - w - 12);
+      var y = clamp(r.top + r.height / 2 - h / 2, 96, window.innerHeight - h - 12);
+      zoom.style.left = x + "px"; zoom.style.top = y + "px";
+      zoom.style.transformOrigin = clamp(((r.left + r.width / 2) - x) / w * 100, 0, 100) + "% " + clamp(((r.top + r.height / 2) - y) / h * 100, 0, 100) + "%";
+    }
+    function show(card) {
+      clearTimeout(hideT); if (cur === card) return; cur = card;
+      zoom.classList.add("is-on"); place(card);
+      gsap.fromTo(zoom, { opacity: 0, scale: 0.72 }, { opacity: 1, scale: 1, duration: 0.32, ease: "power3.out", overwrite: true });
+    }
+    function hide() {
+      hideT = setTimeout(function () {
+        cur = null;
+        gsap.to(zoom, { opacity: 0, scale: 0.9, duration: 0.2, ease: "power2.in", overwrite: true, onComplete: function () { if (!cur) zoom.classList.remove("is-on"); } });
+      }, 60);
+    }
+    rows.addEventListener("mouseover", function (e) { var c = e.target.closest && e.target.closest(".fq-card"); if (c && matchMedia("(hover: hover)").matches) show(c); });
+    rows.addEventListener("mouseout", function (e) { var c = e.target.closest && e.target.closest(".fq-card"); if (c && !(e.relatedTarget && c.contains(e.relatedTarget))) hide(); });
+    rows.addEventListener("click", function (e) { var c = e.target.closest && e.target.closest(".fq-card"); if (c && !matchMedia("(hover: hover)").matches) { if (cur === c) { hide(); } else { show(c); } } });
+    document.addEventListener("click", function (e) { if (!e.target.closest(".fq-card")) hide(); });
+    window.addEventListener("scroll", function () { if (cur) hide(); }, { passive: true });
+  })();
+
+  /* fuera de pantalla no se anima nada */
+  if ("IntersectionObserver" in window) {
+    var faqEl = $("#faq");
+    new IntersectionObserver(function (es) { faqEl.classList.toggle("is-off", !es[0].isIntersecting); }, { rootMargin: "80px" }).observe(faqEl);
+  }
 
   /* ---------- formulario ---------- */
   var form = $("#cf"), note = $("#cfNote");
