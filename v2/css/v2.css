@@ -667,3 +667,6 @@ html[data-hdr="light"] .nav a.is-on { color: var(--olive); }
 
 /* Roadmap: el destello en los nodos, mucho más tenue (no distrae de la lectura) */
 .rm-col.hit::before { transform: scale(1.45); background: var(--lime); box-shadow: 0 0 0 3px rgba(215,242,74,0.18), 0 0 10px 2px rgba(215,242,74,0.35); animation: none; }
+
+/* Preguntas: el título de cada tarjeta en el verde lima de la página */
+.fq-card h3 { color: var(--lime); }
