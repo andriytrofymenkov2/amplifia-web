@@ -145,18 +145,22 @@
       });
     }, "top 65%");
 
-    /* 04 · qué hacemos: las tres columnas se abren solas, una hacia la derecha y otra hacia la izquierda */
-    $$("#que-hacemos .col").forEach(function (col, i) {
-      var from = i % 2 ? "inset(0% 0% 0% 100%)" : "inset(0% 100% 0% 0%)";
-      var w = words($(".cap-title", col)), rest = $$(".tiny, .sub", col);
-      gsap.set(col, { clipPath: from }); gsap.set(w, { yPercent: 118 }); gsap.set(rest, { opacity: 0, y: 16 });
-      onceIn("#que-hacemos .cols", function () {
-        gsap.timeline({ delay: i * 0.16 })
-          .to(col, { clipPath: "inset(0% 0% 0% 0%)", duration: 1.1, ease: "power3.inOut" })
-          .to(w, { yPercent: 0, duration: 0.8, stagger: 0.05, ease: "power4.out" }, 0.45)
-          .to(rest, { opacity: 0.8, y: 0, duration: 0.6, stagger: 0.08 }, 0.65);
-      }, "top 70%");
-    });
+    /* 04 · qué hacemos: un solo bloque que se abre desde el centro; los tres módulos aparecen integrados */
+    var capsCols = $("#capsCols"), capCols = $$(".col", capsCols);
+    var cw = capCols.map(function (c) { return words($(".cap-title", c)); });
+    var capRest = $$(".col .tiny, .col .sub", capsCols), nodes = $$(".cols-node", capsCols);
+    capsCols.style.clipPath = "inset(0% 50% 0% 50% round 8px)";
+    gsap.set(cw, { yPercent: 118 }); gsap.set(capRest, { opacity: 0, y: 16 });
+    gsap.set(".cols-link", { scaleX: 0 }); gsap.set(nodes, { scale: 0 });
+    onceIn(capsCols, function () {
+      gsap.timeline()
+        .fromTo(capsCols, { clipPath: "inset(0% 50% 0% 50% round 8px)" }, { clipPath: "inset(0% 0% 0% 0% round 8px)", duration: 1.5, ease: "power3.inOut" })
+        .to(".cols-link", { scaleX: 1, duration: 1.4, ease: "power2.inOut" }, 0.1)
+        .to(cw[1], { yPercent: 0, duration: 0.9, stagger: 0.05, ease: "power4.out" }, 0.7)
+        .to([cw[0], cw[2]], { yPercent: 0, duration: 0.9, stagger: 0.05, ease: "power4.out" }, 0.95)
+        .to(capRest, { opacity: 0.8, y: 0, duration: 0.7, stagger: 0.06, ease: "power2.out" }, 1.0)
+        .to(nodes, { scale: 1, duration: 0.6, stagger: 0.15, ease: "back.out(2.4)" }, 1.3);
+    }, "top 70%");
 
     /* 05 · frentes: recorrido horizontal */
     var hz = $("#frentes"), hzTrack = $("#hzTrack");
@@ -186,13 +190,68 @@
       tl.from(".rm-foot", { opacity: 0, y: 16, duration: 0.8 }, 2.4);
     }, "top 75%");
 
-    /* 07 · nosotros: retratos que se abren y textos por palabra */
-    $$(".person").forEach(function (p) {
-      var ph = $(".ph", p), img = $("img", ph);
-      gsap.fromTo(ph, { clipPath: "inset(100% 0% 0% 0%)" }, { clipPath: "inset(0% 0% 0% 0%)", ease: "power3.inOut", scrollTrigger: { trigger: ph, start: "top 90%", end: "top 30%", scrub: 0.6 } });
-      gsap.fromTo(img, { scale: 1.1 }, { scale: 1, ease: "none", scrollTrigger: { trigger: ph, start: "top 92%", end: "top 30%", scrub: true } });
-      gsap.from($$(".tiny, .role, .bio", p), { opacity: 0, y: 26, duration: 1, stagger: 0.12, ease: "power3.out", scrollTrigger: { trigger: p, start: "top 60%", once: true } });
-    });
+    /* 07 · nosotros: dos contenedores negros con "+" (mismo mecanismo que la página anterior) */
+    (function who() {
+      var PEOPLE = [
+        { tag: "Procesos", name: "Andriy Trofymenko", role: "Ingeniero industrial · Optimización de procesos · Mejora continua",
+          intro: "Especializado en la gestión estratégica de proyectos y la excelencia operativa. Combina rigurosidad técnica y visión integral para transformar procesos, reducir costos y maximizar la productividad, con formación en Industria 4.0.",
+          labelA: "Proyectos", listA: ["Cadena de valor del cáñamo", "Capacitación corporativa", "Planta de polietileno", "Reestructuración de layout", "Optimización clínica", "Herramientas de gestión"],
+          labelB: "Trabajó con", textB: "Medisur · SS Servicios · MS Patagonia · Aeropuertos Argentina" },
+        { tag: "Personas", name: "Christian Pollavini", role: "Coach empresarial · Desarrollo organizacional y comercial",
+          intro: "Coach empresarial especializado en desarrollo organizacional y comercial. Trabaja con líderes y equipos para que los cambios de proceso se sostengan en las personas que los llevan adelante.",
+          labelA: "Áreas de trabajo", listA: ["Coaching organizacional", "Liderazgo", "Cohesión de equipos", "Entrenamiento de equipos comerciales", "Estrategia de venta", "Manejo de objeciones y cierre"],
+          labelB: "", textB: "" }
+      ];
+      var sec = $("#consultora"), whoCards = $$(".who-card", sec), hots = $$(".who-hot", sec), detail = $("#whoDetail"), xBtn = $("#whoX");
+      gsap.set(whoCards, { opacity: 0, y: 50 });
+      gsap.set(hots, { opacity: 0, scale: 0.6 });
+      onceIn("#whoStage", function () {
+        gsap.timeline().to(whoCards, { opacity: 1, y: 0, duration: 1.1, stagger: 0.2, ease: "power3.out" }, 0)
+          .to(hots, { opacity: 1, scale: 1, duration: 0.7, stagger: 0.18, ease: "back.out(2.2)" }, 0.9);
+      }, "top 75%");
+
+      if (window.matchMedia("(hover: hover) and (min-width: 861px)").matches) {
+        var CLOSED = { left: "inset(0% 100% 0% 0%)", right: "inset(0% 0% 0% 100%)", top: "inset(0% 0% 100% 0%)", bottom: "inset(100% 0% 0% 0%)" }, OPEN = "inset(0% 0% 0% 0%)";
+        var edgeOf = function (e, el) {
+          var r = el.getBoundingClientRect(), dx = (e.clientX - (r.left + r.width / 2)) / r.width, dy = (e.clientY - (r.top + r.height / 2)) / r.height;
+          return Math.abs(dx) > Math.abs(dy) ? (dx < 0 ? "left" : "right") : (dy < 0 ? "top" : "bottom");
+        };
+        whoCards.forEach(function (card) {
+          var color = $(".who-img-color", card);
+          card.addEventListener("mouseenter", function (e) { gsap.fromTo(color, { clipPath: CLOSED[edgeOf(e, card)] }, { clipPath: OPEN, duration: 0.8, ease: "power3.out", overwrite: true }); });
+          card.addEventListener("mouseleave", function (e) {
+            var edge = edgeOf(e, card), toward = { left: CLOSED.right, right: CLOSED.left, top: CLOSED.bottom, bottom: CLOSED.top }[edge];
+            gsap.to(color, { clipPath: toward, duration: 0.7, ease: "power3.inOut", overwrite: true });
+          });
+        });
+      }
+      function open(i) {
+        var d = PEOPLE[i], src = $(".who-img-color", whoCards[i]).getAttribute("src");
+        $("#wdImg").src = src; $("#wdImg").alt = d.name;
+        $("#wdTag").textContent = d.tag; $("#wdName").textContent = d.name; $("#wdRole").textContent = d.role; $("#wdIntro").textContent = d.intro;
+        $("#wdLabelA").textContent = d.labelA;
+        var ul = $("#wdListA"); ul.innerHTML = "";
+        d.listA.forEach(function (t) { var li = document.createElement("li"); li.textContent = t; ul.appendChild(li); });
+        $("#wdBlockB").hidden = !d.textB; $("#wdLabelB").textContent = d.labelB; $("#wdTextB").textContent = d.textB;
+        detail.hidden = false; root.classList.add("has-panel");
+        var bodyEls = $$(".wd-tag, h3, .wd-role, .wd-intro, .wd-block:not([hidden])", detail);
+        gsap.fromTo(detail, { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.55, ease: "power3.out", overwrite: true });
+        gsap.fromTo($(".wd-photo img", detail), { scale: 1.12 }, { scale: 1, duration: 1.4, ease: "power2.out", overwrite: true });
+        gsap.fromTo(bodyEls, { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.7, stagger: 0.07, delay: 0.15, ease: "power3.out", overwrite: true });
+        if (lenis && phone) lenis.stop();
+        xBtn.focus({ preventScroll: true });
+      }
+      function shut() {
+        root.classList.remove("has-panel");
+        if (detail.hidden) return;
+        gsap.to(detail, { opacity: 0, y: 16, duration: 0.3, ease: "power2.in", overwrite: true, onComplete: function () { detail.hidden = true; } });
+        if (lenis) lenis.start();
+      }
+      hots.forEach(function (h) { h.addEventListener("click", function () { open(+h.getAttribute("data-who")); }); });
+      xBtn.addEventListener("click", shut);
+      document.addEventListener("keydown", function (e) { if (e.key === "Escape") shut(); });
+      ScrollTrigger.create({ trigger: sec, start: "top 85%", end: "bottom 15%", onToggle: function (s) { if (!s.isActive) shut(); } });
+    })();
     $$(".split").forEach(function (el) {
       var w = words(el); el.classList.add("is-split");
       gsap.from(w, { yPercent: 118, duration: 1.25, stagger: 0.07, ease: "power4.out", scrollTrigger: { trigger: el, start: "top 88%", once: true } });

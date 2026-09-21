@@ -10,7 +10,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500&display=swap" rel="stylesheet">
 <link rel="preload" as="image" href="Imagenes%20usadas/hero_poster_1920.jpg">
-<link rel="stylesheet" href="v2/css/v2.css?v=10">
+<link rel="stylesheet" href="v2/css/v2.css?v=13">
 <script>document.documentElement.classList.add("js");</script>
 </head>
 <body class="is-loading">
@@ -91,10 +91,13 @@
 <section class="caps" id="que-hacemos" data-hdr="dark" data-name="Qué hacemos">
   <div class="caps-in">
     <span class="tiny">Qué hacemos</span>
-    <div class="cols">
-      <div class="col"><div class="ambient a3"></div><span class="tiny">01</span><h2 class="cap-title">Organizaciones</h2><p class="sub">Procesos que fluyen. Operaciones que mejoran. Resultados que se sostienen.</p></div>
-      <div class="col"><div class="ambient a4"></div><span class="tiny">02</span><h2 class="cap-title">Personas</h2><p class="sub">Líderes que deciden. Equipos que colaboran. Organizaciones que evolucionan.</p></div>
-      <div class="col"><div class="ambient a5"></div><span class="tiny">03</span><h2 class="cap-title">Inteligencia</h2><p class="sub">Datos que informan. IA que amplifica. Decisiones que avanzan.</p></div>
+    <div class="cols" id="capsCols">
+      <div class="cols-glow" aria-hidden="true"></div>
+      <i class="cols-link" aria-hidden="true"></i>
+      <div class="col"><span class="tiny">01</span><h2 class="cap-title">Procesos</h2><p class="sub">Procesos que fluyen. Operaciones que mejoran. Resultados que se sostienen.</p></div>
+      <div class="col"><span class="tiny">02</span><h2 class="cap-title">Inteligencia</h2><p class="sub">Datos que informan. IA que amplifica. Decisiones que avanzan.</p></div>
+      <div class="col"><span class="tiny">03</span><h2 class="cap-title">Personas</h2><p class="sub">Líderes que deciden. Equipos que colaboran. Organizaciones que evolucionan.</p></div>
+      <i class="cols-node n1" aria-hidden="true"></i><i class="cols-node n2" aria-hidden="true"></i>
     </div>
   </div>
   <div class="caps-close"><span class="tiny">Juntas</span><h2 class="xl split">Combinadas y potenciadas con <em>inteligencia artificial</em>, transforman cómo trabaja una organización.</h2></div>
@@ -105,8 +108,8 @@
   <div class="stage">
     <div class="hz-track" id="hzTrack">
       <div class="hz-intro"><span class="tiny">Frentes</span><h2 class="xl">Seis frentes,<br>un solo <em>sistema</em>.</h2></div>
-      <article class="card"><div class="card-img"><div class="ambient a2"></div></div><div class="card-body"><span class="tiny">01 · Organizaciones</span><h3 class="lg">Procesos y operaciones</h3><ul><li>Lean Manufacturing y 5S</li><li>Mapeo y estandarización de procesos</li><li>Flujo y layout de planta y oficina</li><li>Indicadores y control de gestión</li></ul></div></article>
-      <article class="card"><div class="card-img"><div class="ambient a1"></div></div><div class="card-body"><span class="tiny">02 · Organizaciones</span><h3 class="lg">Mejora continua</h3><ul><li>Kaizen y Six Sigma</li><li>Eliminación de pérdidas y desperdicios</li><li>Gestión visual y Kanban</li><li>Productividad que se sostiene</li></ul></div></article>
+      <article class="card"><div class="card-img"><div class="ambient a2"></div></div><div class="card-body"><span class="tiny">01 · Procesos</span><h3 class="lg">Procesos y operaciones</h3><ul><li>Lean Manufacturing y 5S</li><li>Mapeo y estandarización de procesos</li><li>Flujo y layout de planta y oficina</li><li>Indicadores y control de gestión</li></ul></div></article>
+      <article class="card"><div class="card-img"><div class="ambient a1"></div></div><div class="card-body"><span class="tiny">02 · Procesos</span><h3 class="lg">Mejora continua</h3><ul><li>Kaizen y Six Sigma</li><li>Eliminación de pérdidas y desperdicios</li><li>Gestión visual y Kanban</li><li>Productividad que se sostiene</li></ul></div></article>
       <article class="card"><div class="card-img"><div class="ambient a4"></div></div><div class="card-body"><span class="tiny">03 · Personas</span><h3 class="lg">Liderazgo y coaching</h3><ul><li>Coaching ejecutivo y de equipos</li><li>Liderazgo en el día a día</li><li>Toma de decisiones</li><li>Cultura y cohesión organizacional</li></ul></div></article>
       <article class="card"><div class="card-img"><div class="ambient a5"></div></div><div class="card-body"><span class="tiny">04 · Personas</span><h3 class="lg">Equipos y desarrollo comercial</h3><ul><li>Comunicación y colaboración</li><li>Entrenamiento de equipos comerciales</li><li>Estrategia de venta y objeciones</li><li>Desarrollo de las personas</li></ul></div></article>
       <article class="card"><div class="card-img"><div class="ambient a3"></div></div><div class="card-body"><span class="tiny">05 · Inteligencia</span><h3 class="lg">Inteligencia artificial</h3><ul><li>IA integrada en decisiones reales</li><li>Automatización de tareas y flujos</li><li>Agentes y asistentes para el equipo</li><li>Uso responsable de la IA</li></ul></div></article>
@@ -144,26 +147,43 @@
 </section>
 
 <!-- ===== 07 · NOSOTROS ===== -->
-<section class="us sheet paper" id="consultora" data-hdr="light" data-name="Nosotros">
-  <div class="us-head"><span class="tiny">Quiénes somos</span><h2 class="xl split">Dos disciplinas,<br>una sola <em>mirada</em>.</h2></div>
-  <article class="person">
-    <div class="ph" style="--fx:44%"><img src="Imagenes%20usadas/who-andriy.jpg" alt="Andriy Trofymenko" loading="lazy"></div>
-    <div class="person-copy">
-      <span class="tiny">Procesos</span>
-      <h3 class="xl split">Andriy<br>Trofymenko</h3>
-      <p class="role">Ingeniero industrial · Optimización de procesos · Mejora continua</p>
-      <p class="bio">Especializado en la gestión estratégica de proyectos y la excelencia operativa. Combina rigurosidad técnica y visión integral para transformar procesos, reducir costos y maximizar la productividad.</p>
+<section class="us sheet" id="consultora" data-hdr="dark" data-name="Nosotros">
+  <div class="us-head who-head">
+    <div><span class="tiny">Quiénes somos</span><h2 class="xl split">Dos disciplinas,<br>una sola <em>mirada</em>.</h2></div>
+    <p class="who-close">Amplifia integra procesos, liderazgo y tecnología: tres disciplinas que rara vez trabajan juntas y que, juntas, sostienen los resultados.</p>
+  </div>
+  <div class="who-stage" id="whoStage">
+    <div class="who-cards" id="whoCards">
+      <article class="who-card">
+        <img class="who-img who-img-base" src="Imagenes%20usadas/who-andriy.jpg" alt="Andriy Trofymenko" width="1100" height="734" decoding="async" loading="lazy">
+        <img class="who-img who-img-color" src="Imagenes%20usadas/who-andriy.jpg" alt="" aria-hidden="true" width="1100" height="734" decoding="async" loading="lazy">
+        <span class="who-tag">Procesos</span>
+        <h3>Andriy Trofymenko</h3>
+        <p>Ingeniero industrial</p>
+        <button class="who-hot is-card" data-who="0" aria-label="Conocé a Andriy"><i class="hot-plus"></i><span>Conocé a Andriy</span></button>
+      </article>
+      <article class="who-card">
+        <img class="who-img who-img-base" src="Imagenes%20usadas/who-christian.jpg" alt="Christian Pollavini" width="1100" height="734" decoding="async" loading="lazy">
+        <img class="who-img who-img-color" src="Imagenes%20usadas/who-christian.jpg" alt="" aria-hidden="true" width="1100" height="734" decoding="async" loading="lazy">
+        <span class="who-tag">Personas</span>
+        <h3>Christian Pollavini</h3>
+        <p>Coach empresarial</p>
+        <button class="who-hot is-card" data-who="1" aria-label="Conocé a Christian"><i class="hot-plus"></i><span>Conocé a Christian</span></button>
+      </article>
     </div>
-  </article>
-  <article class="person rev">
-    <div class="ph" style="--fx:52%"><img src="Imagenes%20usadas/who-christian.jpg" alt="Christian Pollavini" loading="lazy"></div>
-    <div class="person-copy">
-      <span class="tiny">Personas</span>
-      <h3 class="xl split">Christian<br>Pollavini</h3>
-      <p class="role">Coach empresarial · Desarrollo organizacional y comercial</p>
-      <p class="bio">Trabaja con líderes y equipos para que los cambios de proceso se sostengan en las personas que los llevan adelante.</p>
+    <div class="who-detail" id="whoDetail" role="dialog" aria-modal="false" aria-label="Trayectoria" hidden>
+      <button class="who-x" id="whoX" aria-label="Cerrar"><i></i></button>
+      <div class="wd-photo"><img id="wdImg" src="" alt=""></div>
+      <div class="wd-body">
+        <span class="wd-tag" id="wdTag"></span>
+        <h3 id="wdName"></h3>
+        <p class="wd-role" id="wdRole"></p>
+        <p class="wd-intro" id="wdIntro"></p>
+        <div class="wd-block" id="wdBlockA"><em id="wdLabelA"></em><ul id="wdListA"></ul></div>
+        <div class="wd-block" id="wdBlockB"><em id="wdLabelB"></em><p id="wdTextB"></p></div>
+      </div>
     </div>
-  </article>
+  </div>
 </section>
 
 <!-- ===== 08 · PROYECTOS ===== -->
@@ -211,7 +231,7 @@
 </section>
 
 <!-- ===== 10 · PREGUNTAS ===== -->
-<section class="faq sheet paper" id="faq" data-hdr="light" data-name="Preguntas">
+<section class="faq sheet" id="faq" data-hdr="light" data-name="Preguntas">
   <div class="faq-side"><span class="tiny">Preguntas frecuentes</span><h2 class="xl split">Lo que suelen preguntarnos.</h2></div>
   <div class="qas">
     <div class="qa"><button type="button" aria-expanded="false">¿Cómo empieza una consultoría con Amplifia?<i></i></button><div class="qa-a"><div><p>Con un diagnóstico. Relevamos datos y conversamos con líderes y equipos para entender cómo funciona hoy tu organización. Recién ahí te proponemos un camino a la medida.</p></div></div></div>
@@ -259,6 +279,6 @@
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/SplitText.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.18/dist/lenis.min.js"></script>
-<script src="v2/js/v2.js?v=10"></script>
+<script src="v2/js/v2.js?v=13"></script>
 </body>
 </html>
