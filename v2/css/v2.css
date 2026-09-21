@@ -818,3 +818,14 @@ input, textarea { -webkit-appearance: none; appearance: none; border-radius: 0; 
 .ampli.is-walking .a-legL, .ampli.is-walking .a-armR { animation-name: swingA; }
 @keyframes swingA { 0%, 100% { transform: rotate(-9deg); } 50% { transform: rotate(9deg); } }
 @keyframes swingB { 0%, 100% { transform: rotate(9deg); } 50% { transform: rotate(-9deg); } }
+
+/* Ampli = chip de IA verde neón (sobrio, premium) */
+.ampli-btn { width: clamp(58px, 4.6vw, 84px); filter: drop-shadow(0 8px 16px rgba(0,0,0,0.6)); }
+.ampli-btn svg { animation: ampliIdle 3.4s ease-in-out infinite; }
+.ampli .a-glow { animation: chipGlow 2.6s ease-in-out infinite; }
+@keyframes chipGlow { 0%, 100% { opacity: 0.55; } 50% { opacity: 1; } }
+.ampli.is-walking .ampli-btn svg { animation: ampliStep 0.5s ease-in-out infinite; }
+.ampli.face-left .ampli-btn svg, .ampli.face-left.is-walking .ampli-btn svg { transform: none; }
+.a-eye, .a-pupil { transition: transform 0.08s linear; }
+@media (max-width: 860px) { .ampli-btn { width: 46px; } }
+@media (prefers-reduced-motion: reduce) { .ampli .a-glow { animation: none; } }
