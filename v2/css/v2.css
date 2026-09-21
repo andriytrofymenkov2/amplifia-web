@@ -508,3 +508,68 @@ html[data-hdr="light"] .rail { color: var(--ink); }
 .faq.paper .faq-side h2 { color: var(--lime); -webkit-text-stroke: 0.9px rgba(7,7,7,0.85); paint-order: stroke fill; text-shadow: none; }
 .faq .qa i { background: var(--lime); border-color: var(--lime); color: var(--ink); }
 .faq .qa.is-open i { background: var(--ink); border-color: var(--ink); color: var(--lime); }
+
+/* ---------- Barra superior de la página anterior: píldora con logo, navegación y botón ---------- */
+.hdr { inset: auto; top: 16px; left: 50%; transform: translateX(-50%); width: min(1180px, 92vw); height: 66px; padding: 0 8px 0 26px; gap: 26px; justify-content: flex-start;
+  background: var(--ink); color: #fff; border: 1px solid rgba(150,148,138,0.35); border-radius: 999px; pointer-events: auto;
+  transition: background 0.5s var(--ease), color 0.5s var(--ease), border-color 0.5s var(--ease); }
+html[data-hdr="light"] .hdr { background: var(--paper); color: var(--ink); border-color: rgba(7,7,7,0.16); }
+.menu-open .hdr { background: var(--ink) !important; color: #fff !important; border-color: rgba(150,148,138,0.35) !important; }
+.brand { flex-shrink: 0; font-style: italic; font-size: 22px; }
+.brand svg { width: 30px; height: 35px; }
+.nav { flex: 1; justify-content: center; gap: clamp(16px, 2.1vw, 34px); font-size: 13px; letter-spacing: 0.06em; }
+.nav a { white-space: nowrap; opacity: 0.85; transition: opacity 0.2s ease, color 0.3s ease; }
+.nav a::after { display: none; }
+.nav a:hover { opacity: 1; }
+.nav a.is-on { opacity: 1; color: var(--lime); }
+html[data-hdr="light"] .nav a.is-on { color: var(--olive); }
+.menu-open .nav a.is-on { color: var(--lime); }
+.nav-cta { flex-shrink: 0; background: var(--lime); color: var(--ink); font-size: 13px; font-weight: 600; letter-spacing: 0.02em; padding: 14px 24px; border-radius: 999px; transition: background 0.2s ease; }
+.nav-cta:hover { background: #e4f76b; }
+.menu-btn { display: none; }
+@media (max-width: 1180px) and (min-width: 861px) { .nav { gap: 18px; font-size: 12px; letter-spacing: 0.04em; } }
+@media (max-width: 1040px) and (min-width: 861px) { .nav-cta { display: none; } }
+@media (max-width: 860px) {
+  .hdr { width: 92vw; height: 58px; padding: 0 6px 0 20px; top: 12px; justify-content: space-between; }
+  .nav, .nav-cta { display: none; }
+  .menu-btn { display: flex; }
+  .brand svg { width: 24px; height: 28px; }
+}
+
+/* ---------- Redes con los íconos oficiales ---------- */
+.social { position: fixed; z-index: 85; display: flex; gap: 8px; }
+.social a, .menu-social a, .foot-social a { display: block; width: 30px; height: 30px; border-radius: 8px; box-shadow: 0 8px 20px rgba(0,0,0,0.45); transition: transform 0.3s var(--ease), box-shadow 0.3s ease; }
+.social a:hover, .menu-social a:hover, .foot-social a:hover { transform: translateY(-3px) scale(1.06); box-shadow: 0 12px 26px rgba(0,0,0,0.55); }
+.social svg, .menu-social svg, .foot-social svg { display: block; width: 100%; height: 100%; }
+@media (min-width: 1500px) { .social { top: 30px; right: clamp(16px, 2vw, 28px); } }
+@media (max-width: 1499px) and (min-width: 861px) {
+  .social { flex-direction: column; right: calc(clamp(16px, 2vw, 28px) + 13px); bottom: calc(clamp(16px, 3vh, 28px) + 68px); opacity: 0; transform: translateY(12px); pointer-events: none; transition: opacity 0.5s ease, transform 0.5s var(--ease); }
+  .social.is-on { opacity: 1; transform: none; pointer-events: auto; }
+}
+@media (max-width: 860px) { .social { display: none; } }
+.menu-open .social, .has-panel .social { opacity: 0 !important; pointer-events: none; }
+.menu-social { display: none; }
+@media (max-width: 860px) { .menu-social { display: flex; gap: 14px; position: absolute; left: var(--pad); bottom: calc(clamp(20px, 5vh, 46px) + 64px); } .menu-social a { width: 38px; height: 38px; } }
+.foot-social { display: flex; gap: 10px; }
+.foot-social a { width: 30px; height: 30px; opacity: 1; }
+
+/* navegación de la barra: en fila */
+.nav { display: flex; align-items: center; }
+
+/* Preguntas frecuentes: fondo negro, todo el texto en blanco, solo los "+" en verde */
+.faq { background: var(--ink); color: var(--paper); }
+.faq .faq-side h2 { color: var(--paper); -webkit-text-stroke: 0; text-shadow: none; }
+.faq .qa { border-top-color: rgba(239,236,229,0.2); }
+.faq .qa:last-child { border-bottom-color: rgba(239,236,229,0.2); }
+.faq .qa i, .faq .qa.is-open i { background: var(--lime); border-color: var(--lime); color: var(--ink); }
+.faq .tiny { opacity: 0.72; }
+
+/* Empresas: video de luz con partículas de fondo */
+.trust-bg { z-index: 0; }
+.trust-bg img { opacity: 0.9; }
+.trust-bg .shade { background: linear-gradient(180deg, #070707 0%, rgba(7,7,7,0.35) 22%, rgba(7,7,7,0.25) 60%, #070707 100%); }
+.trust-head, .c3d { position: relative; z-index: 2; }
+@media (max-width: 860px) { .nav, .nav-cta { display: none; } }
+
+.hdr { width: min(1120px, 92vw); }
+@media (max-width: 860px) { .hdr { width: 92vw; } }

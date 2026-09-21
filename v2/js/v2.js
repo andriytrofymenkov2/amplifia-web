@@ -91,7 +91,7 @@
   }
 
   /* ---------- cabecera, riel y progreso según la sección ---------- */
-  var railEl = $(".rail"), railN = $("#railN"), railT = $("#railT");
+  var railEl = $(".rail"), railN = $("#railN"), railT = $("#railT"), navLinks = $$(".nav a");
   $$("[data-name]").forEach(function (s, i) {
     ScrollTrigger.create({
       trigger: s, start: "top 60px", end: "bottom 60px",
@@ -101,11 +101,12 @@
         railN.textContent = pad2(i + 1);
         railT.textContent = s.getAttribute("data-name");
         railEl.style.opacity = s.matches(".hero") ? "" : "0";
+        navLinks.forEach(function (a) { a.classList.toggle("is-on", a.getAttribute("href") === "#" + s.id); });
       }
     });
   });
   gsap.to("#prog", { scaleX: 1, ease: "none", scrollTrigger: { start: 0, end: "max", scrub: 0.2 } });
-  ScrollTrigger.create({ trigger: "#hero", start: "bottom 60%", end: "max", onToggle: function (s) { $("#wa").classList.toggle("is-on", s.isActive); } });
+  ScrollTrigger.create({ trigger: "#hero", start: "bottom 60%", end: "max", onToggle: function (s) { $("#wa").classList.toggle("is-on", s.isActive); $("#social").classList.toggle("is-on", s.isActive); } });
 
   function onceIn(t, fn, start) { ScrollTrigger.create({ trigger: t, start: start || "top 70%", once: true, onEnter: fn }); }
 
@@ -257,6 +258,7 @@
     });
 
     ring3d();
+    feed($("#clientes"), [$("#clientes video")]);
 
     /* 11 · contacto: se destapa con paralaje */
     gsap.fromTo("#ctInner", { yPercent: -14 }, { yPercent: 0, ease: "none", scrollTrigger: { trigger: "#contacto", start: "top bottom", end: "top top", scrub: true } });
