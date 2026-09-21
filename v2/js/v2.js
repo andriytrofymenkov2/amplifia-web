@@ -159,6 +159,7 @@
         .to(cw[1], { yPercent: 0, opacity: 1, duration: 0.9, stagger: 0.05, ease: "power4.out" }, 0.7)
         .to([cw[0], cw[2]], { yPercent: 0, opacity: 1, duration: 0.9, stagger: 0.05, ease: "power4.out" }, 0.95)
         .to(capRest, { opacity: 0.8, y: 0, duration: 0.7, stagger: 0.06, ease: "power2.out" }, 1.0)
+        .fromTo(".col-img img", { scale: 1.25 }, { scale: 1, duration: 2.4, ease: "power2.out" }, 0.2)
         .to(nodes, { scale: 1, duration: 0.6, stagger: 0.15, ease: "back.out(2.4)" }, 1.3);
     }, "top 70%");
 

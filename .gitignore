@@ -40,6 +40,7 @@ Imagenes usadas/lite/*
 !Imagenes usadas/av1/rise.mp4
 !Imagenes usadas/av1/wave.mp4
 !Imagenes usadas/hero_full.mp4
+!Imagenes usadas/procesos.jpg
 !Imagenes usadas/hero_poster_1920.jpg
 !Imagenes usadas/hero_poster_960.jpg
 !Imagenes usadas/lite/bokeh.mp4
@@ -55,3 +56,6 @@ Imagenes usadas/lite/*
 !Imagenes usadas/lite/wave.mp4
 !Imagenes usadas/who-andriy.jpg
 !Imagenes usadas/who-christian.jpg
+
+# originales pesados de la carpeta de trabajo (se suben versiones optimizadas)
+imagenes usadas página nueva/
