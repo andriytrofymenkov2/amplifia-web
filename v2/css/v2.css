@@ -811,3 +811,10 @@ input, textarea { -webkit-appearance: none; appearance: none; border-radius: 0; 
 .caps-in > .tiny, .prob-head .tiny, .fr-head .tiny, .rm-head .tiny, .caps-close .tiny, .us-head .tiny, .pj-head .tiny, .mq-label, .faq-side .tiny, .ct-left .tiny { font-size: clamp(15px, 1.35vw, 21px); }
 .fq-n, .who-tag, .wd-tag, .rm-col b { font-size: revert-layer; }
 .fq-n { font-size: 11px; } .who-tag { font-size: 12px; }
+
+/* Ampli realista: proporciones de adulto (alto y angosto); zapatos claros para verse sobre negro */
+.ampli-btn { width: clamp(50px, 4.2vw, 74px); filter: drop-shadow(0 8px 14px rgba(0,0,0,0.6)) drop-shadow(0 0 6px rgba(215,242,74,0.18)); }
+@media (max-width: 860px) { .ampli-btn { width: 40px; } }
+.ampli.is-walking .a-legL, .ampli.is-walking .a-armR { animation-name: swingA; }
+@keyframes swingA { 0%, 100% { transform: rotate(-9deg); } 50% { transform: rotate(9deg); } }
+@keyframes swingB { 0%, 100% { transform: rotate(9deg); } 50% { transform: rotate(-9deg); } }
