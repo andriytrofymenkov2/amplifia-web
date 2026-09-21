@@ -141,6 +141,13 @@ html[data-hdr="light"] .rail { color: var(--ink); }
 .scene { position: relative; flex: 1; }
 .item { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: center; }
 
+/* Fondos de imagen que cambian con cada paso (escenas inmersivas) */
+.stage { isolation: isolate; overflow: hidden; }
+.bgimgs { position: absolute; inset: -2%; z-index: -1; will-change: transform; }
+.bgimgs img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; }
+.bgimgs img:first-child { opacity: 1; }
+.bgshade { position: absolute; inset: 0; background: linear-gradient(90deg, rgba(10,10,10,0.78), rgba(10,10,10,0.35) 60%, rgba(10,10,10,0.55)); }
+
 /* El problema */
 .prob .stage { padding: 0 var(--pad); }
 .prob-side { position: absolute; left: var(--pad); top: clamp(96px, 14vh, 150px); display: flex; flex-direction: column; gap: 10px; z-index: 2; }
@@ -153,6 +160,18 @@ html[data-hdr="light"] .rail { color: var(--ink); }
 .prob .item.wide h2 { max-width: 16ch; }
 .stage-hint { position: absolute; left: 50%; bottom: clamp(18px, 4vh, 36px); transform: translateX(-50%); font-size: 10px; letter-spacing: 0.24em; text-transform: uppercase; color: var(--soft); display: flex; flex-direction: column; align-items: center; gap: 10px; }
 .stage-hint i { display: block; width: 1px; height: 32px; background: currentColor; opacity: 0.45; }
+
+/* Cortes de imagen a pantalla completa: el marco se abre al scrollear */
+.brk { padding: 0; background: var(--ink); }
+.brk .track { height: 300vh; }
+.brk .stage { display: block; overflow: hidden; }
+.brk-frame { position: absolute; inset: 0; overflow: hidden; clip-path: inset(17% 27% 17% 27% round 32px); will-change: clip-path; }
+.brk-frame img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transform: scale(1.4); will-change: transform; }
+.brk-shade { position: absolute; inset: 0; background: radial-gradient(ellipse 80% 70% at 50% 50%, rgba(10,10,10,0.15), rgba(10,10,10,0.6)); }
+.brk-word { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; font-size: clamp(48px, 10vw, 190px); color: var(--paper); pointer-events: none; }
+.brk-word span, .brk-word em { display: block; line-height: 0.95; }
+.brk-word em { color: var(--lime); }
+.caps-spread { will-change: word-spacing; }
 
 /* Qué hacemos */
 .caps { padding: clamp(110px, 16vh, 180px) var(--pad) 0; }
@@ -299,6 +318,13 @@ html[data-hdr="light"] .rail { color: var(--ink); }
 
 /* ---------- Celular y tablet: sin escenas fijas, todo apilado y legible ---------- */
 @media (max-width: 860px) {
+  .bgimgs { display: none; }
+  .stage { overflow: visible; }
+  .brk .track { height: auto; }
+  .brk .stage { padding: 0; height: 72svh; position: relative; }
+  .brk-frame { clip-path: none; }
+  .brk-frame img { transform: none; }
+  .brk-word { font-size: clamp(40px, 13vw, 90px); }
   .hdr { background: rgba(10, 10, 10, 0.92); padding-top: 8px; padding-bottom: 8px; }
   html[data-hdr="light"] .hdr { background: rgba(242, 239, 233, 0.94); }
   .nav { display: none; }

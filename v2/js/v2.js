@@ -88,6 +88,7 @@
   }
   var heroTrack = $(".hero-track");
   gsap.to(".hero-media", { scale: 1.16, ease: "none", scrollTrigger: { trigger: heroTrack, start: "top top", end: "bottom top", scrub: true } });
+  gsap.to(".hero-word", { letterSpacing: "0.07em", ease: "none", scrollTrigger: { trigger: heroTrack, start: "top top", end: "70% top", scrub: true } });
   gsap.to(".hero-copy", { yPercent: -14, opacity: 0, ease: "none", scrollTrigger: { trigger: heroTrack, start: "top top", end: "70% top", scrub: true } });
   gsap.to(".hero-scroll", { opacity: 0, ease: "none", scrollTrigger: { trigger: heroTrack, start: "top top", end: "12% top", scrub: true } });
 
@@ -113,6 +114,8 @@
   /* ---------- Escenas fijas: un paso por vez ---------- */
   function scene(section, items, onStep) {
     var track = $(".track", section), n = items.length, cur = -1;
+    var bgs = $$(".bgimgs img", section), layer = $(".bgimgs", section);
+    if (layer) gsap.fromTo(layer, { scale: 1.28 }, { scale: 1.0, ease: "none", scrollTrigger: { trigger: track, start: "top top", end: "bottom bottom", scrub: true } });
     gsap.set(items, { autoAlpha: 0 });
     function go(i) {
       if (i === cur) return;
@@ -120,6 +123,10 @@
       if (cur >= 0) gsap.to(items[cur], { autoAlpha: 0, y: -28 * dir, duration: 0.45, ease: "power2.in", overwrite: true });
       if (cur < 0) gsap.set(items[i], { autoAlpha: 1, y: 0 });
       else gsap.fromTo(items[i], { autoAlpha: 0, y: 40 * dir }, { autoAlpha: 1, y: 0, duration: 0.85, ease: "power3.out", delay: 0.28, overwrite: true });
+      if (bgs.length) {
+        if (cur >= 0 && bgs[cur]) gsap.to(bgs[cur], { opacity: 0, duration: 1.2, ease: "power1.inOut", overwrite: true });
+        if (bgs[i]) gsap.to(bgs[i], { opacity: 1, duration: 1.2, ease: "power1.inOut", overwrite: true });
+      }
       cur = i;
       if (onStep) onStep(i);
     }
@@ -151,6 +158,24 @@
     scene($("#metodo"), $$("#rdScene .rd-item"), function (i) {
       nodes.forEach(function (li, k) { li.classList.toggle("is-on", k <= i); });
       gsap.to(fill, { scaleX: i / (nodes.length - 1), duration: 0.7, ease: "power2.out", overwrite: true });
+    });
+
+    /* Cortes: el marco se abre hasta ocupar toda la pantalla, la imagen se asienta y las letras se juntan */
+    $$(".brk").forEach(function (s) {
+      var tl = gsap.timeline({ scrollTrigger: { trigger: $(".track", s), start: "top top", end: "bottom bottom", scrub: 0.6 } });
+      tl.fromTo($(".brk-frame", s), { clipPath: "inset(17% 27% 17% 27% round 32px)" }, { clipPath: "inset(0% 0% 0% 0% round 0px)", ease: "power2.inOut", duration: 0.5 }, 0)
+        .to($(".brk-frame img", s), { scale: 1, ease: "none", duration: 1 }, 0)
+        .fromTo($$(".brk-word > *", s), { yPercent: 40, opacity: 0, letterSpacing: "0.12em" }, { yPercent: 0, opacity: 1, letterSpacing: "-0.01em", ease: "power2.out", duration: 0.45, stagger: 0.12 }, 0.35)
+        .to($(".brk-word", s), { opacity: 0, yPercent: -8, ease: "power1.in", duration: 0.25 }, 0.8);
+    });
+
+    /* Frase de cierre: las palabras se juntan a medida que entra */
+    var spread = $(".caps-spread");
+    if (spread) gsap.fromTo(spread, { wordSpacing: "0.55em", opacity: 0.15 }, { wordSpacing: "0em", opacity: 1, ease: "none", scrollTrigger: { trigger: spread, start: "top 92%", end: "top 45%", scrub: true } });
+
+    /* Retratos: se abren desde un marco */
+    if (!reduce) $$(".person .ph").forEach(function (ph) {
+      gsap.fromTo(ph, { clipPath: "inset(16% 16% 16% 16% round 18px)" }, { clipPath: "inset(0% 0% 0% 0% round 4px)", ease: "power2.out", scrollTrigger: { trigger: ph, start: "top 92%", end: "top 35%", scrub: true } });
     });
 
     /* Qué hacemos: el foco sigue al scroll */
