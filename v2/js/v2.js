@@ -127,23 +127,28 @@
     var mw = words($("#manifText"), false);
     onceIn("#manifiesto", function () { gsap.to(mw, { opacity: 1, stagger: 0.07, duration: 0.7, ease: "power2.out" }); }, "top 55%");
 
-    /* 03 · el problema: una frase por vez sobre el mismo fondo */
+    /* 03 · el problema: cada frase entra y sale sola (por tiempo); el scroll solo decide cuál toca */
     var probTrack = $("#problema .track"), items = $$("#probList .ph-item"), probN = $("#probN");
-    gsap.fromTo("#problema .bgv", { scale: 1.22 }, { scale: 1, ease: "none", scrollTrigger: { trigger: probTrack, start: "top bottom", end: "bottom bottom", scrub: true } });
-    var pIdx = -1;
-    var ptl = gsap.timeline({ defaults: { ease: "none" }, scrollTrigger: { trigger: probTrack, start: "top top", end: "bottom bottom", scrub: 0.8 },
-      onUpdate: function () { var k = clamp(Math.floor(ptl.time() + 0.3), 0, items.length - 1); if (k !== pIdx) { pIdx = k; probN.textContent = pad2(k + 1); } } });
-    items.forEach(function (it, i) {
-      var w = words($("h2", it)), sub = $(".sub", it);
-      if (i > 0) { gsap.set(w, { yPercent: 118 }); ptl.to(w, { yPercent: 0, duration: 0.5, stagger: 0.05, ease: "power3.out" }, i + 0.08); }
-      gsap.set(sub, { y: 18, opacity: 0 });
-      ptl.to(sub, { opacity: 0.8, y: 0, duration: 0.35 }, i > 0 ? i + 0.3 : 0.05);
-      if (i < items.length - 1) {
-        ptl.to(w, { yPercent: -118, duration: 0.35, stagger: 0.03, ease: "power2.in" }, i + 0.6);
-        ptl.to(sub, { opacity: 0, duration: 0.25 }, i + 0.58);
+    gsap.fromTo("#problema .bgv", { scale: 1.2 }, { scale: 1, ease: "none", scrollTrigger: { trigger: probTrack, start: "top bottom", end: "bottom bottom", scrub: true } });
+    var pw = items.map(function (it) { return words($("h2", it)); });
+    var ps = items.map(function (it) { return $(".sub", it); });
+    gsap.set(pw, { yPercent: 118 }); gsap.set(ps, { opacity: 0, y: 18 });
+    var pCur = -1;
+    function showPhrase(k) {
+      if (k === pCur) return;
+      var prev = pCur, dir = k > prev ? 1 : -1; pCur = k;
+      probN.textContent = pad2(k + 1);
+      if (prev >= 0) {
+        gsap.to(pw[prev], { yPercent: -118 * dir, duration: 0.45, stagger: 0.03, ease: "power2.in", overwrite: true });
+        gsap.to(ps[prev], { opacity: 0, duration: 0.25, overwrite: true });
       }
-    });
-    ptl.to({}, { duration: 0.2 }, items.length);
+      gsap.set(pw[k], { yPercent: 118 * dir });
+      gsap.to(pw[k], { yPercent: 0, duration: 0.85, stagger: 0.05, ease: "power3.out", delay: prev >= 0 ? 0.4 : 0.1, overwrite: true });
+      gsap.fromTo(ps[k], { opacity: 0, y: 18 }, { opacity: 0.8, y: 0, duration: 0.6, ease: "power2.out", delay: prev >= 0 ? 0.75 : 0.5, overwrite: true });
+    }
+    ScrollTrigger.create({ trigger: probTrack, start: "top top", end: "bottom bottom",
+      onUpdate: function (s) { showPhrase(clamp(Math.floor(s.progress * items.length), 0, items.length - 1)); } });
+    showPhrase(0);
     feed(probTrack, [$("#problema video")]);
 
     /* 04 · qué hacemos: las tres columnas se abren solas, una hacia la derecha y otra hacia la izquierda */
@@ -191,7 +196,7 @@
     $$(".person").forEach(function (p) {
       var ph = $(".ph", p), img = $("img", ph);
       gsap.fromTo(ph, { clipPath: "inset(100% 0% 0% 0%)" }, { clipPath: "inset(0% 0% 0% 0%)", ease: "power3.inOut", scrollTrigger: { trigger: ph, start: "top 90%", end: "top 30%", scrub: 0.6 } });
-      gsap.fromTo(img, { scale: 1.32, yPercent: -5 }, { scale: 1, yPercent: 5, ease: "none", scrollTrigger: { trigger: ph, start: "top bottom", end: "bottom top", scrub: true } });
+      gsap.fromTo(img, { scale: 1.1 }, { scale: 1, ease: "none", scrollTrigger: { trigger: ph, start: "top 92%", end: "top 30%", scrub: true } });
       gsap.from($$(".tiny, .role, .bio", p), { opacity: 0, y: 26, duration: 1, stagger: 0.12, ease: "power3.out", scrollTrigger: { trigger: p, start: "top 60%", once: true } });
     });
     $$(".split").forEach(function (el) {

@@ -366,3 +366,10 @@ html[data-hdr="light"] .rail { color: var(--ink); }
 .c3d-hint i { width: 34px; height: 1px; background: rgba(215,242,74,0.7); }
 .c3d-hint.is-hidden { opacity: 0; }
 @media (max-width: 860px) { .c3d-stage { --c3d-w: min(184px, 50vw); height: 370px; perspective: 880px; } }
+
+/* retratos: la cara completa (las fotos son horizontales) */
+.person { grid-template-columns: min(36vw, 500px) 1fr; }
+.person.rev { grid-template-columns: 1fr min(36vw, 500px); }
+.person .ph { aspect-ratio: 5 / 4; }
+.ph img { top: 0; height: 100%; object-position: var(--fx, 50%) 6%; }
+@media (max-width: 860px) { .person .ph { max-width: 100%; } }
