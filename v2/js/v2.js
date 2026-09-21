@@ -181,7 +181,8 @@
     var side = p.l > window.innerWidth / 2 ? "R" : "L";
     ampli.classList.remove("is-open");
     ampli.classList.add("is-walking");
-    var dist = Math.hypot(to - x, toY - y), dur = Math.min(3.2, 0.9 + dist / 700);
+    var dist = Math.hypot(to - x, toY - y), dur = Math.min(1.0, 0.4 + dist / 2200);
+    ampli._target = { l: p.l, t: p.t, w: box.w, h: box.h };
     gsap.to(ampli, { x: to, duration: dur, ease: "sine.inOut", overwrite: true });
     gsap.to(ampli, { y: toY, duration: dur * 1.05, ease: "power2.inOut", onComplete: function () { ampliSide = side; ampli.classList.remove("is-walking"); ampli.classList.toggle("on-right", side === "R"); if (done) done(); } });
   }
@@ -194,8 +195,8 @@
     ampliWalkTo(ampliPick(260), done);
   }
   /* si Ampli está en la parte de arriba, el globo y el panel se abren hacia abajo para no salirse de la pantalla */
-  function ampliTips() {
-    var b = ampliBox(), rs = textRects(), vh = window.innerHeight, BW = 350, BH = 84, right = b.l + b.w / 2 > window.innerWidth / 2;
+  function ampliTips(tb) {
+    var b = tb || ampliBox(), rs = textRects(), vh = window.innerHeight, BW = 350, BH = 84, right = b.l + b.w / 2 > window.innerWidth / 2;
     var bl = right ? b.l + b.w - BW : b.l, br = bl + BW;
     var up = { left: bl, right: br, top: b.t - BH - 8, bottom: b.t - 8 }, dn = { left: bl, right: br, top: b.t + b.h + 8, bottom: b.t + b.h + 8 + BH }, hu = up.top < 90 ? 99 : 0, hd = dn.bottom > vh - 10 ? 99 : 0;
     for (var i = 0; i < rs.length; i++) { if (hit(up, rs[i], 4)) hu++; if (hit(dn, rs[i], 4)) hd++; }
@@ -218,13 +219,12 @@
     if (id === "hero") { ampli.classList.add("is-hidden"); ampli.classList.remove("is-open"); ampliBubble.classList.remove("is-on"); return; }
     ampli.classList.remove("is-hidden");
     ampliBubble.classList.remove("is-on");
-    ampliWalk(id, function () {
-      ampliT = setTimeout(function () {
-        if (ampliId !== id) return;
-        ampliTips(); ampliBubble.innerHTML = AMPLI_LINES[id]; ampliBubble.classList.add("is-on"); ampliFit(ampliBubble);
-        ampliT = setTimeout(function () { ampliBubble.classList.remove("is-on"); }, 6500);
-      }, 250);
-    });
+    ampliWalk(id, null);
+    ampliT = setTimeout(function () {
+      if (ampliId !== id) return;
+      ampliTips(ampli._target); ampliBubble.innerHTML = AMPLI_LINES[id]; ampliBubble.classList.add("is-on"); ampliFit(ampliBubble);
+      ampliT = setTimeout(function () { ampliBubble.classList.remove("is-on"); }, 6500);
+    }, 120);
   }
   /* los ojos siguen al mouse */
   if (!phone) {
