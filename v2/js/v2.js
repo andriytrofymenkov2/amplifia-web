@@ -139,24 +139,28 @@
     contacto: "¿Hablamos? Empezamos por un <b>diagnóstico</b>."
   };
   var ampli = $("#ampli"), ampliBubble = $("#ampliBubble"), ampliBtn = $("#ampliBtn"), ampliId = null, ampliT = null, ampliShown = null, ampliX = 0, ampliSide = null;
-  /* lado en que se para Ampli en cada sección (alterna izquierda / derecha) */
-  var AMPLI_SIDE = { hero: "L", manifiesto: "R", problema: "R", "que-hacemos": "L", frentes: "R", metodo: "L", consultora: "R", proyectos: "L", clientes: "R", faq: "L", contacto: "R" };
-  function ampliTarget(side) { var w = ampli.offsetWidth || 90; return side === "R" ? Math.max(12, window.innerWidth - w - (phone ? 12 : 100)) : (phone ? 10 : 20); }
-  function ampliWalk(side, done) {
-    var to = ampliTarget(side);
-    if (ampliSide === null) { gsap.set(ampli, { x: to }); ampliSide = side; ampli.classList.toggle("on-right", side === "R"); if (done) done(); return; }
-    if (side === ampliSide && Math.abs(to - ampliX) < 2) { if (done) done(); return; }
+  /* dónde se para Ampli en cada sección: lado (L/R) y altura (fracción de la pantalla medida desde abajo) — recorre toda la página */
+  var AMPLI_SPOT = { hero: ["L", .10], manifiesto: ["R", .52], problema: ["L", .58], "que-hacemos": ["R", .42], frentes: ["L", .40], metodo: ["R", .30], consultora: ["L", .55], proyectos: ["R", .55], clientes: ["L", .26], faq: ["L", .34], contacto: ["R", .60] };
+  var ampliY = 0;
+  function ampliTarget(side) { var w = ampli.offsetWidth || 70; return side === "R" ? Math.max(12, window.innerWidth - w - (phone ? 8 : 6)) : (phone ? 6 : 4); }
+  function ampliTargetY(f) { return -Math.max(0, f * window.innerHeight - 30); }
+  function ampliWalk(spot, done) {
+    var side = spot[0], to = ampliTarget(side), toY = phone ? 0 : ampliTargetY(spot[1]);
+    if (ampliSide === null) { gsap.set(ampli, { x: to, y: toY }); ampliX = to; ampliY = toY; ampliSide = side; ampli.classList.toggle("on-right", side === "R"); if (done) done(); return; }
+    if (Math.abs(to - ampliX) < 2 && Math.abs(toY - ampliY) < 2) { if (done) done(); return; }
     ampli.classList.remove("is-open");
-    ampli.classList.toggle("face-left", to < ampliX);
     ampli.classList.add("is-walking");
-    gsap.to(ampli, { x: to, duration: Math.min(2.4, 0.7 + Math.abs(to - ampliX) / 900), ease: "power1.inOut", onUpdate: function () { ampliX = gsap.getProperty(ampli, "x"); },
-      onComplete: function () { ampliX = to; ampliSide = side; ampli.classList.remove("is-walking", "face-left"); ampli.classList.toggle("on-right", side === "R"); if (done) done(); } });
+    var dist = Math.hypot(to - ampliX, toY - ampliY);
+    var dur = Math.min(2.8, 0.8 + dist / 800);
+    gsap.to(ampli, { x: to, duration: dur, ease: "sine.inOut", overwrite: true });
+    gsap.to(ampli, { y: toY, duration: dur, ease: "power2.inOut", onUpdate: function () { ampliX = gsap.getProperty(ampli, "x"); ampliY = gsap.getProperty(ampli, "y"); },
+      onComplete: function () { ampliX = to; ampliY = toY; ampliSide = side; ampli.classList.remove("is-walking"); ampli.classList.toggle("on-right", side === "R"); if (done) done(); } });
   }
   function ampliSay(id) {
     if (!ampliBubble || !AMPLI_LINES[id]) return;
     ampliId = id; clearTimeout(ampliT);
     ampliBubble.classList.remove("is-on");
-    ampliWalk(AMPLI_SIDE[id] || "L", function () {
+    ampliWalk(AMPLI_SPOT[id] || ["L", .1], function () {
       ampliT = setTimeout(function () {
         if (ampliId !== id) return;
         ampliBubble.innerHTML = AMPLI_LINES[id]; ampliBubble.classList.add("is-on");
@@ -177,7 +181,7 @@
   $("#ampliX").addEventListener("click", function () { ampliOpen(false); });
   $(".ampli-cta").addEventListener("click", function () { ampliOpen(false); });
   document.addEventListener("keydown", function (e) { if (e.key === "Escape") ampliOpen(false); });
-  window.addEventListener("resize", function () { if (ampliSide) { ampliX = ampliTarget(ampliSide); gsap.set(ampli, { x: ampliX }); } });
+  window.addEventListener("resize", function () { if (ampliSide) { ampliX = ampliTarget(ampliSide); var sp = AMPLI_SPOT[ampliShown] || ["L", .1]; ampliY = phone ? 0 : ampliTargetY(sp[1]); gsap.set(ampli, { x: ampliX, y: ampliY }); } });
   gsap.to("#prog", { scaleX: 1, ease: "none", scrollTrigger: { start: 0, end: "max", scrub: 0.2 } });
   ScrollTrigger.create({ trigger: "#hero", start: "bottom 60%", end: "max", onToggle: function (s) { $("#wa").classList.toggle("is-on", s.isActive); $("#social").classList.toggle("is-on", s.isActive); } });
 

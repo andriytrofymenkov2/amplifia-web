@@ -829,3 +829,7 @@ input, textarea { -webkit-appearance: none; appearance: none; border-radius: 0; 
 .a-eye, .a-pupil { transition: transform 0.08s linear; }
 @media (max-width: 860px) { .ampli-btn { width: 46px; } }
 @media (prefers-reduced-motion: reduce) { .ampli .a-glow { animation: none; } }
+
+.a-ia { filter: drop-shadow(0 0 5px rgba(215,242,74,0.9)); animation: iaPulse 2.6s ease-in-out infinite; }
+@keyframes iaPulse { 0%, 100% { opacity: 0.85; } 50% { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .a-ia { animation: none; } }
