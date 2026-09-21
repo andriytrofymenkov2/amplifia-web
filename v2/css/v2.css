@@ -878,3 +878,14 @@ input, textarea { -webkit-appearance: none; appearance: none; border-radius: 0; 
 .ampli.is-speaking .l-b, .ampli:has(.ampli-bubble.is-on) .l-b { animation-duration: 0.7s; }
 .a-pupil.l-mark { transition: transform 0.2s ease-out; }
 @media (prefers-reduced-motion: reduce) { .l-b, .l-stripe-glow { animation: none; } }
+
+/* Ampli: arrastrable; el globo y el panel se abren hacia abajo cuando está arriba */
+.ampli-btn { touch-action: none; cursor: grab; -webkit-user-select: none; user-select: none; }
+.ampli.is-dragging .ampli-btn { cursor: grabbing; }
+.ampli.is-dragging .ampli-btn svg { animation: none; transform: scale(1.12); }
+.ampli.tip-below .ampli-bubble, .ampli.tip-below .ampli-panel { bottom: auto; top: 100%; margin: 8px 0 0; }
+.ampli.tip-below .ampli-bubble { border-radius: 4px 14px 14px 14px; transform-origin: 0 0; }
+.ampli.tip-below.on-right .ampli-bubble { border-radius: 14px 4px 14px 14px; transform-origin: 100% 0; }
+.ampli.tip-below .ampli-panel { transform-origin: 0 0; }
+.ampli.tip-below.on-right .ampli-panel { transform-origin: 100% 0; }
+.ampli-btn, .ampli-btn * { -webkit-user-drag: none; user-drag: none; -webkit-user-select: none; user-select: none; }

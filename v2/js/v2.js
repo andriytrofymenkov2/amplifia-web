@@ -187,8 +187,16 @@
       var p0 = ampliPick(0), bx = ampliBox(), x0 = gsap.getProperty(ampli, "x"), y0 = gsap.getProperty(ampli, "y");
       gsap.set(ampli, { x: p0.l - (bx.l - x0), y: p0.t - (bx.t - y0) }); ampliSide = p0.l > window.innerWidth / 2 ? "R" : "L"; ampli.classList.toggle("on-right", ampliSide === "R"); if (done) done(); return;
     }
+    if (Date.now() < ampliPinned) { if (done) done(); return; }
     ampliWalkTo(ampliPick(260), done);
   }
+  /* si Ampli está en la parte de arriba, el globo y el panel se abren hacia abajo para no salirse de la pantalla */
+  function ampliTips() {
+    var b = ampliBox();
+    ampli.classList.toggle("tip-below", b.t < 270);
+    ampli.classList.toggle("on-right", b.l + b.w / 2 > window.innerWidth / 2);
+  }
+  var ampliPinned = 0, dragging = false, dragMoved = false;
   function ampliSay(id) {
     if (!ampliBubble || !AMPLI_LINES[id]) return;
     ampliId = id; clearTimeout(ampliT);
@@ -198,7 +206,7 @@
     ampliWalk(id, function () {
       ampliT = setTimeout(function () {
         if (ampliId !== id) return;
-        ampliBubble.innerHTML = AMPLI_LINES[id]; ampliBubble.classList.add("is-on");
+        ampliTips(); ampliBubble.innerHTML = AMPLI_LINES[id]; ampliBubble.classList.add("is-on");
         ampliT = setTimeout(function () { ampliBubble.classList.remove("is-on"); }, 6500);
       }, 250);
     });
@@ -211,14 +219,41 @@
       pupils.forEach(function (p) { p.style.transform = "translate(" + (dx / d * k).toFixed(2) + "px," + (dy / d * k).toFixed(2) + "px)"; }); }); } }, { passive: true });
   }
   /* panel: se abre con un toque y lleva al diagnóstico */
-  function ampliOpen(o) { ampli.classList.toggle("is-open", o); ampliBtn.setAttribute("aria-expanded", o ? "true" : "false"); if (o) { clearTimeout(ampliT); ampliBubble.classList.remove("is-on"); } }
-  ampliBtn.addEventListener("click", function () { if (ampli.classList.contains("is-open")) ampliOpen(false); else if (phone) ampliOpen(true); else { ampliOpen(true); } });
+  function ampliOpen(o) { if (o) ampliTips(); ampli.classList.toggle("is-open", o); ampliBtn.setAttribute("aria-expanded", o ? "true" : "false"); if (o) { clearTimeout(ampliT); ampliBubble.classList.remove("is-on"); } }
+  ampliBtn.addEventListener("click", function () { if (dragMoved) return; if (ampli.classList.contains("is-open")) ampliOpen(false); else if (phone) ampliOpen(true); else { ampliOpen(true); } });
+    /* arrastrar a Ampli: clic sostenido y moverlo adonde quieras (mouse o dedo) */
+  (function ampliDrag() {
+    var sx, sy, bx0, by0, w, h, pid = null;
+    ampliBtn.addEventListener("pointerdown", function (e) {
+      if (e.button && e.button !== 0) return;
+      e.preventDefault();
+      pid = e.pointerId; dragMoved = false; sx = e.clientX; sy = e.clientY;
+      var b = ampliBox(); w = b.w; h = b.h; bx0 = b.l - gsap.getProperty(ampli, "x"); by0 = b.t - gsap.getProperty(ampli, "y");
+      try { ampliBtn.setPointerCapture(pid); } catch (er) {}
+    });
+    ampliBtn.addEventListener("pointermove", function (e) {
+      if (pid === null || e.pointerId !== pid) return;
+      if (!dragMoved && Math.hypot(e.clientX - sx, e.clientY - sy) < 6) return;
+      if (!dragMoved) { dragMoved = true; dragging = true; gsap.killTweensOf(ampli); ampli.classList.remove("is-walking", "is-open"); ampli.classList.add("is-dragging"); ampliBubble.classList.remove("is-on"); clearTimeout(ampliT); }
+      var nx = clamp(e.clientX - w / 2, 4, window.innerWidth - w - 4), ny = clamp(e.clientY - h / 2, 4, window.innerHeight - h - 4);
+      gsap.set(ampli, { x: nx - bx0, y: ny - by0 });
+    });
+    function end(e) {
+      if (pid === null || (e && e.pointerId !== pid)) return;
+      try { ampliBtn.releasePointerCapture(pid); } catch (er) {}
+      pid = null;
+      if (dragMoved) { dragging = false; ampli.classList.remove("is-dragging"); ampliPinned = Date.now() + 25000; ampliSide = ampliBox().l > window.innerWidth / 2 ? "R" : "L"; ampliTips(); setTimeout(function () { dragMoved = false; }, 60); }
+    }
+    ampliBtn.addEventListener("dragstart", function (e) { e.preventDefault(); });
+    ampliBtn.addEventListener("selectstart", function (e) { e.preventDefault(); });
+    ampliBtn.addEventListener("pointerup", end); ampliBtn.addEventListener("pointercancel", end);
+  })();
   $("#ampliX").addEventListener("click", function () { ampliOpen(false); });
   $(".ampli-cta").addEventListener("click", function () { ampliOpen(false); });
   document.addEventListener("keydown", function (e) { if (e.key === "Escape") ampliOpen(false); });
   var ampliIdle = null;
   function ampliCheck() {
-    if (phone || !ampliSide || ampliId === "hero" || ampli.classList.contains("is-open") || ampli.classList.contains("is-walking")) return;
+    if (phone || dragging || Date.now() < ampliPinned || !ampliSide || ampliId === "hero" || ampli.classList.contains("is-open") || ampli.classList.contains("is-walking")) return;
     var b = ampliBox(), me = { left: b.l, right: b.l + b.w, top: b.t, bottom: b.t + b.h }, rs = textRects(), bad = b.t < 90;
     for (var i = 0; i < rs.length && !bad; i++) if (hit(me, rs[i], 6)) bad = true;
     if (bad) ampliWalkTo(ampliPick(160));
@@ -226,7 +261,7 @@
   window.addEventListener("scroll", function () { clearTimeout(ampliIdle); ampliIdle = setTimeout(ampliCheck, 900); }, { passive: true });
   window.addEventListener("resize", function () { clearTimeout(ampliIdle); ampliIdle = setTimeout(ampliCheck, 500); });
   /* de vez en cuando pasea a otro lugar libre (movimiento natural) */
-  setInterval(function () { if (!phone && ampliSide && ampliId !== "hero" && !document.hidden && !ampli.classList.contains("is-open") && !ampli.classList.contains("is-walking")) ampliWalkTo(ampliPick(300)); }, 16000);
+  setInterval(function () { if (!phone && !dragging && Date.now() > ampliPinned && ampliSide && ampliId !== "hero" && !document.hidden && !ampli.classList.contains("is-open") && !ampli.classList.contains("is-walking")) ampliWalkTo(ampliPick(300)); }, 16000);
   gsap.to("#prog", { scaleX: 1, ease: "none", scrollTrigger: { start: 0, end: "max", scrub: 0.2 } });
   ScrollTrigger.create({ trigger: "#hero", start: "bottom 60%", end: "max", onToggle: function (s) { $("#wa").classList.toggle("is-on", s.isActive); $("#social").classList.toggle("is-on", s.isActive); } });
 
