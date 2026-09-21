@@ -627,3 +627,30 @@ html[data-hdr="light"] .nav a.is-on { color: var(--olive); }
 .rm-spark::after { background: linear-gradient(90deg, rgba(215,242,74,0.95), rgba(215,242,74,0)); }
 .rm-col::before { transition: transform 0.35s cubic-bezier(0.3, 1.7, 0.5, 1), box-shadow 0.35s ease, background 0.35s ease; }
 .rm-col.hit::before { transform: scale(2.2); background: #fff; box-shadow: 0 0 0 6px rgba(215,242,74,0.55), 0 0 26px 10px rgba(215,242,74,0.9); animation: none; }
+
+/* ---------- Preguntas: filas de tarjetas en movimiento (título libre a la izquierda) ---------- */
+.faq { grid-template-columns: minmax(280px, 0.8fr) 1.7fr; overflow: hidden; }
+.fq-rows { display: flex; flex-direction: column; gap: clamp(14px, 2.2vh, 22px); min-width: 0;
+  -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 9%, #000 91%, transparent 100%); mask-image: linear-gradient(90deg, transparent 0, #000 9%, #000 91%, transparent 100%); }
+.fq-row { overflow: hidden; }
+.fq-track { display: flex; width: max-content; animation: fqL var(--dur, 60s) linear infinite; will-change: transform; }
+.fq-row[data-dir="right"] .fq-track { animation-name: fqR; }
+.fq-set { display: flex; flex: none; gap: clamp(14px, 1.4vw, 22px); padding-right: clamp(14px, 1.4vw, 22px); }
+.fq-rows:hover .fq-track { animation-play-state: paused; }
+@keyframes fqL { from { transform: translateX(0); } to { transform: translateX(-33.3333%); } }
+@keyframes fqR { from { transform: translateX(-33.3333%); } to { transform: translateX(0); } }
+.fq-card { position: relative; flex: none; width: clamp(270px, 21vw, 370px); padding: clamp(16px, 1.6vw, 24px); display: flex; flex-direction: column; gap: 10px;
+  background: #0c0c0c; border: 1px solid rgba(239,236,229,0.14); border-radius: 12px; transition: border-color 0.4s ease, transform 0.5s var(--ease); }
+.fq-card:hover { border-color: rgba(215,242,74,0.6); transform: translateY(-3px); }
+.fq-n { font-size: 11px; letter-spacing: 0.22em; color: var(--lime); font-weight: 500; }
+.fq-card h3 { font-family: var(--serif); font-weight: 400; font-size: clamp(19px, 1.6vw, 26px); line-height: 1.12; letter-spacing: -0.01em; }
+.fq-card p { font-size: clamp(13px, 0.95vw, 15px); line-height: 1.5; opacity: 0.74; }
+@media (max-width: 860px) { .faq { grid-template-columns: 1fr; } .fq-card { width: 78vw; } }
+@media (prefers-reduced-motion: reduce) { .fq-track { animation: none; } .fq-row { overflow-x: auto; } }
+@media (max-width: 1499px) and (min-width: 861px) { .faq { padding-right: var(--pad); } }
+@media (min-width: 861px) and (max-height: 840px) {
+  .fq-card { padding: 14px 16px; gap: 6px; width: clamp(250px, 19vw, 330px); }
+  .fq-card h3 { font-size: clamp(16px, 1.35vw, 21px); }
+  .fq-card p { font-size: 12.5px; line-height: 1.42; }
+  .faq { padding-top: 92px; }
+}

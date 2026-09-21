@@ -358,16 +358,12 @@
 
 
 
-  /* ---------- preguntas frecuentes ---------- */
-  var qas = $$(".qa"), refreshT;
-  qas.forEach(function (q) {
-    var b = $("button", q);
-    b.addEventListener("click", function () {
-      var open = !q.classList.contains("is-open");
-      qas.forEach(function (o) { o.classList.remove("is-open"); $("button", o).setAttribute("aria-expanded", "false"); });
-      if (open) { q.classList.add("is-open"); b.setAttribute("aria-expanded", "true"); }
-      clearTimeout(refreshT); refreshT = setTimeout(function () { ScrollTrigger.refresh(); }, 650);
-    });
+  /* ---------- preguntas frecuentes: cada fila se repite 3 veces para que el bucle no tenga huecos ---------- */
+  $$(".fq-row").forEach(function (row) {
+    var set = $(".fq-set", row), track = document.createElement("div");
+    track.className = "fq-track"; track.style.setProperty("--dur", row.getAttribute("data-speed") || "60s");
+    row.appendChild(track); track.appendChild(set);
+    for (var k = 0; k < 2; k++) { var c = set.cloneNode(true); c.setAttribute("aria-hidden", "true"); track.appendChild(c); }
   });
 
   /* ---------- formulario ---------- */
