@@ -150,16 +150,18 @@
     var pw = pns.map(function (p) { return words($(".pn-copy h2", p)); });
     pns.forEach(function (p, i) {
       if (i === 0) return;
-      var at = i - 1;
-      gsap.set(p, { clipPath: "inset(100% 0% 0% 0%)" });
+      var at = i - 1, dir = i % 2 ? 1 : -1;            /* 1: se abre hacia la derecha, -1: hacia la izquierda */
+      var from = dir > 0 ? "inset(0% 100% 0% 0%)" : "inset(0% 0% 0% 100%)";
+      var sel = $$(".tiny, .sub", $(".pn-copy", p));
+      gsap.set(p, { clipPath: from });
       gsap.set(pw[i], { yPercent: 118 });
-      gsap.set($$(".tiny, .sub", $(".pn-copy", p)), { opacity: 0, y: 18 });
-      ctl.to(pns[i - 1].querySelector(".pn-copy"), { opacity: 0, y: -50, duration: 0.35 }, at + 0.05)
-         .to(p, { clipPath: "inset(0% 0% 0% 0%)", ease: "power2.inOut", duration: 0.9 }, at + 0.1)
-         .fromTo($(".pn-media", p), { scale: 1.5, yPercent: 10 }, { scale: 1, yPercent: 0, duration: 0.9 }, at + 0.1)
-         .to($(".pn-media", pns[i - 1]), { yPercent: -14, scale: 1.1, duration: 0.9 }, at + 0.1)
-         .to(pw[i], { yPercent: 0, duration: 0.5, stagger: 0.05, ease: "power3.out" }, at + 0.62)
-         .to($$(".tiny, .sub", $(".pn-copy", p)), { opacity: 0.8, y: 0, duration: 0.4, stagger: 0.08 }, at + 0.8);
+      gsap.set(sel, { opacity: 0, y: 18 });
+      ctl.to($(".pn-copy", pns[i - 1]), { opacity: 0, x: -70 * dir, duration: 0.35 }, at + 0.05)
+         .to(p, { clipPath: "inset(0% 0% 0% 0%)", ease: "power2.inOut", duration: 0.7 }, at + 0.1)
+         .fromTo($(".pn-media", p), { scale: 1.4, xPercent: -12 * dir }, { scale: 1, xPercent: 0, duration: 0.7 }, at + 0.1)
+         .to($(".pn-media", pns[i - 1]), { xPercent: 14 * dir, scale: 1.1, duration: 0.7 }, at + 0.1)
+         .to(pw[i], { yPercent: 0, duration: 0.4, stagger: 0.04, ease: "power3.out" }, at + 0.45)
+         .to(sel, { opacity: 0.8, y: 0, duration: 0.3, stagger: 0.06 }, at + 0.6);
     });
     ctl.to({}, { duration: 0.4 }, pns.length - 0.6);
     feed(capTrack, pns.map(function (p) { return $("video", p); }), function () { return clamp(ctl.time() - 0.1, 0, pns.length - 1); });
@@ -167,11 +169,12 @@
     /* 05 · frentes: recorrido horizontal */
     var hz = $("#frentes"), hzTrack = $("#hzTrack");
     function hzDist() { return Math.max(0, hzTrack.offsetWidth - window.innerWidth); }
-    function setH() { hz.style.height = (hzDist() + window.innerHeight) + "px"; }
+    function hzLen() { return hzDist() * 0.72; }
+    function setH() { hz.style.height = (hzLen() + window.innerHeight) + "px"; }
     setH();
     ScrollTrigger.addEventListener("refreshInit", setH);
     var htween = gsap.to(hzTrack, { x: function () { return -hzDist(); }, ease: "none",
-      scrollTrigger: { trigger: hz, start: "top top", end: function () { return "+=" + hzDist(); }, scrub: 0.8, invalidateOnRefresh: true,
+      scrollTrigger: { trigger: hz, start: "top top", end: function () { return "+=" + hzLen(); }, scrub: 0.8, invalidateOnRefresh: true,
         onUpdate: function (s) { gsap.set("#hzBar", { scaleX: s.progress }); } } });
     $$(".card-img img", hz).forEach(function (img) {
       gsap.fromTo(img, { xPercent: -6 }, { xPercent: 6, ease: "none", scrollTrigger: { trigger: img.closest(".card"), containerAnimation: htween, start: "left right", end: "right left", scrub: true } });
@@ -187,14 +190,14 @@
     steps.forEach(function (st, i) {
       var w = words($("h2", st)), num = $(".rd-num", st), ln = $$(".rd-lines p", st);
       if (i > 0) {
-        gsap.set(w, { yPercent: 118 }); gsap.set(num, { opacity: 0, y: 80 }); gsap.set(ln, { opacity: 0, y: 24 });
+        gsap.set(w, { yPercent: 118 }); gsap.set(num, { opacity: 0, x: 220 * (i % 2 ? 1 : -1) }); gsap.set(ln, { opacity: 0, x: 80 * (i % 2 ? 1 : -1) });
         rtl.to(w, { yPercent: 0, duration: 0.5, stagger: 0.05, ease: "power3.out" }, i + 0.08)
            .to(num, { opacity: 1, y: 0, duration: 0.6, ease: "power3.out" }, i + 0.02)
-           .to(ln, { opacity: 1, y: 0, duration: 0.4, stagger: 0.1, ease: "power2.out" }, i + 0.3);
+           .to(ln, { opacity: 1, x: 0, duration: 0.4, stagger: 0.08, ease: "power2.out" }, i + 0.22);
       } else { gsap.set(ln, { opacity: 0.001 }); rtl.fromTo(ln, { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.4, stagger: 0.1 }, 0.05); }
       if (i < steps.length - 1) {
         rtl.to(w, { yPercent: -118, duration: 0.35, stagger: 0.03, ease: "power2.in" }, i + 0.6)
-           .to(num, { opacity: 0, y: -80, duration: 0.35 }, i + 0.6)
+           .to(num, { opacity: 0, x: -220 * (i % 2 ? 1 : -1), duration: 0.35 }, i + 0.6)
            .to(ln, { opacity: 0, duration: 0.25 }, i + 0.55);
       }
     });
