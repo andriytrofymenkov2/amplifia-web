@@ -745,3 +745,8 @@ input, textarea { -webkit-appearance: none; appearance: none; border-radius: 0; 
 .manif-text { margin: 0 auto; max-width: 15.5em; text-align: center; }
 .caps-close { margin: 0 auto; max-width: 1400px; text-align: center; justify-items: center; }
 .caps-close .xl { text-align: center; margin: 0 auto; }
+
+/* Inicio: AMPLIFIA en blanco neón (brillo propio) */
+.hero-word { color: #fff; text-shadow: 0 0 6px rgba(255,255,255,0.95), 0 0 22px rgba(255,255,255,0.65), 0 0 60px rgba(215,242,74,0.45), 0 0 120px rgba(215,242,74,0.25); animation: neonHum 4.5s ease-in-out infinite; }
+@keyframes neonHum { 0%, 100% { text-shadow: 0 0 6px rgba(255,255,255,0.95), 0 0 22px rgba(255,255,255,0.65), 0 0 60px rgba(215,242,74,0.45), 0 0 120px rgba(215,242,74,0.25); } 50% { text-shadow: 0 0 8px #fff, 0 0 30px rgba(255,255,255,0.8), 0 0 80px rgba(215,242,74,0.6), 0 0 150px rgba(215,242,74,0.35); } }
+@media (max-width: 860px), (prefers-reduced-motion: reduce) { .hero-word { animation: none; text-shadow: 0 0 5px rgba(255,255,255,0.9), 0 0 20px rgba(255,255,255,0.55), 0 0 44px rgba(215,242,74,0.4); } }
