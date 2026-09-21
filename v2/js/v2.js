@@ -559,6 +559,7 @@
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(fqMeasure);
   window.addEventListener("load", fqMeasure);
   window.addEventListener("resize", fqMeasure);
+  var ampliHideZoom = function () {};
   /* lupa: una sola tarjeta ampliada, flotando sobre la original.
      Mouse o lápiz: al pasar. Táctil: con un toque. No depende de media queries de hover (notebooks táctiles, Safari, etc.) */
   (function fqLupa() {
@@ -583,27 +584,35 @@
       if (window.gsap) gsap.fromTo(zoom, { opacity: 0, scale: 0.72 }, { opacity: 1, scale: 1, duration: 0.32, ease: "power3.out", overwrite: true });
       else zoom.style.opacity = 1;
     }
-    function hide() {
-      clearTimeout(hideT);
-      hideT = setTimeout(function () {
-        cur = null;
-        anim({ opacity: 0, scale: 0.9, duration: 0.2, ease: "power2.in" }, function () { if (!cur) zoom.classList.remove("is-on"); });
-      }, 60);
+    var lastScrollAt = 0;
+    function hide(instant) {
+      clearTimeout(hideT); cur = null;
+      if (instant) { if (window.gsap) gsap.killTweensOf(zoom); zoom.style.opacity = 0; zoom.classList.remove("is-on"); return; }
+      anim({ opacity: 0, scale: 0.94, duration: 0.1, ease: "power1.in" }, function () { if (!cur) zoom.classList.remove("is-on"); });
     }
     function cardOf(e) { return e.target && e.target.closest ? e.target.closest(".fq-card") : null; }
     rows.addEventListener("pointerdown", function (e) { lastType = e.pointerType || "mouse"; }, true);
     var over = window.PointerEvent ? "pointerover" : "mouseover", out = window.PointerEvent ? "pointerout" : "mouseout";
-    rows.addEventListener(over, function (e) { var c = cardOf(e); if (c && (e.pointerType || "mouse") !== "touch") show(c); });
+    rows.addEventListener(over, function (e) { var c = cardOf(e); if (c && (e.pointerType || "mouse") !== "touch" && Date.now() - lastScrollAt > 250) show(c); });
     rows.addEventListener(out, function (e) { var c = cardOf(e); if (c && (e.pointerType || "mouse") !== "touch" && !(e.relatedTarget && c.contains(e.relatedTarget))) hide(); });
+    rows.addEventListener("mouseleave", function () { hide(true); });
+    rows.addEventListener("pointerleave", function () { hide(true); });
     rows.addEventListener("click", function (e) { var c = cardOf(e); if (c && lastType === "touch") { if (cur === c) hide(); else show(c); } });
-    document.addEventListener("click", function (e) { if (!cardOf(e) && cur) hide(); });
-    window.addEventListener("scroll", function () { if (cur) hide(); }, { passive: true });
+    document.addEventListener("click", function (e) { if (!cardOf(e) && cur) hide(true); });
+    /* cualquier scroll, rueda o toque en pantalla la apaga al instante: la lupa nunca sigue a otra sección */
+    function killNow() { lastScrollAt = Date.now(); if (cur || zoom.classList.contains("is-on")) hide(true); }
+    window.addEventListener("scroll", killNow, { passive: true });
+    window.addEventListener("wheel", killNow, { passive: true });
+    window.addEventListener("touchmove", killNow, { passive: true });
+    window.addEventListener("keydown", function (e) { if (e.key === "Escape" || /Arrow|Page|Home|End| /.test(e.key)) killNow(); });
+    window.addEventListener("blur", function () { hide(true); });
+    ampliHideZoom = function () { hide(true); };
   })();
 
   /* fuera de pantalla no se anima nada */
   if ("IntersectionObserver" in window) {
     var faqEl = $("#faq");
-    new IntersectionObserver(function (es) { faqEl.classList.toggle("is-off", !es[0].isIntersecting); }, { rootMargin: "80px" }).observe(faqEl);
+    new IntersectionObserver(function (es) { faqEl.classList.toggle("is-off", !es[0].isIntersecting); if (!es[0].isIntersecting) ampliHideZoom(); }, { rootMargin: "80px" }).observe(faqEl);
   }
 
   /* ---------- formulario ---------- */
