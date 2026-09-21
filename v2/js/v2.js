@@ -207,7 +207,7 @@
   if (!phone) {
     var pupils = $$(".a-pupil", ampli), ptick = false, mx = 0, my = 0;
     window.addEventListener("mousemove", function (e) { mx = e.clientX; my = e.clientY; if (!ptick) { ptick = true; requestAnimationFrame(function () { ptick = false;
-      var r = ampliBtn.getBoundingClientRect(), dx = mx - (r.left + r.width / 2), dy = my - (r.top + r.height * 0.2), d = Math.max(1, Math.hypot(dx, dy)), k = Math.min(1, d / 200) * 2.2;
+      var r = ampliBtn.getBoundingClientRect(), dx = mx - (r.left + r.width / 2), dy = my - (r.top + r.height * 0.2), d = Math.max(1, Math.hypot(dx, dy)), k = Math.min(1, d / 200) * 6;
       pupils.forEach(function (p) { p.style.transform = "translate(" + (dx / d * k).toFixed(2) + "px," + (dy / d * k).toFixed(2) + "px)"; }); }); } }, { passive: true });
   }
   /* panel: se abre con un toque y lleva al diagnóstico */
