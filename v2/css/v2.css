@@ -496,3 +496,10 @@ html[data-hdr="light"] .rail { color: var(--ink); }
 .qa > button { line-height: 1.25; }
 /* títulos en verde lima sobre fondo claro: un borde oscuro fino para que se lean */
 .paper .faq-side h2, .faq.paper .faq-side h2 { color: var(--lime); text-shadow: 0 0 1px rgba(7,7,7,0.55), 0 2px 12px rgba(7,7,7,0.22); }
+
+/* sin máscaras: los títulos no recortan nada; margen extra por si algún contenedor recorta */
+.w-mask { overflow: visible !important; padding: 0 !important; margin: 0 !important; }
+.xl, .mega, .lg, .cap-title, .pr-t { padding-bottom: 0.12em; overflow: visible; }
+.hero-word { padding-bottom: 0.14em; }
+.pr-row, .col, .manif-in, .caps-close, .cta, .faq-side, .ct-left, .us-head { overflow: visible; }
+.cols, .who-card { overflow: hidden; }

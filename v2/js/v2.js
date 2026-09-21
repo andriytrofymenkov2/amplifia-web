@@ -86,9 +86,8 @@
   /* ---------- texto: palabras con máscara ---------- */
   function words(el, mask) {
     if (!HAS_SPLIT) return [el];
-    var opts = { type: "words", wordsClass: "w" };
-    if (mask !== false) { opts.mask = "words"; opts.maskClass = "mk"; }
-    return SplitText.create(el, opts).words;
+    /* sin máscara: nada recorta las letras (g, p, q, y, j, tildes). La palabra aparece con desvanecido + subida. */
+    return SplitText.create(el, { type: "words", wordsClass: "w" }).words;
   }
 
   /* ---------- cabecera, riel y progreso según la sección ---------- */
@@ -132,14 +131,14 @@
     var prT = prRows.map(function (r) { return words($(".pr-t", r)); });
     prRows.forEach(function (r, i) {
       gsap.set($(".pr-line", r), { scaleX: 0 });
-      gsap.set(prT[i], { yPercent: 118 });
+      gsap.set(prT[i], { yPercent: 40, opacity: 0 });
       gsap.set($$(".pr-n, .pr-s", r), { opacity: 0, x: i % 2 ? -40 : 40 });
     });
     onceIn("#prList", function () {
       prRows.forEach(function (r, i) {
         var tl = gsap.timeline({ delay: i * 0.18 });
         tl.to($(".pr-line", r), { scaleX: 1, duration: 1.1, ease: "power3.inOut" })
-          .to(prT[i], { yPercent: 0, duration: 0.9, stagger: 0.05, ease: "power4.out" }, 0.25)
+          .to(prT[i], { yPercent: 0, opacity: 1, duration: 0.9, stagger: 0.05, ease: "power4.out" }, 0.25)
           .to($(".pr-n", r), { opacity: 0.55, x: 0, duration: 0.7, ease: "power3.out" }, 0.3)
           .to($(".pr-s", r), { opacity: 0.7, x: 0, duration: 0.8, ease: "power3.out" }, 0.5);
       });
@@ -150,14 +149,14 @@
     var cw = capCols.map(function (c) { return words($(".cap-title", c)); });
     var capRest = $$(".col .tiny, .col .sub", capsCols), nodes = $$(".cols-node", capsCols);
     capsCols.style.clipPath = "inset(0% 50% 0% 50% round 8px)";
-    gsap.set(cw, { yPercent: 118 }); gsap.set(capRest, { opacity: 0, y: 16 });
+    gsap.set(cw, { yPercent: 40, opacity: 0 }); gsap.set(capRest, { opacity: 0, y: 16 });
     gsap.set(".cols-link", { scaleX: 0 }); gsap.set(nodes, { scale: 0 });
     onceIn(capsCols, function () {
       gsap.timeline()
         .fromTo(capsCols, { clipPath: "inset(0% 50% 0% 50% round 8px)" }, { clipPath: "inset(0% 0% 0% 0% round 8px)", duration: 1.5, ease: "power3.inOut" })
         .to(".cols-link", { scaleX: 1, duration: 1.4, ease: "power2.inOut" }, 0.1)
-        .to(cw[1], { yPercent: 0, duration: 0.9, stagger: 0.05, ease: "power4.out" }, 0.7)
-        .to([cw[0], cw[2]], { yPercent: 0, duration: 0.9, stagger: 0.05, ease: "power4.out" }, 0.95)
+        .to(cw[1], { yPercent: 0, opacity: 1, duration: 0.9, stagger: 0.05, ease: "power4.out" }, 0.7)
+        .to([cw[0], cw[2]], { yPercent: 0, opacity: 1, duration: 0.9, stagger: 0.05, ease: "power4.out" }, 0.95)
         .to(capRest, { opacity: 0.8, y: 0, duration: 0.7, stagger: 0.06, ease: "power2.out" }, 1.0)
         .to(nodes, { scale: 1, duration: 0.6, stagger: 0.15, ease: "back.out(2.4)" }, 1.3);
     }, "top 70%");
@@ -177,7 +176,7 @@
     var cols = $$("#metodo .rm-col");
     var rw = cols.map(function (c) { return words($(".cap-title", c)); });
     gsap.set(cols, { opacity: 0, y: 50 });
-    rw.forEach(function (w) { gsap.set(w, { yPercent: 118 }); });
+    rw.forEach(function (w) { gsap.set(w, { yPercent: 40, opacity: 0 }); });
     onceIn("#metodo .rm-wrap", function () {
       var tl = gsap.timeline();
       tl.to("#rmLine", { scaleX: 1, duration: 2.6, ease: "power1.inOut" }, 0);
@@ -185,7 +184,7 @@
         var t = 0.15 + i * 0.6;
         tl.call(function () { col.classList.add("on"); }, null, t)
           .to(col, { opacity: 1, y: 0, duration: 0.9, ease: "power3.out" }, t)
-          .to(rw[i], { yPercent: 0, duration: 0.8, ease: "power4.out" }, t + 0.1);
+          .to(rw[i], { yPercent: 0, opacity: 1, duration: 0.8, ease: "power4.out" }, t + 0.1);
       });
       tl.from(".rm-foot", { opacity: 0, y: 16, duration: 0.8 }, 2.4);
     }, "top 75%");
@@ -254,7 +253,7 @@
     })();
     $$(".split").forEach(function (el) {
       var w = words(el); el.classList.add("is-split");
-      gsap.from(w, { yPercent: 118, duration: 1.25, stagger: 0.07, ease: "power4.out", scrollTrigger: { trigger: el, start: "top 88%", once: true } });
+      gsap.from(w, { yPercent: 40, opacity: 0, duration: 1.25, stagger: 0.07, ease: "power4.out", scrollTrigger: { trigger: el, start: "top 88%", once: true } });
     });
 
     ring3d();
@@ -339,15 +338,6 @@
   }
 
 
-  /* Las máscaras de palabra recortan mientras la palabra sube; cuando ya llegó a su lugar se libera el
-     recorte, así las letras que bajan (g, p, q, y) nunca quedan cortadas. */
-  setInterval(function () {
-    $$(".w-mask").forEach(function (m) {
-      var w = m.firstElementChild;
-      if (!w || m._free) return;
-      if (gsap.getProperty(w, "yPercent") === 0 && !gsap.isTweening(w)) { m.style.overflow = "visible"; m._free = true; }
-    });
-  }, 600);
 
   /* ---------- preguntas frecuentes ---------- */
   var qas = $$(".qa"), refreshT;
