@@ -902,3 +902,22 @@ input, textarea { -webkit-appearance: none; appearance: none; border-radius: 0; 
 @media (max-width: 860px) { .pre-mark { width: 46vw; } }
 .ampli-bubble { max-width: min(340px, calc(100vw - 28px)); }
 .ampli-panel { width: min(320px, calc(100vw - 28px)); }
+
+/* ---------- Portada liviana ---------- */
+.hero-word .ch { will-change: auto; }
+.hero-word { text-shadow: 0 0 8px rgba(255,255,255,0.9), 0 0 34px rgba(215,242,74,0.45); }
+.lowtier .hero-word { text-shadow: 0 0 6px rgba(255,255,255,0.85), 0 0 18px rgba(215,242,74,0.4); }
+.lowtier .shade-hero, .novideo .shade-hero { background: linear-gradient(180deg, rgba(7,7,7,0.55), rgba(7,7,7,0.25) 45%, rgba(7,7,7,0.7)); }
+.novideo #heroMedia video, .novideo .vfreeze { display: none !important; }
+#heroMedia { contain: paint; }
+.hero-copy { contain: layout style; }
+
+/* ---------- Ampli liviano: oculto = sin animaciones; en reposo casi sin costo ---------- */
+.ampli.is-hidden { display: none !important; }
+.ampli .l-b, .ampli .l-stripe-glow, .ampli .a-glow { animation: none; }
+.ampli.is-walking .l-b, .ampli.speaking .l-b { animation: eq 0.8s ease-in-out infinite; }
+.ampli.is-walking .l-stripe-glow, .ampli.speaking .l-stripe-glow { animation: stripeGlow 1.4s ease-in-out infinite; }
+.ampli .l-stripe-glow { opacity: 0.7; }
+.ampli-btn svg { animation: none; }
+.ampli.is-walking .ampli-btn svg { animation: orbStretch 0.9s ease-in-out infinite; }
+.ampli-btn { will-change: transform; }

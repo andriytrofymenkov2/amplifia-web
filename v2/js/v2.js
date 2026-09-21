@@ -57,14 +57,39 @@
   });
 
   /* ---------- video: uno decodifica, el vecino espera, el resto se libera ---------- */
-  function vsrc(v) { return phone ? (v.getAttribute("data-phone") || "") : v.getAttribute("data-src"); }
+  /* nivel del equipo: si es flojo, con poca memoria o con datos limitados, se usa el video liviano; si es muy limitado, solo la imagen */
+  var nav = navigator, conn = nav.connection || {}, cores = nav.hardwareConcurrency || 8, mem = nav.deviceMemory || 8;
+  var saveData = !!conn.saveData || /(^|-)2g$/.test(conn.effectiveType || "");
+  var lowTier = phone || cores <= 4 || mem <= 4 || /3g/.test(conn.effectiveType || "");
+  var noVideo = saveData || reduce;
+  if (lowTier) root.classList.add("lowtier");
+  try { var q = /[?&]tier=(low|high|none)/.exec(location.search); if (q) { lowTier = q[1] === "low"; noVideo = q[1] === "none"; root.classList.toggle("lowtier", lowTier); } } catch (e) {}
+  function vsrc(v) { return lowTier || v._lite ? (v.getAttribute("data-lite") || v.getAttribute("data-phone") || v.getAttribute("data-src")) : v.getAttribute("data-src"); }
   function vload(v) {
-    if (reduce || v.getAttribute("src")) return;
+    if (noVideo || v.getAttribute("src")) return;
     var s = vsrc(v); if (!s) return;
     v.src = s; v.load();
     v.addEventListener("loadeddata", function () { v.classList.add("is-ready"); }, { once: true });
   }
-  function vplay(v) { vload(v); if (v._s === "play") return; v._s = "play"; if (scrolling) return; var p = v.play(); if (p && p.catch) p.catch(function () {}); }
+
+  /* gobernador de fluidez: si el video pierde cuadros, baja a la versión liviana; si aun así no da, queda la imagen fija (siempre se ve bien y nunca hay lag) */
+  function watchVideo(v) {
+    if (!v || v._watched || !v.getVideoPlaybackQuality) return; v._watched = true;
+    var lastT = 0, lastD = 0, bad = 0, checks = 0;
+    var iv = setInterval(function () {
+      if (document.hidden || v.paused || !v.readyState) return;
+      var q = v.getVideoPlaybackQuality(); checks++;
+      var dt = q.totalVideoFrames - lastT, dd = q.droppedVideoFrames - lastD; lastT = q.totalVideoFrames; lastD = q.droppedVideoFrames;
+      if (dt > 8 && dd / dt > 0.14) bad++; else bad = Math.max(0, bad - 1);
+      if (bad >= 2) {
+        bad = 0;
+        if (!lowTier && !v._lite) { v._lite = true; var t = v.currentTime; v.src = vsrc(v); v.load(); v.addEventListener("loadeddata", function () { try { v.currentTime = t; } catch (e) {} var p = v.play(); if (p && p.catch) p.catch(function () {}); }, { once: true }); }
+        else { clearInterval(iv); noVideo = true; v.pause(); v.classList.remove("is-ready"); v.removeAttribute("src"); v.load(); root.classList.add("novideo"); }
+      }
+      if (checks > 40) clearInterval(iv);
+    }, 1500);
+  }
+  function vplay(v) { vload(v); if (v._s === "play") return; v._s = "play"; if (scrolling) return; var p = v.play(); if (p && p.catch) p.catch(function () {}); watchVideo(v); }
   function vwait(v) { vload(v); if (v._s === "wait") return; v._s = "wait"; v.pause(); }
   function vfree(v) {
     if (v._s === "free") return; v._s = "free"; v.pause();
@@ -159,9 +184,11 @@
   function ampliBox() { var r = ampli.getBoundingClientRect(); var b = ampliBtn.getBoundingClientRect(); return { l: b.left, t: b.top, w: b.width, h: b.height }; }
   function ampliPick(avoidNear) {
     var box = ampliBox(), vw = window.innerWidth, vh = window.innerHeight, rects = textRects();
-    var top0 = 100, bot = vh - 24, cols = 2, rows = 9, cands = [];
+    var top0 = 100, bot = vh - 24, rows = 14, cands = [], first = ampliSide === null;
+    var cols = first ? 2 : 1;
     for (var c = 0; c < cols; c++) for (var r = 0; r < rows; r++) {
-      var inset = clamp((vw * 0.044) - box.w - 8, 12, 34), l = c === 0 ? inset : vw - box.w - inset, t = top0 + (bot - top0 - box.h) * r / (rows - 1) + (Math.random() - .5) * 26;
+      var inset = clamp((vw * 0.044) - box.w - 8, 12, 34);
+      var l = first ? (c === 0 ? inset : vw - box.w - inset) : box.l, t = top0 + (bot - top0 - box.h) * r / (rows - 1) + (Math.random() - .5) * 20;
       l = clamp(l, 12, vw - box.w - 12); t = clamp(t, top0, bot - box.h);
       var me = { left: l, right: l + box.w, top: t, bottom: t + box.h }, BW = 350, BH = 84;
       var bl = l > vw / 2 ? l + box.w - BW : l, br = bl + BW;
@@ -169,8 +196,9 @@
       var hitsMe = 0, hu = 0, hd = 0;
       for (var i = 0; i < rects.length; i++) { if (hit(me, rects[i], 14)) hitsMe++; if (up.top > 88 && hit(up, rects[i], 4)) hu++; else if (up.top <= 88) hu += 99; if (dn.bottom < vh - 10 && hit(dn, rects[i], 4)) hd++; else if (dn.bottom >= vh - 10) hd += 99; }
       var hitsBub = Math.min(hu, hd);
+      var waHit = (l + box.w > vw - 110 && t + box.h > vh - 120) ? 2000 : 0;
       var d = Math.hypot(l - box.l, t - box.t);
-      cands.push({ l: l, t: t, s: hitsMe * 1000 + hitsBub * 260 + (d < (avoidNear || 220) ? 500 : 0) + Math.random() * 30 - Math.min(d, 900) / 40 });
+      cands.push({ l: l, t: t, s: waHit + hitsMe * 1000 + hitsBub * 260 + (d < (avoidNear || 220) ? 500 : 0) + Math.random() * 30 - Math.min(d, 900) / 40 });
     }
     cands.sort(function (a, b) { return a.s - b.s; });
     return cands[0];
@@ -235,8 +263,8 @@
     ampliWalk(id, null);
     ampliT = setTimeout(function () {
       if (ampliId !== id) return;
-      ampliTips(ampli._target); ampliBubble.innerHTML = AMPLI_LINES[id]; ampliBubble.classList.add("is-on"); ampliFitNow(ampliBubble);
-      ampliT = setTimeout(function () { ampliBubble.classList.remove("is-on"); }, 6500);
+      ampliTips(ampli._target); ampliBubble.innerHTML = AMPLI_LINES[id]; ampliBubble.classList.add("is-on"); ampli.classList.add("speaking"); ampliFitNow(ampliBubble);
+      ampliT = setTimeout(function () { ampliBubble.classList.remove("is-on"); ampli.classList.remove("speaking"); }, 6500);
     }, 120);
   }
   /* los ojos siguen al mouse */
@@ -302,7 +330,7 @@
     var hw = $(".hero-word");
     if (HAS_SPLIT) { heroChars = SplitText.create(hw, { type: "chars", charsClass: "ch" }).chars; gsap.set(heroChars, { yPercent: 115 }); }
     var heroTrack = $("#hero .track");
-    gsap.to("#heroMedia", { scale: 1.22, ease: "none", scrollTrigger: { trigger: heroTrack, start: "top top", end: "bottom bottom", scrub: true } });
+    if (!lowTier) gsap.to("#heroMedia", { scale: 1.22, ease: "none", scrollTrigger: { trigger: heroTrack, start: "top top", end: "bottom bottom", scrub: true } });
     gsap.to("#heroCopy", { yPercent: -16, opacity: 0, ease: "none", scrollTrigger: { trigger: heroTrack, start: "top top", end: "62% top", scrub: true } });
     gsap.to(".hero-scroll", { opacity: 0, ease: "none", scrollTrigger: { trigger: heroTrack, start: "top top", end: "10% top", scrub: true } });
     feed(heroTrack, [$("#hero video")]);

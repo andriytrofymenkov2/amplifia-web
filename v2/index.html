@@ -10,7 +10,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="preload" as="image" href="../Imagenes%20usadas/hero_poster_1920.jpg">
-<link rel="stylesheet" href="css/v2.css?v=68">
+<link rel="stylesheet" href="css/v2.css?v=72">
 <script>document.documentElement.classList.add("js");</script>
 </head>
 <body class="is-loading">
@@ -92,8 +92,8 @@
   <div class="track" style="--len:1.8">
     <div class="stage">
       <div class="bgv" id="heroMedia">
-        <img src="../Imagenes%20usadas/hero_poster_1920.jpg" alt="" width="1920" height="1080" fetchpriority="high">
-        <video muted loop playsinline webkit-playsinline preload="none" data-src="../Imagenes%20usadas/hero_720.mp4" data-phone="../Imagenes%20usadas/lite/hero.mp4"></video>
+        <img src="../Imagenes%20usadas/hero_poster_1920.jpg" srcset="../Imagenes%20usadas/hero_poster_960.jpg 960w, ../Imagenes%20usadas/hero_poster_1920.jpg 1920w" sizes="100vw" alt="" width="1920" height="1080" fetchpriority="high" decoding="async">
+        <video muted loop playsinline webkit-playsinline preload="none" data-src="../Imagenes%20usadas/hero_720b.mp4" data-phone="../Imagenes%20usadas/hero_480.mp4" data-lite="../Imagenes%20usadas/hero_480.mp4"></video>
         <div class="shade shade-hero"></div>
       </div>
       <div class="hero-copy" id="heroCopy">
@@ -240,7 +240,7 @@
     <div class="pj-bg"><div class="ambient a5"></div></div>
     <span class="tiny pj-tag">Próximamente · Cursos</span>
     <h3 class="xl pj-title">Plataforma de capacitación</h3>
-    <p class="pj-desc">Cursos para líderes y equipos, cuando quieras y donde estés.</p>
+    <p class="pj-desc">Una plataforma online donde líderes y equipos acceden a nuestros cursos y capacitaciones, a su ritmo y desde cualquier lugar. <em>Aprendemos juntos: la misma metodología para cada persona del equipo.</em></p>
     <span class="pj-go">Quiero acceso anticipado <i>↗</i></span>
   </a>
 </section>
@@ -316,6 +316,6 @@
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/SplitText.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.18/dist/lenis.min.js"></script>
-<script src="js/v2.js?v=70"></script>
+<script src="js/v2.js?v=72"></script>
 </body>
 </html>
