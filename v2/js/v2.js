@@ -126,18 +126,20 @@
   });
   /* ---------- Ampli: dice una frase por sección (por ahora fijas; luego será un agente) ---------- */
   var AMPLI_LINES = {
-    hero: "¡Hola! Soy <b>Ampli</b>. Te acompaño en el recorrido.",
-    manifiesto: "Más herramientas no alcanzan: hay que convertirlas en <b>resultados</b>.",
-    problema: "¿Te suena alguna de estas señales?",
-    "que-hacemos": "Procesos, IA y personas: las tres trabajan <b>juntas</b>.",
-    frentes: "Seis frentes, un solo sistema. Seguí bajando para verlos.",
-    metodo: "Cuatro pasos, siempre con procesos <b>y</b> personas.",
-    consultora: "Dos disciplinas, una sola mirada. Tocá el <b>+</b> para conocerlos.",
-    proyectos: "Ya hicimos un workshop, y viene una plataforma de cursos.",
-    clientes: "Estas son empresas con las que trabajamos. Arrastrá para girar.",
-    faq: "Poné el mouse sobre una pregunta y la ves más grande.",
-    contacto: "¿Hablamos? Empezamos por un <b>diagnóstico</b>."
+    hero: "",
+    manifiesto: "Más herramientas no alcanzan. Las integramos con tus procesos y tu gente para que den <b>resultados</b>.",
+    problema: "<b>Hola, soy Ampli.</b> Si te suena alguna de estas señales, un diagnóstico es el primer paso.",
+    "que-hacemos": "Procesos, IA y personas en un solo equipo: por eso las mejoras <b>se sostienen</b>.",
+    frentes: "Seis frentes, desde Lean y Kaizen hasta IA y tableros en vivo. Elegí por dónde <b>empezar</b>.",
+    metodo: "Cuatro pasos a tu medida, empezando por un <b>diagnóstico</b> con procesos y personas.",
+    consultora: "Andriy lidera los procesos y Christian, las personas. Tocá el <b>+</b> para conocer sus proyectos.",
+    proyectos: "Ya hicimos un workshop ejecutivo en Río Gallegos y ahora viene una <b>plataforma de cursos</b>.",
+    clientes: "Trabajamos con salud, industria, servicios y aeropuertos: Medisur, SS Servicios, MS Patagonia y más.",
+    faq: "¿Dudas sobre alcance, tiempos o costos? Poné el mouse sobre una pregunta: la respuesta está <b>acá</b>.",
+    contacto: "Contanos tu desafío: conversamos y te proponemos un camino <b>a la medida</b> de tu empresa."
   };
+
+
   var ampli = $("#ampli"), ampliBubble = $("#ampliBubble"), ampliBtn = $("#ampliBtn"), ampliId = null, ampliT = null, ampliShown = null, ampliX = 0, ampliSide = null;
   /* Ampli mide dónde hay texto en pantalla y elige un lugar LIBRE, siempre distinto al anterior: nunca se para encima de una palabra */
   var ampliY = 0, TEXT_SEL = "h1,h2,h3,h4,p,li,label,input,textarea,button:not(.ampli-btn):not(.menu-btn),.tiny,.btn,.nav-cta,.rm-num,.cap-title,.pr-t,.c3d-name,b";
@@ -159,14 +161,16 @@
     var box = ampliBox(), vw = window.innerWidth, vh = window.innerHeight, rects = textRects();
     var top0 = 100, bot = vh - 24, cols = 2, rows = 9, cands = [];
     for (var c = 0; c < cols; c++) for (var r = 0; r < rows; r++) {
-      var l = c === 0 ? 4 : vw - box.w - 4, t = top0 + (bot - top0 - box.h) * r / (rows - 1) + (Math.random() - .5) * 26;
-      l = clamp(l, 6, vw - box.w - 6); t = clamp(t, top0, bot - box.h);
-      var me = { left: l, right: l + box.w, top: t, bottom: t + box.h }, bub = { left: l - 4, right: l + 310, top: t - 78, bottom: t };
-      if (l > vw / 2) bub = { left: l + box.w - 310, right: l + box.w + 4, top: t - 78, bottom: t };
-      var hitsMe = 0, hitsBub = 0;
-      for (var i = 0; i < rects.length; i++) { if (hit(me, rects[i], 14)) hitsMe++; if (hit(bub, rects[i], 2)) hitsBub++; }
+      var inset = clamp((vw * 0.044) - box.w - 8, 12, 34), l = c === 0 ? inset : vw - box.w - inset, t = top0 + (bot - top0 - box.h) * r / (rows - 1) + (Math.random() - .5) * 26;
+      l = clamp(l, 12, vw - box.w - 12); t = clamp(t, top0, bot - box.h);
+      var me = { left: l, right: l + box.w, top: t, bottom: t + box.h }, BW = 350, BH = 84;
+      var bl = l > vw / 2 ? l + box.w - BW : l, br = bl + BW;
+      var up = { left: bl, right: br, top: t - BH - 8, bottom: t - 8 }, dn = { left: bl, right: br, top: t + box.h + 8, bottom: t + box.h + 8 + BH };
+      var hitsMe = 0, hu = 0, hd = 0;
+      for (var i = 0; i < rects.length; i++) { if (hit(me, rects[i], 14)) hitsMe++; if (up.top > 88 && hit(up, rects[i], 4)) hu++; else if (up.top <= 88) hu += 99; if (dn.bottom < vh - 10 && hit(dn, rects[i], 4)) hd++; else if (dn.bottom >= vh - 10) hd += 99; }
+      var hitsBub = Math.min(hu, hd);
       var d = Math.hypot(l - box.l, t - box.t);
-      cands.push({ l: l, t: t, s: hitsMe * 1000 + hitsBub * 40 + (d < (avoidNear || 220) ? 500 : 0) + Math.random() * 30 - Math.min(d, 900) / 40 });
+      cands.push({ l: l, t: t, s: hitsMe * 1000 + hitsBub * 260 + (d < (avoidNear || 220) ? 500 : 0) + Math.random() * 30 - Math.min(d, 900) / 40 });
     }
     cands.sort(function (a, b) { return a.s - b.s; });
     return cands[0];
@@ -187,18 +191,29 @@
       var p0 = ampliPick(0), bx = ampliBox(), x0 = gsap.getProperty(ampli, "x"), y0 = gsap.getProperty(ampli, "y");
       gsap.set(ampli, { x: p0.l - (bx.l - x0), y: p0.t - (bx.t - y0) }); ampliSide = p0.l > window.innerWidth / 2 ? "R" : "L"; ampli.classList.toggle("on-right", ampliSide === "R"); if (done) done(); return;
     }
-    if (Date.now() < ampliPinned) { if (done) done(); return; }
     ampliWalkTo(ampliPick(260), done);
   }
   /* si Ampli está en la parte de arriba, el globo y el panel se abren hacia abajo para no salirse de la pantalla */
   function ampliTips() {
-    var b = ampliBox();
-    ampli.classList.toggle("tip-below", b.t < 270);
-    ampli.classList.toggle("on-right", b.l + b.w / 2 > window.innerWidth / 2);
+    var b = ampliBox(), rs = textRects(), vh = window.innerHeight, BW = 350, BH = 84, right = b.l + b.w / 2 > window.innerWidth / 2;
+    var bl = right ? b.l + b.w - BW : b.l, br = bl + BW;
+    var up = { left: bl, right: br, top: b.t - BH - 8, bottom: b.t - 8 }, dn = { left: bl, right: br, top: b.t + b.h + 8, bottom: b.t + b.h + 8 + BH }, hu = up.top < 90 ? 99 : 0, hd = dn.bottom > vh - 10 ? 99 : 0;
+    for (var i = 0; i < rs.length; i++) { if (hit(up, rs[i], 4)) hu++; if (hit(dn, rs[i], 4)) hd++; }
+    ampli.classList.toggle("tip-below", hd < hu || (hd === hu && b.t < 270));
+    ampli.classList.toggle("on-right", right);
+  }
+  function ampliFit(el) {
+    el.style.translate = "0 0";
+    requestAnimationFrame(function () {
+      var r = el.getBoundingClientRect(), vw = window.innerWidth, vh = window.innerHeight, dx = 0, dy = 0;
+      if (r.right > vw - 14) dx = vw - 14 - r.right; if (r.left + dx < 14) dx = 14 - r.left;
+      if (r.bottom > vh - 14) dy = vh - 14 - r.bottom; if (r.top + dy < 90) dy = 90 - r.top;
+      el.style.translate = dx + "px " + dy + "px";
+    });
   }
   var ampliPinned = 0, dragging = false, dragMoved = false;
   function ampliSay(id) {
-    if (!ampliBubble || !AMPLI_LINES[id]) return;
+    if (!ampliBubble || AMPLI_LINES[id] === undefined) return;
     ampliId = id; clearTimeout(ampliT);
     if (id === "hero") { ampli.classList.add("is-hidden"); ampli.classList.remove("is-open"); ampliBubble.classList.remove("is-on"); return; }
     ampli.classList.remove("is-hidden");
@@ -206,7 +221,7 @@
     ampliWalk(id, function () {
       ampliT = setTimeout(function () {
         if (ampliId !== id) return;
-        ampliTips(); ampliBubble.innerHTML = AMPLI_LINES[id]; ampliBubble.classList.add("is-on");
+        ampliTips(); ampliBubble.innerHTML = AMPLI_LINES[id]; ampliBubble.classList.add("is-on"); ampliFit(ampliBubble);
         ampliT = setTimeout(function () { ampliBubble.classList.remove("is-on"); }, 6500);
       }, 250);
     });
@@ -219,7 +234,7 @@
       pupils.forEach(function (p) { p.style.transform = "translate(" + (dx / d * k).toFixed(2) + "px," + (dy / d * k).toFixed(2) + "px)"; }); }); } }, { passive: true });
   }
   /* panel: se abre con un toque y lleva al diagnóstico */
-  function ampliOpen(o) { if (o) ampliTips(); ampli.classList.toggle("is-open", o); ampliBtn.setAttribute("aria-expanded", o ? "true" : "false"); if (o) { clearTimeout(ampliT); ampliBubble.classList.remove("is-on"); } }
+  function ampliOpen(o) { if (o) { ampliTips(); ampliFit($("#ampliPanel")); } ampli.classList.toggle("is-open", o); ampliBtn.setAttribute("aria-expanded", o ? "true" : "false"); if (o) { clearTimeout(ampliT); ampliBubble.classList.remove("is-on"); } }
   ampliBtn.addEventListener("click", function () { if (dragMoved) return; if (ampli.classList.contains("is-open")) ampliOpen(false); else if (phone) ampliOpen(true); else { ampliOpen(true); } });
     /* arrastrar a Ampli: clic sostenido y moverlo adonde quieras (mouse o dedo) */
   (function ampliDrag() {
@@ -235,14 +250,14 @@
       if (pid === null || e.pointerId !== pid) return;
       if (!dragMoved && Math.hypot(e.clientX - sx, e.clientY - sy) < 6) return;
       if (!dragMoved) { dragMoved = true; dragging = true; gsap.killTweensOf(ampli); ampli.classList.remove("is-walking", "is-open"); ampli.classList.add("is-dragging"); ampliBubble.classList.remove("is-on"); clearTimeout(ampliT); }
-      var nx = clamp(e.clientX - w / 2, 4, window.innerWidth - w - 4), ny = clamp(e.clientY - h / 2, 4, window.innerHeight - h - 4);
+      var nx = clamp(e.clientX - w / 2, 14, window.innerWidth - w - 14), ny = clamp(e.clientY - h / 2, 14, window.innerHeight - h - 14);
       gsap.set(ampli, { x: nx - bx0, y: ny - by0 });
     });
     function end(e) {
       if (pid === null || (e && e.pointerId !== pid)) return;
       try { ampliBtn.releasePointerCapture(pid); } catch (er) {}
       pid = null;
-      if (dragMoved) { dragging = false; ampli.classList.remove("is-dragging"); ampliPinned = Date.now() + 25000; ampliSide = ampliBox().l > window.innerWidth / 2 ? "R" : "L"; ampliTips(); setTimeout(function () { dragMoved = false; }, 60); }
+      if (dragMoved) { dragging = false; ampli.classList.remove("is-dragging"); ampliPinned = Date.now() + 6000; ampliSide = ampliBox().l > window.innerWidth / 2 ? "R" : "L"; ampliTips(); setTimeout(function () { dragMoved = false; }, 60); }
     }
     ampliBtn.addEventListener("dragstart", function (e) { e.preventDefault(); });
     ampliBtn.addEventListener("selectstart", function (e) { e.preventDefault(); });
@@ -261,7 +276,7 @@
   window.addEventListener("scroll", function () { clearTimeout(ampliIdle); ampliIdle = setTimeout(ampliCheck, 900); }, { passive: true });
   window.addEventListener("resize", function () { clearTimeout(ampliIdle); ampliIdle = setTimeout(ampliCheck, 500); });
   /* de vez en cuando pasea a otro lugar libre (movimiento natural) */
-  setInterval(function () { if (!phone && !dragging && Date.now() > ampliPinned && ampliSide && ampliId !== "hero" && !document.hidden && !ampli.classList.contains("is-open") && !ampli.classList.contains("is-walking")) ampliWalkTo(ampliPick(300)); }, 16000);
+  setInterval(function () { if (!phone && !dragging && Date.now() > ampliPinned && ampliSide && ampliId !== "hero" && !document.hidden && !ampli.classList.contains("is-open") && !ampli.classList.contains("is-walking")) ampliWalkTo(ampliPick(300)); }, 13000);
   gsap.to("#prog", { scaleX: 1, ease: "none", scrollTrigger: { start: 0, end: "max", scrub: 0.2 } });
   ScrollTrigger.create({ trigger: "#hero", start: "bottom 60%", end: "max", onToggle: function (s) { $("#wa").classList.toggle("is-on", s.isActive); $("#social").classList.toggle("is-on", s.isActive); } });
 
