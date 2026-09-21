@@ -10,7 +10,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="preload" as="image" href="../Imagenes%20usadas/hero_poster_1920.jpg">
-<link rel="stylesheet" href="css/v2.css?v=56">
+<link rel="stylesheet" href="css/v2.css?v=57">
 <script>document.documentElement.classList.add("js");</script>
 </head>
 <body class="is-loading">
@@ -63,17 +63,33 @@
     <a class="btn ampli-cta" href="#contacto">Pedir un diagnóstico</a>
   </div>
   <button class="ampli-btn" id="ampliBtn" type="button" aria-label="Ampli, tu guía" aria-expanded="false">
-    <svg viewBox="0 0 100 100" aria-hidden="true">
+    <svg viewBox="0 0 120 120" aria-hidden="true">
       <defs>
-        <radialGradient id="oS" cx="38%" cy="32%" r="80%"><stop offset="0" stop-color="#3a4636"/><stop offset=".45" stop-color="#121710"/><stop offset="1" stop-color="#030403"/></radialGradient>
-        <radialGradient id="oC" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#fbffc4"/><stop offset=".35" stop-color="#d7f24a"/><stop offset="1" stop-color="#d7f24a" stop-opacity="0"/></radialGradient>
-        <radialGradient id="oG" cx="50%" cy="50%" r="50%"><stop offset=".55" stop-color="#d7f24a" stop-opacity=".45"/><stop offset="1" stop-color="#d7f24a" stop-opacity="0"/></radialGradient>
+        <radialGradient id="gB" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#0c1408" stop-opacity=".9"/><stop offset=".75" stop-color="#101a0c" stop-opacity=".78"/><stop offset="1" stop-color="#2a3a1c" stop-opacity=".9"/></radialGradient>
+        <radialGradient id="gH" cx="50%" cy="50%" r="50%"><stop offset=".5" stop-color="#d7f24a" stop-opacity=".5"/><stop offset="1" stop-color="#d7f24a" stop-opacity="0"/></radialGradient>
+        <linearGradient id="gR" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffffff" stop-opacity=".95"/><stop offset=".45" stop-color="#d7f24a" stop-opacity=".35"/><stop offset="1" stop-color="#d7f24a" stop-opacity=".95"/></linearGradient>
+        <radialGradient id="gS" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#fff" stop-opacity=".75"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient>
+        <radialGradient id="gL" cx="50%" cy="100%" r="80%"><stop offset="0" stop-color="#eaff70" stop-opacity=".85"/><stop offset="1" stop-color="#eaff70" stop-opacity="0"/></radialGradient>
+        <filter id="gF1" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="6"/></filter>
+        <filter id="gF2" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="3"/></filter>
+        <clipPath id="gC"><circle cx="60" cy="60" r="41"/></clipPath>
       </defs>
-      <circle class="a-glow" cx="50" cy="50" r="50" fill="url(#oG)"/>
-      <circle cx="50" cy="50" r="36" fill="url(#oS)" stroke="#d7f24a" stroke-opacity=".75" stroke-width="1.6"/>
-      <circle class="o-ring" cx="50" cy="50" r="42" fill="none" stroke="#d7f24a" stroke-opacity=".5" stroke-width="1" stroke-dasharray="3 7"/>
-      <circle class="a-pupil o-core" cx="50" cy="52" r="15" fill="url(#oC)"/>
-      <path d="M27 38q6-14 22-16" stroke="#fff" stroke-opacity=".35" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+      <circle class="a-glow" cx="60" cy="60" r="60" fill="url(#gH)"/>
+      <circle cx="60" cy="60" r="44" fill="url(#gB)"/>
+      <g clip-path="url(#gC)">
+        <g class="a-pupil o-soul">
+          <g class="o-s1"><circle cx="60" cy="42" r="15" fill="#b6e21c" filter="url(#gF1)"/></g>
+          <g class="o-s2"><circle cx="76" cy="66" r="13" fill="#d7f24a" filter="url(#gF1)"/></g>
+          <g class="o-s3"><circle cx="46" cy="70" r="12" fill="#8fd400" filter="url(#gF1)"/></g>
+          <circle class="o-core" cx="60" cy="60" r="9" fill="#f6ffb0" filter="url(#gF2)"/>
+        </g>
+        <ellipse cx="60" cy="108" rx="30" ry="14" fill="url(#gL)"/>
+      </g>
+      <circle cx="60" cy="60" r="43" fill="none" stroke="url(#gR)" stroke-width="2.2"/>
+      <circle cx="60" cy="60" r="39.500" fill="none" stroke="#fff" stroke-opacity=".12" stroke-width="1"/>
+      <ellipse cx="45" cy="38" rx="16" ry="9" fill="url(#gS)" transform="rotate(-32 45 38)"/>
+      <circle cx="39" cy="33" r="2.600" fill="#fff" opacity=".95"/>
+      <path d="M40 92q20 12 40 0" stroke="#eaff70" stroke-opacity=".7" stroke-width="1.6" fill="none" stroke-linecap="round"/>
     </svg>
   </button>
 </div>
@@ -310,6 +326,6 @@
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/SplitText.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.18/dist/lenis.min.js"></script>
-<script src="js/v2.js?v=56"></script>
+<script src="js/v2.js?v=57"></script>
 </body>
 </html>

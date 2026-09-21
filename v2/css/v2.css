@@ -850,3 +850,17 @@ input, textarea { -webkit-appearance: none; appearance: none; border-radius: 0; 
 @keyframes orbStretch { 0%, 100% { transform: scale(1, 1); } 50% { transform: scale(0.9, 1.1); } }
 .a-pupil { transition: transform 0.15s ease-out; }
 @media (prefers-reduced-motion: reduce) { .o-core, .o-ring { animation: none; } }
+
+/* Orbe de cristal con alma verde en movimiento */
+.ampli-btn { width: clamp(46px, 3.8vw, 64px); }
+.o-s1, .o-s2, .o-s3 { transform-box: view-box; transform-origin: 60px 60px; }
+.o-s1 { animation: soulA 6s linear infinite; }
+.o-s2 { animation: soulB 8.5s linear infinite; }
+.o-s3 { animation: soulA 11s linear infinite reverse; }
+@keyframes soulA { to { transform: rotate(360deg); } }
+@keyframes soulB { to { transform: rotate(-360deg); } }
+.o-core { transform-box: fill-box; transform-origin: 50% 50%; animation: coreBeat 2.4s ease-in-out infinite; }
+@keyframes coreBeat { 0%, 100% { transform: scale(0.85); opacity: 0.8; } 50% { transform: scale(1.2); opacity: 1; } }
+.ampli.is-walking .o-s1 { animation-duration: 1.8s; } .ampli.is-walking .o-s2 { animation-duration: 2.4s; } .ampli.is-walking .o-s3 { animation-duration: 3s; }
+.a-pupil.o-soul { transition: transform 0.2s ease-out; }
+@media (prefers-reduced-motion: reduce) { .o-s1, .o-s2, .o-s3, .o-core { animation: none; } }
