@@ -10,7 +10,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500&display=swap" rel="stylesheet">
 <link rel="preload" as="image" href="../Imagenes%20usadas/hero_poster_1920.jpg">
-<link rel="stylesheet" href="css/v2.css?v=7">
+<link rel="stylesheet" href="css/v2.css?v=8">
 <script>document.documentElement.classList.add("js");</script>
 </head>
 <body class="is-loading">
@@ -105,18 +105,20 @@
   <div class="caps-close"><span class="tiny">Juntas</span><h2 class="xl split">Combinadas y potenciadas con <em>inteligencia artificial</em>, transforman cómo trabaja una organización.</h2></div>
 </section>
 
-<!-- ===== 05 · FRENTES ===== -->
-<section class="fr" id="frentes" data-hdr="dark" data-name="Frentes">
-  <div class="fr-in">
-    <div class="fr-head"><span class="tiny">Frentes</span><h2 class="lg">Seis frentes, un solo <em>sistema</em>.</h2></div>
-    <div class="fr-grid" id="frGrid">
-      <article class="card"><div class="ambient a2"></div><span class="tiny">01 · Organizaciones</span><h3>Procesos y operaciones</h3><ul><li>Lean Manufacturing y 5S</li><li>Mapeo y estandarización de procesos</li><li>Flujo y layout de planta y oficina</li><li>Indicadores y control de gestión</li></ul></article>
-      <article class="card"><div class="ambient a1"></div><span class="tiny">02 · Organizaciones</span><h3>Mejora continua</h3><ul><li>Kaizen y Six Sigma</li><li>Eliminación de pérdidas y desperdicios</li><li>Gestión visual y Kanban</li><li>Productividad que se sostiene</li></ul></article>
-      <article class="card"><div class="ambient a4"></div><span class="tiny">03 · Personas</span><h3>Liderazgo y coaching</h3><ul><li>Coaching ejecutivo y de equipos</li><li>Liderazgo en el día a día</li><li>Toma de decisiones</li><li>Cultura y cohesión organizacional</li></ul></article>
-      <article class="card"><div class="ambient a5"></div><span class="tiny">04 · Personas</span><h3>Equipos y desarrollo comercial</h3><ul><li>Comunicación y colaboración</li><li>Entrenamiento de equipos comerciales</li><li>Estrategia de venta y objeciones</li><li>Desarrollo de las personas</li></ul></article>
-      <article class="card"><div class="ambient a3"></div><span class="tiny">05 · Inteligencia</span><h3>Inteligencia artificial</h3><ul><li>IA integrada en decisiones reales</li><li>Automatización de tareas y flujos</li><li>Agentes y asistentes para el equipo</li><li>Uso responsable de la IA</li></ul></article>
-      <article class="card"><div class="ambient a2"></div><span class="tiny">06 · Inteligencia</span><h3>Datos y decisiones</h3><ul><li>Tableros y KPIs en vivo</li><li>Datos que informan la operación</li><li>Analítica para reducir costos</li><li>Reportes automáticos</li></ul></article>
+<!-- ===== 05 · FRENTES (scroll horizontal) ===== -->
+<section class="hz" id="frentes" data-hdr="dark" data-name="Frentes">
+  <div class="stage">
+    <div class="hz-track" id="hzTrack">
+      <div class="hz-intro"><span class="tiny">Frentes</span><h2 class="xl">Seis frentes,<br>un solo <em>sistema</em>.</h2></div>
+      <article class="card"><div class="card-img"><div class="ambient a2"></div></div><div class="card-body"><span class="tiny">01 · Organizaciones</span><h3 class="lg">Procesos y operaciones</h3><ul><li>Lean Manufacturing y 5S</li><li>Mapeo y estandarización de procesos</li><li>Flujo y layout de planta y oficina</li><li>Indicadores y control de gestión</li></ul></div></article>
+      <article class="card"><div class="card-img"><div class="ambient a1"></div></div><div class="card-body"><span class="tiny">02 · Organizaciones</span><h3 class="lg">Mejora continua</h3><ul><li>Kaizen y Six Sigma</li><li>Eliminación de pérdidas y desperdicios</li><li>Gestión visual y Kanban</li><li>Productividad que se sostiene</li></ul></div></article>
+      <article class="card"><div class="card-img"><div class="ambient a4"></div></div><div class="card-body"><span class="tiny">03 · Personas</span><h3 class="lg">Liderazgo y coaching</h3><ul><li>Coaching ejecutivo y de equipos</li><li>Liderazgo en el día a día</li><li>Toma de decisiones</li><li>Cultura y cohesión organizacional</li></ul></div></article>
+      <article class="card"><div class="card-img"><div class="ambient a5"></div></div><div class="card-body"><span class="tiny">04 · Personas</span><h3 class="lg">Equipos y desarrollo comercial</h3><ul><li>Comunicación y colaboración</li><li>Entrenamiento de equipos comerciales</li><li>Estrategia de venta y objeciones</li><li>Desarrollo de las personas</li></ul></div></article>
+      <article class="card"><div class="card-img"><div class="ambient a3"></div></div><div class="card-body"><span class="tiny">05 · Inteligencia</span><h3 class="lg">Inteligencia artificial</h3><ul><li>IA integrada en decisiones reales</li><li>Automatización de tareas y flujos</li><li>Agentes y asistentes para el equipo</li><li>Uso responsable de la IA</li></ul></div></article>
+      <article class="card"><div class="card-img"><div class="ambient a2"></div></div><div class="card-body"><span class="tiny">06 · Inteligencia</span><h3 class="lg">Datos y decisiones</h3><ul><li>Tableros y KPIs en vivo</li><li>Datos que informan la operación</li><li>Analítica para reducir costos</li><li>Reportes automáticos</li></ul></div></article>
+      <div class="hz-end"></div>
     </div>
+    <div class="hz-bar" aria-hidden="true"><i id="hzBar"></i></div>
   </div>
 </section>
 
@@ -188,14 +190,29 @@
   </a>
 </section>
 
-<!-- ===== 09 · EMPRESAS ===== -->
-<section class="mq" id="clientes" data-hdr="dark" data-name="Empresas">
-  <span class="tiny mq-label">Empresas con las que trabajamos</span>
-  <div class="mq-track" aria-hidden="true">
-    <div class="mq-set"><span>Medisur</span><i></i><span>SS Servicios</span><i></i><span>MS Patagonia</span><i></i><span>Aeropuertos Argentina</span><i></i></div>
-    <div class="mq-set"><span>Medisur</span><i></i><span>SS Servicios</span><i></i><span>MS Patagonia</span><i></i><span>Aeropuertos Argentina</span><i></i></div>
+<!-- ===== 09 · EMPRESAS (anillo 3D) ===== -->
+<section class="trust" id="clientes" data-hdr="dark" data-name="Empresas">
+  <div class="trust-head"><span class="tiny">Empresas con las que trabajamos</span></div>
+  <div class="c3d" id="c3d">
+    <div class="c3d-stage is-off" id="c3dStage" role="group" aria-label="Empresas con las que trabajamos">
+      <div class="c3d-floor" aria-hidden="true"></div>
+      <div class="c3d-ring" id="c3dRing">
+        <figure class="c3d-card"><span class="c3d-name">Medisur</span></figure>
+        <figure class="c3d-card"><span class="c3d-name">SS Servicios</span></figure>
+        <figure class="c3d-card"><span class="c3d-name">MS Patagonia</span></figure>
+        <figure class="c3d-card"><span class="c3d-name">Aeropuertos Argentina</span></figure>
+        <figure class="c3d-card"><span class="c3d-name">Medisur</span></figure>
+        <figure class="c3d-card"><span class="c3d-name">SS Servicios</span></figure>
+        <figure class="c3d-card"><span class="c3d-name">MS Patagonia</span></figure>
+        <figure class="c3d-card"><span class="c3d-name">Aeropuertos Argentina</span></figure>
+        <figure class="c3d-card"><span class="c3d-name">Medisur</span></figure>
+        <figure class="c3d-card"><span class="c3d-name">SS Servicios</span></figure>
+        <figure class="c3d-card"><span class="c3d-name">MS Patagonia</span></figure>
+        <figure class="c3d-card"><span class="c3d-name">Aeropuertos Argentina</span></figure>
+      </div>
+    </div>
+    <p class="c3d-hint" id="c3dHint"><i aria-hidden="true"></i>Arrastrá para girar<i aria-hidden="true"></i></p>
   </div>
-  <p class="sr-only">Medisur, SS Servicios, MS Patagonia, Aeropuertos Argentina.</p>
 </section>
 
 <!-- ===== 10 · PREGUNTAS ===== -->
@@ -247,6 +264,6 @@
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/SplitText.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.18/dist/lenis.min.js"></script>
-<script src="js/v2.js?v=7"></script>
+<script src="js/v2.js?v=8"></script>
 </body>
 </html>

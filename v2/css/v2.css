@@ -321,3 +321,48 @@ html[data-hdr="light"] .rail { color: var(--ink); }
   .rm-line, .rm-col::before { display: none; }
   .rm-col { padding-top: 22px; padding-bottom: 22px; border-top: 1px solid rgba(239,236,229,0.16); }
 }
+
+/* ---------- ronda 2 ---------- */
+.card-img .ambient { position: absolute; inset: 0; }
+.card-img { background: #0b0b0b; }
+.card { border: 1px solid rgba(239,236,229,0.12); }
+
+/* retratos más chicos */
+.person { grid-template-columns: min(28vw, 400px) 1fr; justify-content: start; gap: clamp(28px, 6vw, 120px); }
+.person.rev { grid-template-columns: 1fr min(28vw, 400px); }
+.person .ph { aspect-ratio: 4 / 4.6; width: 100%; }
+@media (max-width: 860px) {
+  .person, .person.rev { grid-template-columns: 1fr; }
+  .person .ph { max-width: 300px; }
+  .person.rev .ph { order: 0; }
+}
+
+/* roadmap animado */
+.rm-col::before { transform: scale(0); transition: transform 0.6s cubic-bezier(0.3, 1.7, 0.5, 1); box-shadow: 0 0 0 0 rgba(215,242,74,0); }
+.rm-col.on::before { transform: scale(1); animation: rmPulse 2.4s ease-out 0.6s 2; }
+.rm-col.on .rm-num { -webkit-text-stroke-color: rgba(215,242,74,0.95); }
+.rm-num { transition: -webkit-text-stroke-color 1s ease; }
+.rm-line i { position: relative; box-shadow: 0 0 14px rgba(215,242,74,0.55); }
+.rm-line i::after { content: ""; position: absolute; right: -6px; top: -5px; width: 12px; height: 12px; border-radius: 50%; background: var(--lime); box-shadow: 0 0 18px 4px rgba(215,242,74,0.7); }
+@keyframes rmPulse { 0% { box-shadow: 0 0 0 0 rgba(215,242,74,0.6); } 100% { box-shadow: 0 0 0 22px rgba(215,242,74,0); } }
+
+/* empresas: anillo 3D (el original) */
+.trust { position: relative; z-index: 4; background: var(--ink); padding: clamp(90px, 14vh, 150px) 0 clamp(50px, 9vh, 100px); overflow: hidden; }
+.trust-head { padding: 0 var(--pad); }
+.c3d { position: relative; margin-top: 3vh; }
+.c3d-stage { --c3d-w: min(300px, 24vw); --c3d-h: calc(var(--c3d-w) * 0.62); position: relative; height: min(64vh, 560px); perspective: 1500px; perspective-origin: 50% 30%; touch-action: pan-y; cursor: grab; user-select: none; -webkit-user-select: none; }
+.c3d-stage.is-dragging { cursor: grabbing; }
+.c3d-stage.is-off .c3d-ring { visibility: hidden; }
+.c3d-ring { position: absolute; left: 50%; top: 60%; width: 0; height: 0; transform-style: preserve-3d; will-change: transform; }
+.c3d-card, .c3d-back { position: absolute; left: calc(var(--c3d-w) / -2); top: calc(var(--c3d-h) / -2); width: var(--c3d-w); height: var(--c3d-h); margin: 0; box-sizing: border-box; border-radius: 20px; border: 3px solid rgba(255,255,255,0.09); background-color: #070707; background-image: linear-gradient(180deg, #151515 0%, #070707 64%); box-shadow: 0 24px 50px rgba(0,0,0,0.6), 0 2px 0 rgba(255,255,255,0.06) inset; backface-visibility: hidden; -webkit-backface-visibility: hidden; display: grid; place-items: center; overflow: hidden; transition: border-color 0.6s ease, box-shadow 0.6s ease; }
+.c3d-card::before, .c3d-back::before { content: ""; position: absolute; inset: 0; background: linear-gradient(115deg, transparent 36%, rgba(255,255,255,0.08) 50%, transparent 64%); pointer-events: none; }
+.c3d-card.is-front { border-color: rgba(215,242,74,0.55); box-shadow: 0 30px 70px rgba(0,0,0,0.65), 0 0 40px rgba(215,242,74,0.18), 0 2px 0 rgba(255,255,255,0.06) inset; }
+.c3d-name { position: relative; font-family: var(--serif); font-size: clamp(22px, 2.2vw, 34px); line-height: 1.05; text-align: center; padding: 0 12%; letter-spacing: -0.01em; }
+.c3d-back svg { width: 20%; height: auto; overflow: visible; opacity: 0.6; }
+.c3d-back .cb-bar { fill: rgba(255,255,255,0.85); }
+.c3d-back .cb-stripe { fill: var(--lime); }
+.c3d-floor { position: absolute; left: 50%; bottom: 4%; width: min(78%, 980px); height: 22%; translate: -50% 0; background: radial-gradient(50% 50% at 50% 50%, rgba(215,242,74,0.2), transparent 72%); filter: blur(6px); pointer-events: none; }
+.c3d-hint { display: flex; align-items: center; justify-content: center; gap: 14px; margin: 1vh 0 0; font-size: 12px; font-weight: 500; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(255,255,255,0.55); transition: opacity 0.6s ease; }
+.c3d-hint i { width: 34px; height: 1px; background: rgba(215,242,74,0.7); }
+.c3d-hint.is-hidden { opacity: 0; }
+@media (max-width: 860px) { .c3d-stage { --c3d-w: min(184px, 50vw); height: 370px; perspective: 880px; } }
