@@ -64,14 +64,32 @@
     v.src = s; v.load();
     v.addEventListener("loadeddata", function () { v.classList.add("is-ready"); }, { once: true });
   }
-  function vplay(v) { vload(v); if (v._s === "play") return; v._s = "play"; var p = v.play(); if (p && p.catch) p.catch(function () {}); }
+  function vplay(v) { vload(v); if (v._s === "play") return; v._s = "play"; if (scrolling) return; var p = v.play(); if (p && p.catch) p.catch(function () {}); }
   function vwait(v) { vload(v); if (v._s === "wait") return; v._s = "wait"; v.pause(); }
   function vfree(v) {
     if (v._s === "free") return; v._s = "free"; v.pause();
     if (v.getAttribute("src")) { v.removeAttribute("src"); v.load(); v.classList.remove("is-ready"); }
   }
+  /* mientras se scrollea, el video se cambia por una foto fija de su cuadro actual (dibujar un video en movimiento es lo más caro) */
+  function freeze(v) {
+    try {
+      if (!v.videoWidth) return;
+      var cv = v._cv;
+      if (!cv) { cv = v._cv = document.createElement("canvas"); cv.className = "vfreeze"; cv.width = 640; cv.height = Math.round(640 * v.videoHeight / v.videoWidth); v.parentNode.insertBefore(cv, v.nextSibling); }
+      cv.getContext("2d").drawImage(v, 0, 0, cv.width, cv.height);
+      cv.style.display = "block"; v.style.visibility = "hidden";
+    } catch (e) {}
+  }
+  function unfreeze(v) { if (v._cv) { v._cv.style.display = "none"; } v.style.visibility = ""; }
+  var scrolling = false, scrollT = null, activeVids = [];
+  window.addEventListener("scroll", function () {
+    if (!scrolling) { scrolling = true; activeVids.forEach(function (v) { if (v._s === "play") { freeze(v); v.pause(); } }); }
+    clearTimeout(scrollT);
+    scrollT = setTimeout(function () { scrolling = false; activeVids.forEach(function (v) { if (v._s === "play") { var p = v.play(); if (p && p.catch) p.catch(function () {}); unfreeze(v); } }); }, 140);
+  }, { passive: true });
   function feed(trigger, vids, getF) {
     if (reduce) return;
+    vids.forEach(function (v) { if (v && activeVids.indexOf(v) < 0) activeVids.push(v); });
     ScrollTrigger.create({ trigger: trigger, start: "top bottom+=100%", end: "bottom top-=100%", onUpdate: apply, onToggle: apply });
     function apply(self) {
       var on = self.isActive, f = getF ? getF() : 0;
@@ -102,9 +120,35 @@
         railT.textContent = s.getAttribute("data-name");
         railEl.style.opacity = s.matches(".hero") ? "" : "0";
         navLinks.forEach(function (a) { a.classList.toggle("is-on", a.getAttribute("href") === "#" + s.id); });
+        if (s.id !== ampliShown) { ampliShown = s.id; ampliSay(s.id); }
       }
     });
   });
+  /* ---------- Ampli: dice una frase por sección (por ahora fijas; luego será un agente) ---------- */
+  var AMPLI_LINES = {
+    hero: "¡Hola! Soy <b>Ampli</b>. Te acompaño en el recorrido.",
+    manifiesto: "Más herramientas no alcanzan: hay que convertirlas en <b>resultados</b>.",
+    problema: "¿Te suena alguna de estas señales?",
+    "que-hacemos": "Procesos, IA y personas: las tres trabajan <b>juntas</b>.",
+    frentes: "Seis frentes, un solo sistema. Seguí bajando para verlos.",
+    metodo: "Cuatro pasos, siempre con procesos <b>y</b> personas.",
+    consultora: "Dos disciplinas, una sola mirada. Tocá el <b>+</b> para conocerlos.",
+    proyectos: "Ya hicimos un workshop, y viene una plataforma de cursos.",
+    clientes: "Estas son empresas con las que trabajamos. Arrastrá para girar.",
+    faq: "Poné el mouse sobre una pregunta y la ves más grande.",
+    contacto: "¿Hablamos? Empezamos por un <b>diagnóstico</b>."
+  };
+  var ampliBubble = $("#ampliBubble"), ampliId = null, ampliT = null, ampliShown = null;
+  function ampliSay(id) {
+    if (!ampliBubble || !AMPLI_LINES[id]) return;
+    ampliId = id; clearTimeout(ampliT);
+    ampliBubble.classList.remove("is-on");
+    ampliT = setTimeout(function () {
+      ampliBubble.innerHTML = AMPLI_LINES[id]; ampliBubble.classList.add("is-on");
+      ampliT = setTimeout(function () { ampliBubble.classList.remove("is-on"); }, 6500);
+    }, 380);
+  }
+  var ampliBtn = $(".ampli-btn"); if (ampliBtn) ampliBtn.addEventListener("click", function () { ampliSay(ampliId || "hero"); });
   gsap.to("#prog", { scaleX: 1, ease: "none", scrollTrigger: { start: 0, end: "max", scrub: 0.2 } });
   ScrollTrigger.create({ trigger: "#hero", start: "bottom 60%", end: "max", onToggle: function (s) { $("#wa").classList.toggle("is-on", s.isActive); $("#social").classList.toggle("is-on", s.isActive); } });
 
