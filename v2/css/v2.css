@@ -716,3 +716,7 @@ html[data-hdr="light"] .nav a.is-on { color: var(--olive); }
 @keyframes plusRing { 0% { box-shadow: 0 0 0 0 rgba(215,242,74,0.55), 0 0 0 0 rgba(215,242,74,0.35); } 70% { box-shadow: 0 0 0 12px rgba(215,242,74,0), 0 0 0 24px rgba(215,242,74,0); } 100% { box-shadow: 0 0 0 12px rgba(215,242,74,0), 0 0 0 24px rgba(215,242,74,0); } }
 @keyframes plusBlink { 0%, 100% { opacity: 1; } 50% { opacity: 0.25; } }
 @media (prefers-reduced-motion: reduce) { .cols-node, .cols-node::before, .cols-node::after { animation: none; } }
+
+/* Preguntas: el marco se ilumina completo (los cuatro lados); la fila ya no recorta el borde de arriba */
+.fq-row { padding: 5px 0; }
+.fq-card:hover { transform: none; border-color: var(--lime); box-shadow: 0 0 0 1px rgba(215,242,74,0.55), 0 0 22px rgba(215,242,74,0.22); }
