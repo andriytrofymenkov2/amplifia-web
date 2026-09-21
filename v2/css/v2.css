@@ -739,3 +739,9 @@ input, textarea { -webkit-appearance: none; appearance: none; border-radius: 0; 
 /* Proyectos: descripciones más largas y claras */
 .pj-desc { max-width: 52ch; line-height: 1.5; }
 .pj-desc em { font-style: italic; color: var(--lime); }
+
+/* Frases centradas: manifiesto y "Juntas" */
+.manif-in { justify-content: center; text-align: center; }
+.manif-text { margin: 0 auto; max-width: 15.5em; text-align: center; }
+.caps-close { margin: 0 auto; max-width: 1400px; text-align: center; justify-items: center; }
+.caps-close .xl { text-align: center; margin: 0 auto; }
