@@ -13,7 +13,7 @@
 
   var WA = "5491133278023", EMAIL = "andriytrofymenko@gmail.com";
   var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  var phone = window.matchMedia("(max-width: 860px), (hover: none)").matches;
+  var phone = window.matchMedia("(max-width: 860px), (hover: none) and (any-hover: none)").matches;
   var $ = function (s, r) { return (r || document).querySelector(s); };
   var $$ = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
   var clamp = function (v, a, b) { return Math.max(a, Math.min(b, v)); };
@@ -228,7 +228,7 @@
           .to(hots, { opacity: 1, scale: 1, duration: 0.7, stagger: 0.18, ease: "back.out(2.2)" }, 0.9);
       }, "top 75%");
 
-      if (window.matchMedia("(hover: hover) and (min-width: 861px)").matches) {
+      if (window.matchMedia("(any-hover: hover) and (min-width: 861px)").matches) {
         var CLOSED = { left: "inset(0% 100% 0% 0%)", right: "inset(0% 0% 0% 100%)", top: "inset(0% 0% 100% 0%)", bottom: "inset(100% 0% 0% 0%)" }, OPEN = "inset(0% 0% 0% 0%)";
         var edgeOf = function (e, el) {
           var r = el.getBoundingClientRect(), dx = (e.clientX - (r.left + r.width / 2)) / r.width, dy = (e.clientY - (r.top + r.height / 2)) / r.height;
@@ -375,9 +375,10 @@
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(fqMeasure);
   window.addEventListener("load", fqMeasure);
   window.addEventListener("resize", fqMeasure);
-  /* lupa: una sola tarjeta ampliada, flotando sobre la original; en pantallas táctiles se abre con un toque */
+  /* lupa: una sola tarjeta ampliada, flotando sobre la original.
+     Mouse o lápiz: al pasar. Táctil: con un toque. No depende de media queries de hover (notebooks táctiles, Safari, etc.) */
   (function fqLupa() {
-    var zoom = $("#fqZoom"), rows = $("#fqRows"), cur = null, hideT = null;
+    var zoom = $("#fqZoom"), rows = $("#fqRows"), cur = null, hideT = null, lastType = "mouse";
     if (!zoom || !rows) return;
     function place(card) {
       var r = card.getBoundingClientRect();
@@ -388,21 +389,30 @@
       zoom.style.left = x + "px"; zoom.style.top = y + "px";
       zoom.style.transformOrigin = clamp(((r.left + r.width / 2) - x) / w * 100, 0, 100) + "% " + clamp(((r.top + r.height / 2) - y) / h * 100, 0, 100) + "%";
     }
+    function anim(props, done) {
+      if (window.gsap) { gsap.to(zoom, Object.assign({ overwrite: true, onComplete: done }, props)); }
+      else { zoom.style.opacity = props.opacity; if (done) done(); }
+    }
     function show(card) {
       clearTimeout(hideT); if (cur === card) return; cur = card;
       zoom.classList.add("is-on"); place(card);
-      gsap.fromTo(zoom, { opacity: 0, scale: 0.72 }, { opacity: 1, scale: 1, duration: 0.32, ease: "power3.out", overwrite: true });
+      if (window.gsap) gsap.fromTo(zoom, { opacity: 0, scale: 0.72 }, { opacity: 1, scale: 1, duration: 0.32, ease: "power3.out", overwrite: true });
+      else zoom.style.opacity = 1;
     }
     function hide() {
+      clearTimeout(hideT);
       hideT = setTimeout(function () {
         cur = null;
-        gsap.to(zoom, { opacity: 0, scale: 0.9, duration: 0.2, ease: "power2.in", overwrite: true, onComplete: function () { if (!cur) zoom.classList.remove("is-on"); } });
+        anim({ opacity: 0, scale: 0.9, duration: 0.2, ease: "power2.in" }, function () { if (!cur) zoom.classList.remove("is-on"); });
       }, 60);
     }
-    rows.addEventListener("mouseover", function (e) { var c = e.target.closest && e.target.closest(".fq-card"); if (c && matchMedia("(hover: hover)").matches) show(c); });
-    rows.addEventListener("mouseout", function (e) { var c = e.target.closest && e.target.closest(".fq-card"); if (c && !(e.relatedTarget && c.contains(e.relatedTarget))) hide(); });
-    rows.addEventListener("click", function (e) { var c = e.target.closest && e.target.closest(".fq-card"); if (c && !matchMedia("(hover: hover)").matches) { if (cur === c) { hide(); } else { show(c); } } });
-    document.addEventListener("click", function (e) { if (!e.target.closest(".fq-card")) hide(); });
+    function cardOf(e) { return e.target && e.target.closest ? e.target.closest(".fq-card") : null; }
+    rows.addEventListener("pointerdown", function (e) { lastType = e.pointerType || "mouse"; }, true);
+    var over = window.PointerEvent ? "pointerover" : "mouseover", out = window.PointerEvent ? "pointerout" : "mouseout";
+    rows.addEventListener(over, function (e) { var c = cardOf(e); if (c && (e.pointerType || "mouse") !== "touch") show(c); });
+    rows.addEventListener(out, function (e) { var c = cardOf(e); if (c && (e.pointerType || "mouse") !== "touch" && !(e.relatedTarget && c.contains(e.relatedTarget))) hide(); });
+    rows.addEventListener("click", function (e) { var c = cardOf(e); if (c && lastType === "touch") { if (cur === c) hide(); else show(c); } });
+    document.addEventListener("click", function (e) { if (!cardOf(e) && cur) hide(); });
     window.addEventListener("scroll", function () { if (cur) hide(); }, { passive: true });
   })();
 
