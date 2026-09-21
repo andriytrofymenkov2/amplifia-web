@@ -188,6 +188,13 @@
           .to(rw[i], { yPercent: 0, opacity: 1, duration: 0.8, ease: "power4.out" }, t + 0.1);
       });
       tl.from(".rm-foot", { opacity: 0, y: 16, duration: 0.8 }, 2.4);
+      /* la luz aparece cuando la línea termina de llenarse y va y viene sin parar */
+      var spark = $(".rm-spark");
+      tl.set(spark, { opacity: 1, left: "0%" }, 2.7);
+      tl.add(function () {
+        var run = gsap.to(spark, { left: "100%", duration: 3, ease: "sine.inOut", repeat: -1, yoyo: true });
+        ScrollTrigger.create({ trigger: "#metodo", start: "top bottom", end: "bottom top", onToggle: function (s) { if (s.isActive) run.resume(); else run.pause(); } });
+      }, 2.7);
     }, "top 75%");
 
     /* 07 · nosotros: dos contenedores negros con "+" (mismo mecanismo que la página anterior) */

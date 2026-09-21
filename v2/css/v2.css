@@ -573,3 +573,12 @@ html[data-hdr="light"] .nav a.is-on { color: var(--olive); }
 
 .hdr { width: min(1120px, 92vw); }
 @media (max-width: 860px) { .hdr { width: 92vw; } }
+
+/* Roadmap: luz que va y viene por la línea + "Procesos" / "Personas" en verde y más grandes */
+.rm-spark { position: absolute; left: 0; top: -6px; width: 14px; height: 14px; margin-left: -7px; border-radius: 50%; background: #fff; opacity: 0;
+  box-shadow: 0 0 10px 3px #d7f24a, 0 0 30px 10px rgba(215,242,74,0.55); z-index: 3; will-change: left; }
+.rm-spark::before, .rm-spark::after { content: ""; position: absolute; top: 6px; height: 2px; width: 90px; }
+.rm-spark::before { right: 100%; background: linear-gradient(90deg, rgba(215,242,74,0), rgba(215,242,74,0.9)); }
+.rm-spark::after { left: 100%; background: linear-gradient(90deg, rgba(215,242,74,0.9), rgba(215,242,74,0)); }
+.rm-col b { color: var(--lime); font-size: 15px; letter-spacing: 0.2em; opacity: 1; margin-bottom: 10px; }
+.rm-col p { font-size: clamp(15px, 1.2vw, 19px); }
