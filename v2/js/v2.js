@@ -157,9 +157,9 @@
   function ampliBox() { var r = ampli.getBoundingClientRect(); var b = ampliBtn.getBoundingClientRect(); return { l: b.left, t: b.top, w: b.width, h: b.height }; }
   function ampliPick(avoidNear) {
     var box = ampliBox(), vw = window.innerWidth, vh = window.innerHeight, rects = textRects();
-    var top0 = 100, bot = vh - 24, cols = 9, rows = 6, cands = [];
+    var top0 = 100, bot = vh - 24, cols = 2, rows = 9, cands = [];
     for (var c = 0; c < cols; c++) for (var r = 0; r < rows; r++) {
-      var l = 8 + (vw - box.w - 16) * c / (cols - 1) + (Math.random() - .5) * 30, t = top0 + (bot - top0 - box.h) * r / (rows - 1) + (Math.random() - .5) * 30;
+      var l = c === 0 ? 4 : vw - box.w - 4, t = top0 + (bot - top0 - box.h) * r / (rows - 1) + (Math.random() - .5) * 26;
       l = clamp(l, 6, vw - box.w - 6); t = clamp(t, top0, bot - box.h);
       var me = { left: l, right: l + box.w, top: t, bottom: t + box.h }, bub = { left: l - 4, right: l + 310, top: t - 78, bottom: t };
       if (l > vw / 2) bub = { left: l + box.w - 310, right: l + box.w + 4, top: t - 78, bottom: t };
@@ -183,12 +183,17 @@
   }
   function ampliWalk(id, done) {
     if (phone) { if (ampliSide === null) { gsap.set(ampli, { x: 6, y: 0 }); ampliSide = "L"; } if (done) done(); return; }
-    if (ampliSide === null) { gsap.set(ampli, { x: 0, y: 0 }); ampliSide = "L"; ampli.classList.remove("on-right"); }
+    if (ampliSide === null) {
+      var p0 = ampliPick(0), bx = ampliBox(), x0 = gsap.getProperty(ampli, "x"), y0 = gsap.getProperty(ampli, "y");
+      gsap.set(ampli, { x: p0.l - (bx.l - x0), y: p0.t - (bx.t - y0) }); ampliSide = p0.l > window.innerWidth / 2 ? "R" : "L"; ampli.classList.toggle("on-right", ampliSide === "R"); if (done) done(); return;
+    }
     ampliWalkTo(ampliPick(260), done);
   }
   function ampliSay(id) {
     if (!ampliBubble || !AMPLI_LINES[id]) return;
     ampliId = id; clearTimeout(ampliT);
+    if (id === "hero") { ampli.classList.add("is-hidden"); ampli.classList.remove("is-open"); ampliBubble.classList.remove("is-on"); return; }
+    ampli.classList.remove("is-hidden");
     ampliBubble.classList.remove("is-on");
     ampliWalk(id, function () {
       ampliT = setTimeout(function () {
@@ -213,7 +218,7 @@
   document.addEventListener("keydown", function (e) { if (e.key === "Escape") ampliOpen(false); });
   var ampliIdle = null;
   function ampliCheck() {
-    if (phone || !ampliSide || ampli.classList.contains("is-open") || ampli.classList.contains("is-walking")) return;
+    if (phone || !ampliSide || ampliId === "hero" || ampli.classList.contains("is-open") || ampli.classList.contains("is-walking")) return;
     var b = ampliBox(), me = { left: b.l, right: b.l + b.w, top: b.t, bottom: b.t + b.h }, rs = textRects(), bad = b.t < 90;
     for (var i = 0; i < rs.length && !bad; i++) if (hit(me, rs[i], 6)) bad = true;
     if (bad) ampliWalkTo(ampliPick(160));
@@ -221,7 +226,7 @@
   window.addEventListener("scroll", function () { clearTimeout(ampliIdle); ampliIdle = setTimeout(ampliCheck, 900); }, { passive: true });
   window.addEventListener("resize", function () { clearTimeout(ampliIdle); ampliIdle = setTimeout(ampliCheck, 500); });
   /* de vez en cuando pasea a otro lugar libre (movimiento natural) */
-  setInterval(function () { if (!phone && ampliSide && !document.hidden && !ampli.classList.contains("is-open") && !ampli.classList.contains("is-walking")) ampliWalkTo(ampliPick(300)); }, 16000);
+  setInterval(function () { if (!phone && ampliSide && ampliId !== "hero" && !document.hidden && !ampli.classList.contains("is-open") && !ampli.classList.contains("is-walking")) ampliWalkTo(ampliPick(300)); }, 16000);
   gsap.to("#prog", { scaleX: 1, ease: "none", scrollTrigger: { start: 0, end: "max", scrub: 0.2 } });
   ScrollTrigger.create({ trigger: "#hero", start: "bottom 60%", end: "max", onToggle: function (s) { $("#wa").classList.toggle("is-on", s.isActive); $("#social").classList.toggle("is-on", s.isActive); } });
 
