@@ -735,3 +735,7 @@ input, textarea { -webkit-appearance: none; appearance: none; border-radius: 0; 
 
 /* Inteligencia: la foto de servidores, encuadrada al centro; el resto del degradado ya lo pone .col-img::after */
 
+
+/* Proyectos: descripciones más largas y claras */
+.pj-desc { max-width: 52ch; line-height: 1.5; }
+.pj-desc em { font-style: italic; color: var(--lime); }
