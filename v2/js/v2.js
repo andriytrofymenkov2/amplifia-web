@@ -1,210 +1,238 @@
-/* AMPLIFIA v2 — vocabulario de movimiento mínimo:
-   1) titulares que suben por línea (una vez), 2) escenas fijas que cambian de paso al scrollear,
-   3) un solo video (el hero). Scroll nativo. Sin efectos que compitan con el texto. */
+/* AMPLIFIA v2 — capítulos inmersivos.
+   Carga → hero → manifiesto (palabras que se encienden) → problema (una frase por vez)
+   → paneles que se abren (clip-path) → recorrido horizontal → roadmap → láminas que suben.
+   Scroll suave con Lenis en escritorio; nativo en celular. Un video decodificando por vez. */
 (function () {
   "use strict";
-  var root = document.documentElement;
-  if (!window.gsap || !window.ScrollTrigger) { root.classList.remove("js"); return; }
+  var root = document.documentElement, body = document.body;
+  if (!window.gsap || !window.ScrollTrigger) { root.classList.remove("js"); body.classList.remove("is-loading"); return; }
   gsap.registerPlugin(ScrollTrigger);
-  if (window.SplitText) gsap.registerPlugin(SplitText);
-  ScrollTrigger.config({ ignoreMobileResize: true, limitCallbacks: true });
+  var HAS_SPLIT = !!window.SplitText;
+  if (HAS_SPLIT) gsap.registerPlugin(SplitText);
+  ScrollTrigger.config({ ignoreMobileResize: true });
 
   var WA = "5491133278023", EMAIL = "andriytrofymenko@gmail.com";
   var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var phone = window.matchMedia("(max-width: 860px), (hover: none)").matches;
   var $ = function (s, r) { return (r || document).querySelector(s); };
   var $$ = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
+  var clamp = function (v, a, b) { return Math.max(a, Math.min(b, v)); };
+  var pad2 = function (n) { return ("0" + n).slice(-2); };
 
-  /* ---------- Menú móvil y anclas ---------- */
-  var burger = $(".burger"), menu = $(".menu");
+  /* ---------- scroll suave ---------- */
+  var lenis = null;
+  if (!phone && !reduce && window.Lenis && !/[?&]native=1/.test(location.search)) {
+    lenis = new Lenis({ lerp: 0.085, wheelMultiplier: 0.9 });
+    lenis.on("scroll", ScrollTrigger.update);
+    gsap.ticker.add(function (t) { lenis.raf(t * 1000); });
+    gsap.ticker.lagSmoothing(0);
+    lenis.stop();
+  }
+  function scrollToY(y) {
+    if (lenis) lenis.scrollTo(y, { duration: 1.9, easing: function (t) { return 1 - Math.pow(1 - t, 4); } });
+    else window.scrollTo({ top: y, behavior: reduce ? "auto" : "smooth" });
+  }
+
+  /* ---------- menú y anclas ---------- */
+  var menuBtn = $(".menu-btn"), menu = $("#menu");
   function setMenu(open) {
     root.classList.toggle("menu-open", open);
-    burger.setAttribute("aria-expanded", open ? "true" : "false");
+    menuBtn.setAttribute("aria-expanded", open ? "true" : "false");
     menu.setAttribute("aria-hidden", open ? "false" : "true");
+    if (lenis) { if (open) lenis.stop(); else lenis.start(); }
+    else body.style.overflow = open ? "hidden" : "";
   }
-  burger.addEventListener("click", function () { setMenu(!root.classList.contains("menu-open")); });
+  menuBtn.addEventListener("click", function () { setMenu(!root.classList.contains("menu-open")); });
+  document.addEventListener("keydown", function (e) { if (e.key === "Escape") setMenu(false); });
   document.addEventListener("click", function (e) {
     var a = e.target.closest && e.target.closest('a[href^="#"]');
     if (!a) return;
-    var id = a.getAttribute("href");
-    var t = id.length > 1 ? $(id) : null;
+    var id = a.getAttribute("href"), t = id.length > 1 ? $(id) : null;
     if (!t && id !== "#top") return;
     e.preventDefault();
+    var wasOpen = root.classList.contains("menu-open");
     setMenu(false);
     var y = t && id !== "#top" ? t.getBoundingClientRect().top + window.pageYOffset : 0;
-    window.scrollTo({ top: y, behavior: reduce ? "auto" : "smooth" });
+    setTimeout(function () { scrollToY(y); }, wasOpen ? 250 : 0);
   });
-  document.addEventListener("keydown", function (e) { if (e.key === "Escape") setMenu(false); });
 
-  /* ---------- Sección actual: tono de la cabecera, riel y menú ---------- */
-  var secs = $$("[data-name]");
-  var railEl = $(".rail"), railN = $("#railN"), railT = $("#railT"), navLinks = $$(".nav a");
-  secs.forEach(function (s, i) {
+  /* ---------- video: uno decodifica, el vecino espera, el resto se libera ---------- */
+  function vsrc(v) { return phone ? (v.getAttribute("data-phone") || "") : v.getAttribute("data-src"); }
+  function vload(v) {
+    if (reduce || v.getAttribute("src")) return;
+    var s = vsrc(v); if (!s) return;
+    v.src = s; v.load();
+    v.addEventListener("loadeddata", function () { v.classList.add("is-ready"); }, { once: true });
+  }
+  function vplay(v) { vload(v); if (v._s === "play") return; v._s = "play"; var p = v.play(); if (p && p.catch) p.catch(function () {}); }
+  function vwait(v) { vload(v); if (v._s === "wait") return; v._s = "wait"; v.pause(); }
+  function vfree(v) {
+    if (v._s === "free") return; v._s = "free"; v.pause();
+    if (v.getAttribute("src")) { v.removeAttribute("src"); v.load(); v.classList.remove("is-ready"); }
+  }
+  function feed(trigger, vids, getF) {
+    if (reduce) return;
+    ScrollTrigger.create({ trigger: trigger, start: "top bottom+=100%", end: "bottom top-=100%", onUpdate: apply, onToggle: apply });
+    function apply(self) {
+      var on = self.isActive, f = getF ? getF() : 0;
+      vids.forEach(function (v, i) {
+        if (!v) return;
+        var d = Math.abs(i - f);
+        if (!on) vfree(v); else if (d < 1) vplay(v); else if (d < 1.7) vwait(v); else vfree(v);
+      });
+    }
+  }
+
+  /* ---------- texto: palabras con máscara ---------- */
+  function words(el, mask) {
+    if (!HAS_SPLIT) return [el];
+    var opts = { type: "words", wordsClass: "w" };
+    if (mask !== false) { opts.mask = "words"; opts.maskClass = "mk"; }
+    return SplitText.create(el, opts).words;
+  }
+
+  /* ---------- cabecera, riel y progreso según la sección ---------- */
+  var railEl = $(".rail"), railN = $("#railN"), railT = $("#railT");
+  $$("[data-name]").forEach(function (s, i) {
     ScrollTrigger.create({
       trigger: s, start: "top 60px", end: "bottom 60px",
       onToggle: function (self) {
         if (!self.isActive) return;
         root.setAttribute("data-hdr", s.getAttribute("data-hdr") || "dark");
-        railN.textContent = ("0" + (i + 1)).slice(-2);
+        railN.textContent = pad2(i + 1);
         railT.textContent = s.getAttribute("data-name");
-        railEl.classList.toggle("is-off", !s.querySelector(".track, .hero-track"));
-        navLinks.forEach(function (a) { a.classList.toggle("is-on", a.getAttribute("href") === "#" + s.id); });
+        railEl.style.opacity = s.matches(".hero,.manif,.prob,.caps") ? "" : "0";
       }
     });
   });
+  gsap.to("#prog", { scaleX: 1, ease: "none", scrollTrigger: { start: 0, end: "max", scrub: 0.2 } });
+  ScrollTrigger.create({ trigger: "#hero", start: "bottom 60%", end: "max", onToggle: function (s) { $("#wa").classList.toggle("is-on", s.isActive); } });
 
-  /* ---------- WhatsApp: aparece al salir del hero ---------- */
-  ScrollTrigger.create({
-    trigger: "#hero", start: "bottom 60%", end: "max",
-    onToggle: function (self) { $("#wa").classList.toggle("is-on", self.isActive); }
-  });
+  /* ---------- construcción de las escenas ---------- */
+  var heroChars = [];
+  function build() {
+    /* 01 · inicio */
+    var hw = $(".hero-word");
+    if (HAS_SPLIT) { heroChars = SplitText.create(hw, { type: "chars", charsClass: "ch" }).chars; gsap.set(heroChars, { yPercent: 115 }); }
+    var heroTrack = $("#hero .track");
+    gsap.to("#heroMedia", { scale: 1.22, ease: "none", scrollTrigger: { trigger: heroTrack, start: "top top", end: "bottom bottom", scrub: true } });
+    gsap.to("#heroCopy", { yPercent: -16, opacity: 0, ease: "none", scrollTrigger: { trigger: heroTrack, start: "top top", end: "62% top", scrub: true } });
+    gsap.to(hw, { letterSpacing: "0.08em", ease: "none", scrollTrigger: { trigger: heroTrack, start: "top top", end: "62% top", scrub: true } });
+    gsap.to(".hero-scroll", { opacity: 0, ease: "none", scrollTrigger: { trigger: heroTrack, start: "top top", end: "10% top", scrub: true } });
+    feed(heroTrack, [$("#hero video")]);
 
-  /* ---------- Titulares: suben por línea, una sola vez ---------- */
-  function reveal(el) {
-    if (el.closest(".scene") || reduce || !window.SplitText) { el.classList.add("is-split"); return; }
-    SplitText.create(el, {
-      type: "lines", mask: "lines", autoSplit: true,
-      onSplit: function (self) {
-        el.classList.add("is-split");
-        return gsap.from(self.lines, {
-          yPercent: 110, duration: 1.1, ease: "power4.out", stagger: 0.09,
-          scrollTrigger: { trigger: el, start: "top 88%", once: true }
-        });
+    /* 02 · manifiesto: las palabras se encienden */
+    var mw = words($("#manifText"), false);
+    gsap.to(mw, { opacity: 1, ease: "none", stagger: 0.12, duration: 0.5, scrollTrigger: { trigger: "#manifiesto .track", start: "top 25%", end: "bottom bottom", scrub: 0.6 } });
+
+    /* 03 · el problema: una frase por vez sobre el mismo fondo */
+    var probTrack = $("#problema .track"), items = $$("#probList .ph-item"), probN = $("#probN");
+    gsap.fromTo("#problema .bgv", { scale: 1.22 }, { scale: 1, ease: "none", scrollTrigger: { trigger: probTrack, start: "top bottom", end: "bottom bottom", scrub: true } });
+    var pIdx = -1;
+    var ptl = gsap.timeline({ defaults: { ease: "none" }, scrollTrigger: { trigger: probTrack, start: "top top", end: "bottom bottom", scrub: 0.8 },
+      onUpdate: function () { var k = clamp(Math.floor(ptl.time() + 0.3), 0, items.length - 1); if (k !== pIdx) { pIdx = k; probN.textContent = pad2(k + 1); } } });
+    items.forEach(function (it, i) {
+      var w = words($("h2", it)), sub = $(".sub", it);
+      if (i > 0) { gsap.set(w, { yPercent: 118 }); ptl.to(w, { yPercent: 0, duration: 0.5, stagger: 0.05, ease: "power3.out" }, i + 0.08); }
+      gsap.set(sub, { y: 18, opacity: 0 });
+      ptl.to(sub, { opacity: 0.8, y: 0, duration: 0.35 }, i > 0 ? i + 0.3 : 0.05);
+      if (i < items.length - 1) {
+        ptl.to(w, { yPercent: -118, duration: 0.35, stagger: 0.03, ease: "power2.in" }, i + 0.6);
+        ptl.to(sub, { opacity: 0, duration: 0.25 }, i + 0.58);
       }
     });
-  }
-  var fontsReady = document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve();
-  fontsReady.then(function () { $$(".rv-lines").forEach(reveal); ScrollTrigger.refresh(); });
-  setTimeout(function () { $$(".rv-lines").forEach(function (e) { e.classList.add("is-split"); }); }, 2500);
+    ptl.to({}, { duration: 0.2 }, items.length);
+    feed(probTrack, [$("#problema video")]);
 
-  /* ---------- Hero ---------- */
-  var heroVideo = $("#heroVideo");
-  var heroWord = $(".hero-word span"), heroTag = $(".hero-tag");
-  if (!reduce) {
-    gsap.set(heroWord, { yPercent: 115 });
-    gsap.set(heroTag, { opacity: 0, y: 14 });
-    gsap.timeline({ delay: 0.15 })
-      .to(heroWord, { yPercent: 0, duration: 1.5, ease: "power4.out" })
-      .to(heroTag, { opacity: 1, y: 0, duration: 1, ease: "power3.out" }, 0.9);
-  }
-  var heroTrack = $(".hero-track");
-  gsap.to(".hero-media", { scale: 1.16, ease: "none", scrollTrigger: { trigger: heroTrack, start: "top top", end: "bottom top", scrub: true } });
-  gsap.to(".hero-word", { letterSpacing: "0.07em", ease: "none", scrollTrigger: { trigger: heroTrack, start: "top top", end: "70% top", scrub: true } });
-  gsap.to(".hero-copy", { yPercent: -14, opacity: 0, ease: "none", scrollTrigger: { trigger: heroTrack, start: "top top", end: "70% top", scrub: true } });
-  gsap.to(".hero-scroll", { opacity: 0, ease: "none", scrollTrigger: { trigger: heroTrack, start: "top top", end: "12% top", scrub: true } });
+    /* 04 · qué hacemos: cada panel se abre desde abajo sobre el anterior */
+    var capTrack = $("#que-hacemos .track"), pns = $$("#que-hacemos .pn");
+    var ctl = gsap.timeline({ defaults: { ease: "none" }, scrollTrigger: { trigger: capTrack, start: "top top", end: "bottom bottom", scrub: 0.8 } });
+    var pw = pns.map(function (p) { return words($(".pn-copy h2", p)); });
+    pns.forEach(function (p, i) {
+      if (i === 0) return;
+      var at = i - 1;
+      gsap.set(p, { clipPath: "inset(100% 0% 0% 0%)" });
+      gsap.set(pw[i], { yPercent: 118 });
+      gsap.set($$(".tiny, .sub", $(".pn-copy", p)), { opacity: 0, y: 18 });
+      ctl.to(pns[i - 1].querySelector(".pn-copy"), { opacity: 0, y: -50, duration: 0.35 }, at + 0.05)
+         .to(p, { clipPath: "inset(0% 0% 0% 0%)", ease: "power2.inOut", duration: 0.9 }, at + 0.1)
+         .fromTo($(".pn-media", p), { scale: 1.5, yPercent: 10 }, { scale: 1, yPercent: 0, duration: 0.9 }, at + 0.1)
+         .to($(".pn-media", pns[i - 1]), { yPercent: -14, scale: 1.1, duration: 0.9 }, at + 0.1)
+         .to(pw[i], { yPercent: 0, duration: 0.5, stagger: 0.05, ease: "power3.out" }, at + 0.62)
+         .to($$(".tiny, .sub", $(".pn-copy", p)), { opacity: 0.8, y: 0, duration: 0.4, stagger: 0.08 }, at + 0.8);
+    });
+    ctl.to({}, { duration: 0.4 }, pns.length - 0.6);
+    feed(capTrack, pns.map(function (p) { return $("video", p); }), function () { return clamp(ctl.time() - 0.1, 0, pns.length - 1); });
 
-  /* el video sólo en pantallas grandes; en el celular queda el póster (liviano) */
-  var wide = window.matchMedia("(min-width: 861px)");
-  if (wide.matches && !reduce && heroVideo) {
-    var startVideo = function () {
-      heroVideo.src = heroVideo.getAttribute("data-src");
-      heroVideo.style.opacity = 0;
-      heroVideo.addEventListener("playing", function () { gsap.to(heroVideo, { opacity: 1, duration: 1.2, ease: "power1.out" }); }, { once: true });
-      var p = heroVideo.play(); if (p && p.catch) p.catch(function () {});
-    };
-    window.addEventListener("load", function () { setTimeout(startVideo, 400); });
-    ScrollTrigger.create({
-      trigger: heroTrack, start: "top top", end: "bottom top",
-      onToggle: function (self) {
-        if (!heroVideo.src) return;
-        if (self.isActive) { var p = heroVideo.play(); if (p && p.catch) p.catch(function () {}); } else heroVideo.pause();
+    /* 05 · frentes: recorrido horizontal */
+    var hz = $("#frentes"), hzTrack = $("#hzTrack");
+    function hzDist() { return Math.max(0, hzTrack.offsetWidth - window.innerWidth); }
+    function setH() { hz.style.height = (hzDist() + window.innerHeight) + "px"; }
+    setH();
+    ScrollTrigger.addEventListener("refreshInit", setH);
+    var htween = gsap.to(hzTrack, { x: function () { return -hzDist(); }, ease: "none",
+      scrollTrigger: { trigger: hz, start: "top top", end: function () { return "+=" + hzDist(); }, scrub: 0.8, invalidateOnRefresh: true,
+        onUpdate: function (s) { gsap.set("#hzBar", { scaleX: s.progress }); } } });
+    $$(".card-img img", hz).forEach(function (img) {
+      gsap.fromTo(img, { xPercent: -6 }, { xPercent: 6, ease: "none", scrollTrigger: { trigger: img.closest(".card"), containerAnimation: htween, start: "left right", end: "right left", scrub: true } });
+    });
+
+    /* 06 · roadmap */
+    var rdTrack = $("#metodo .track"), steps = $$("#rdSteps .rd-step"), rdN = $("#rdN"), rIdx = -1;
+    gsap.fromTo("#metodo .bgv", { scale: 1.2 }, { scale: 1, ease: "none", scrollTrigger: { trigger: rdTrack, start: "top bottom", end: "bottom bottom", scrub: true } });
+    gsap.set($$(".rd-num"), { yPercent: -50 });
+    var rtl = gsap.timeline({ defaults: { ease: "none" }, scrollTrigger: { trigger: rdTrack, start: "top top", end: "bottom bottom", scrub: 0.8 },
+      onUpdate: function () { var k = clamp(Math.floor(rtl.time() + 0.3), 0, steps.length - 1); if (k !== rIdx) { rIdx = k; rdN.textContent = pad2(k + 1); } } });
+    rtl.fromTo("#rdLine", { scaleX: 0.02 }, { scaleX: 1, duration: steps.length - 1 }, 0);
+    steps.forEach(function (st, i) {
+      var w = words($("h2", st)), num = $(".rd-num", st), ln = $$(".rd-lines p", st);
+      if (i > 0) {
+        gsap.set(w, { yPercent: 118 }); gsap.set(num, { opacity: 0, y: 80 }); gsap.set(ln, { opacity: 0, y: 24 });
+        rtl.to(w, { yPercent: 0, duration: 0.5, stagger: 0.05, ease: "power3.out" }, i + 0.08)
+           .to(num, { opacity: 1, y: 0, duration: 0.6, ease: "power3.out" }, i + 0.02)
+           .to(ln, { opacity: 1, y: 0, duration: 0.4, stagger: 0.1, ease: "power2.out" }, i + 0.3);
+      } else { gsap.set(ln, { opacity: 0.001 }); rtl.fromTo(ln, { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.4, stagger: 0.1 }, 0.05); }
+      if (i < steps.length - 1) {
+        rtl.to(w, { yPercent: -118, duration: 0.35, stagger: 0.03, ease: "power2.in" }, i + 0.6)
+           .to(num, { opacity: 0, y: -80, duration: 0.35 }, i + 0.6)
+           .to(ln, { opacity: 0, duration: 0.25 }, i + 0.55);
       }
     });
+    rtl.to(".rd-foot", { opacity: 0.85, duration: 0.4 }, steps.length - 0.9);
+    rtl.to({}, { duration: 0.3 }, steps.length);
+    feed(rdTrack, [$("#metodo video")]);
+
+    /* 07 · nosotros: retratos que se abren y textos por palabra */
+    $$(".person").forEach(function (p) {
+      var ph = $(".ph", p), img = $("img", ph);
+      gsap.fromTo(ph, { clipPath: "inset(100% 0% 0% 0%)" }, { clipPath: "inset(0% 0% 0% 0%)", ease: "power3.inOut", scrollTrigger: { trigger: ph, start: "top 90%", end: "top 30%", scrub: 0.6 } });
+      gsap.fromTo(img, { scale: 1.32, yPercent: -5 }, { scale: 1, yPercent: 5, ease: "none", scrollTrigger: { trigger: ph, start: "top bottom", end: "bottom top", scrub: true } });
+      gsap.from($$(".tiny, .role, .bio", p), { opacity: 0, y: 26, duration: 1, stagger: 0.12, ease: "power3.out", scrollTrigger: { trigger: p, start: "top 60%", once: true } });
+    });
+    $$(".split").forEach(function (el) {
+      var w = words(el); el.classList.add("is-split");
+      gsap.from(w, { yPercent: 118, duration: 1.25, stagger: 0.07, ease: "power4.out", scrollTrigger: { trigger: el, start: "top 88%", once: true } });
+    });
+
+    /* 11 · contacto: se destapa con paralaje */
+    gsap.fromTo("#ctInner", { yPercent: -14 }, { yPercent: 0, ease: "none", scrollTrigger: { trigger: "#contacto", start: "top bottom", end: "top top", scrub: true } });
+    gsap.fromTo("#contacto .ct-bg", { scale: 1.25 }, { scale: 1, ease: "none", scrollTrigger: { trigger: "#contacto", start: "top bottom", end: "bottom bottom", scrub: true } });
+    feed($("#contacto"), [$("#contacto video")]);
   }
 
-  /* ---------- Escenas fijas: un paso por vez ---------- */
-  function scene(section, items, onStep) {
-    var track = $(".track", section), n = items.length, cur = -1;
-    var bgs = $$(".bgimgs img", section), layer = $(".bgimgs", section);
-    if (layer) gsap.fromTo(layer, { scale: 1.28 }, { scale: 1.0, ease: "none", scrollTrigger: { trigger: track, start: "top top", end: "bottom bottom", scrub: true } });
-    gsap.set(items, { autoAlpha: 0 });
-    function go(i) {
-      if (i === cur) return;
-      var dir = i > cur ? 1 : -1;
-      if (cur >= 0) gsap.to(items[cur], { autoAlpha: 0, y: -28 * dir, duration: 0.45, ease: "power2.in", overwrite: true });
-      if (cur < 0) gsap.set(items[i], { autoAlpha: 1, y: 0 });
-      else gsap.fromTo(items[i], { autoAlpha: 0, y: 40 * dir }, { autoAlpha: 1, y: 0, duration: 0.85, ease: "power3.out", delay: 0.28, overwrite: true });
-      if (bgs.length) {
-        if (cur >= 0 && bgs[cur]) gsap.to(bgs[cur], { opacity: 0, duration: 1.2, ease: "power1.inOut", overwrite: true });
-        if (bgs[i]) gsap.to(bgs[i], { opacity: 1, duration: 1.2, ease: "power1.inOut", overwrite: true });
-      }
-      cur = i;
-      if (onStep) onStep(i);
-    }
-    go(0);
-    return ScrollTrigger.create({
-      trigger: track, start: "top top", end: "bottom bottom",
-      onUpdate: function (self) { go(Math.min(n - 1, Math.floor(self.progress * n))); }
-    });
-  }
-  function scrollToStep(st, i, n) {
-    window.scrollTo({ top: st.start + (i + 0.5) / n * (st.end - st.start), behavior: reduce ? "auto" : "smooth" });
-  }
-
-  var mm = gsap.matchMedia();
-  mm.add("(min-width: 861px)", function () {
-    /* El problema */
-    var probN = $("#probN");
-    scene($("#problema"), $$("#probScene .item"), function (i) { probN.textContent = ("0" + (i + 1)).slice(-2); });
-
-    /* Frentes: lista + panel */
-    var frBtns = $$("#frList li");
-    var frST = scene($("#frentes"), $$("#frPanels .fr-panel"), function (i) {
-      frBtns.forEach(function (li, k) { li.classList.toggle("is-on", k === i); });
-    });
-    frBtns.forEach(function (li, k) { li.firstElementChild.onclick = function () { scrollToStep(frST, k, frBtns.length); }; });
-
-    /* Roadmap: línea de tiempo */
-    var nodes = $$("#rdNodes li"), fill = $("#rdFill");
-    scene($("#metodo"), $$("#rdScene .rd-item"), function (i) {
-      nodes.forEach(function (li, k) { li.classList.toggle("is-on", k <= i); });
-      gsap.to(fill, { scaleX: i / (nodes.length - 1), duration: 0.7, ease: "power2.out", overwrite: true });
-    });
-
-    /* Cortes: el marco se abre hasta ocupar toda la pantalla, la imagen se asienta y las letras se juntan */
-    $$(".brk").forEach(function (s) {
-      var tl = gsap.timeline({ scrollTrigger: { trigger: $(".track", s), start: "top top", end: "bottom bottom", scrub: 0.6 } });
-      tl.fromTo($(".brk-frame", s), { clipPath: "inset(17% 27% 17% 27% round 32px)" }, { clipPath: "inset(0% 0% 0% 0% round 0px)", ease: "power2.inOut", duration: 0.5 }, 0)
-        .to($(".brk-frame img", s), { scale: 1, ease: "none", duration: 1 }, 0)
-        .fromTo($$(".brk-word > *", s), { yPercent: 40, opacity: 0, letterSpacing: "0.12em" }, { yPercent: 0, opacity: 1, letterSpacing: "-0.01em", ease: "power2.out", duration: 0.45, stagger: 0.12 }, 0.35)
-        .to($(".brk-word", s), { opacity: 0, yPercent: -8, ease: "power1.in", duration: 0.25 }, 0.8);
-    });
-
-    /* Frase de cierre: las palabras se juntan a medida que entra */
-    var spread = $(".caps-spread");
-    if (spread) gsap.fromTo(spread, { wordSpacing: "0.55em", opacity: 0.15 }, { wordSpacing: "0em", opacity: 1, ease: "none", scrollTrigger: { trigger: spread, start: "top 92%", end: "top 45%", scrub: true } });
-
-    /* Retratos: se abren desde un marco */
-    if (!reduce) $$(".person .ph").forEach(function (ph) {
-      gsap.fromTo(ph, { clipPath: "inset(16% 16% 16% 16% round 18px)" }, { clipPath: "inset(0% 0% 0% 0% round 4px)", ease: "power2.out", scrollTrigger: { trigger: ph, start: "top 92%", end: "top 35%", scrub: true } });
-    });
-
-    /* Qué hacemos: el foco sigue al scroll */
-    $$(".cap").forEach(function (c) {
-      ScrollTrigger.create({ trigger: c, start: "top 68%", end: "bottom 38%", toggleClass: { targets: c, className: "is-on" } });
-    });
-
-    /* Retratos: una pizca de paralaje, nada más */
-    if (!reduce) $$(".person .ph img").forEach(function (img) {
-      gsap.fromTo(img, { yPercent: -4 }, { yPercent: 4, ease: "none", scrollTrigger: { trigger: img.parentNode, start: "top bottom", end: "bottom top", scrub: true } });
-    });
-    return function () { $$(".cap").forEach(function (c) { c.classList.remove("is-on"); }); };
-  });
-
-  /* ---------- Preguntas frecuentes ---------- */
-  var qas = $$(".qa");
-  var refreshT;
+  /* ---------- preguntas frecuentes ---------- */
+  var qas = $$(".qa"), refreshT;
   qas.forEach(function (q) {
     var b = $("button", q);
     b.addEventListener("click", function () {
       var open = !q.classList.contains("is-open");
       qas.forEach(function (o) { o.classList.remove("is-open"); $("button", o).setAttribute("aria-expanded", "false"); });
       if (open) { q.classList.add("is-open"); b.setAttribute("aria-expanded", "true"); }
-      clearTimeout(refreshT);
-      refreshT = setTimeout(function () { ScrollTrigger.refresh(); }, 650);
+      clearTimeout(refreshT); refreshT = setTimeout(function () { ScrollTrigger.refresh(); }, 650);
     });
   });
 
-  /* ---------- Formulario (mismo mensaje que la versión actual) ---------- */
+  /* ---------- formulario ---------- */
   var form = $("#cf"), note = $("#cfNote");
   function values() {
     var f = new FormData(form);
@@ -221,22 +249,43 @@
     if (!ok) note.textContent = "Completá tu nombre, un email válido y tu desafío.";
     return ok;
   }
-  function message(v) {
-    return "Hola, soy " + v.name + (v.company ? " (" + v.company + ")" : "") + ". Quiero consultar por un diagnóstico.\n\nMi desafío: " + v.challenge + "\n\nMi email: " + v.email;
-  }
+  function message(v) { return "Hola, soy " + v.name + (v.company ? " (" + v.company + ")" : "") + ". Quiero consultar por un diagnóstico.\n\nMi desafío: " + v.challenge + "\n\nMi email: " + v.email; }
   form.addEventListener("submit", function (e) {
-    e.preventDefault();
-    var v = values(); if (!valid(v)) return;
+    e.preventDefault(); var v = values(); if (!valid(v)) return;
     window.open("https://wa.me/" + WA + "?text=" + encodeURIComponent(message(v)), "_blank", "noopener");
-    note.classList.remove("is-error");
-    note.textContent = "Se abrió WhatsApp con tu mensaje listo. ¡Gracias!";
+    note.classList.remove("is-error"); note.textContent = "Se abrió WhatsApp con tu mensaje listo. ¡Gracias!";
   });
   $("#cfMail").addEventListener("click", function () {
     var v = values(); if (!valid(v)) return;
     window.location.href = "mailto:" + EMAIL + "?subject=" + encodeURIComponent("Diagnóstico Amplifia") + "&body=" + encodeURIComponent(message(v));
-    note.classList.remove("is-error");
-    note.textContent = "Se abrió tu correo con el mensaje listo.";
+    note.classList.remove("is-error"); note.textContent = "Se abrió tu correo con el mensaje listo.";
   });
 
-  window.addEventListener("load", function () { ScrollTrigger.refresh(); });
+  /* ---------- pantalla de carga y entrada ---------- */
+  var pre = $("#pre"), preN = $("#preN"), finished = false;
+  function finish() {
+    if (finished) return; finished = true;
+    body.classList.remove("is-loading");
+    var hv = $("#hero video"); if (hv) vplay(hv);
+    if (reduce) { pre.remove(); if (lenis) lenis.start(); ScrollTrigger.refresh(); return; }
+    var tl = gsap.timeline({ onComplete: function () { pre.remove(); if (lenis) lenis.start(); ScrollTrigger.refresh(); } });
+    tl.to([".pre-mark", ".pre-count"], { opacity: 0, y: -24, duration: 0.5, ease: "power2.in" })
+      .to(pre, { yPercent: -100, duration: 1.2, ease: "power4.inOut" }, 0.35)
+      .fromTo("#heroMedia img, #heroMedia video", { scale: 1.35 }, { scale: 1, duration: 2.4, ease: "power3.out" }, 0.35);
+    if (heroChars.length) tl.to(heroChars, { yPercent: 0, duration: 1.4, stagger: 0.06, ease: "power4.out" }, 0.95);
+    tl.from([".hero-kicker", ".hero-tag", ".hero-scroll", ".hdr", ".rail"], { opacity: 0, y: 16, duration: 1, stagger: 0.12, ease: "power3.out" }, 1.4);
+  }
+  var fontsReady = document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve();
+  var loaded = new Promise(function (res) { if (document.readyState === "complete") res(); else window.addEventListener("load", res); });
+  var counter = { v: 0 };
+  gsap.timeline()
+    .from(".pre-mark .bar", { scaleY: 0, duration: 0.9, stagger: 0.12, ease: "power3.out" }, 0)
+    .to(counter, { v: 100, duration: 1.9, ease: "power2.inOut", onUpdate: function () { preN.textContent = Math.round(counter.v); } }, 0);
+  var minTime = new Promise(function (res) { setTimeout(res, 2000); });
+  Promise.race([Promise.all([fontsReady, loaded, minTime]), new Promise(function (res) { setTimeout(res, 5500); })]).then(function () {
+    try { build(); } catch (e) { if (window.console) console.error(e); }
+    finish();
+  });
+  setTimeout(function () { if (!finished) { body.classList.remove("is-loading"); if (pre.parentNode) pre.remove(); if (lenis) lenis.start(); } }, 9000);
+  window.addEventListener("load", function () { setTimeout(function () { ScrollTrigger.refresh(); }, 600); });
 })();
