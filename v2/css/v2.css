@@ -654,3 +654,13 @@ html[data-hdr="light"] .nav a.is-on { color: var(--olive); }
   .fq-card p { font-size: 12.5px; line-height: 1.42; }
   .faq { padding-top: 92px; }
 }
+
+/* Preguntas: tarjetas más chicas (que no llenen toda la pantalla) */
+.fq-rows { gap: clamp(10px, 1.6vh, 16px); }
+.fq-set { gap: 14px; padding-right: 14px; }
+.fq-card { width: clamp(220px, 15.5vw, 290px); padding: 14px 16px; gap: 6px; border-radius: 10px; }
+.fq-n { font-size: 10px; }
+.fq-card h3 { font-size: clamp(15px, 1.15vw, 19px); line-height: 1.15; }
+.fq-card p { font-size: clamp(11.5px, 0.8vw, 13px); line-height: 1.42; }
+@media (min-width: 861px) and (max-height: 840px) { .fq-card { width: clamp(210px, 15vw, 260px); padding: 12px 14px; } .fq-card p { font-size: 11.5px; } .fq-card h3 { font-size: clamp(14px, 1.05vw, 17px); } }
+@media (max-width: 860px) { .fq-card { width: 64vw; } }
