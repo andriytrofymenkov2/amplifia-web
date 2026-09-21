@@ -10,7 +10,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="preload" as="image" href="../Imagenes%20usadas/hero_poster_1920.jpg">
-<link rel="stylesheet" href="css/v2.css?v=57">
+<link rel="stylesheet" href="css/v2.css?v=58">
 <script>document.documentElement.classList.add("js");</script>
 </head>
 <body class="is-loading">
@@ -63,33 +63,23 @@
     <a class="btn ampli-cta" href="#contacto">Pedir un diagnóstico</a>
   </div>
   <button class="ampli-btn" id="ampliBtn" type="button" aria-label="Ampli, tu guía" aria-expanded="false">
-    <svg viewBox="0 0 120 120" aria-hidden="true">
+    <svg viewBox="-20 -14 180 190" aria-hidden="true">
       <defs>
-        <radialGradient id="gB" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#0c1408" stop-opacity=".9"/><stop offset=".75" stop-color="#101a0c" stop-opacity=".78"/><stop offset="1" stop-color="#2a3a1c" stop-opacity=".9"/></radialGradient>
-        <radialGradient id="gH" cx="50%" cy="50%" r="50%"><stop offset=".5" stop-color="#d7f24a" stop-opacity=".5"/><stop offset="1" stop-color="#d7f24a" stop-opacity="0"/></radialGradient>
-        <linearGradient id="gR" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffffff" stop-opacity=".95"/><stop offset=".45" stop-color="#d7f24a" stop-opacity=".35"/><stop offset="1" stop-color="#d7f24a" stop-opacity=".95"/></linearGradient>
-        <radialGradient id="gS" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#fff" stop-opacity=".75"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient>
-        <radialGradient id="gL" cx="50%" cy="100%" r="80%"><stop offset="0" stop-color="#eaff70" stop-opacity=".85"/><stop offset="1" stop-color="#eaff70" stop-opacity="0"/></radialGradient>
-        <filter id="gF1" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="6"/></filter>
-        <filter id="gF2" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="3"/></filter>
-        <clipPath id="gC"><circle cx="60" cy="60" r="41"/></clipPath>
+        <radialGradient id="lH" cx="50%" cy="50%" r="50%"><stop offset=".3" stop-color="#d7f24a" stop-opacity=".5"/><stop offset="1" stop-color="#d7f24a" stop-opacity="0"/></radialGradient>
+        <linearGradient id="lB" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#cfd3c4"/></linearGradient>
+        <filter id="lF" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="5"/></filter>
       </defs>
-      <circle class="a-glow" cx="60" cy="60" r="60" fill="url(#gH)"/>
-      <circle cx="60" cy="60" r="44" fill="url(#gB)"/>
-      <g clip-path="url(#gC)">
-        <g class="a-pupil o-soul">
-          <g class="o-s1"><circle cx="60" cy="42" r="15" fill="#b6e21c" filter="url(#gF1)"/></g>
-          <g class="o-s2"><circle cx="76" cy="66" r="13" fill="#d7f24a" filter="url(#gF1)"/></g>
-          <g class="o-s3"><circle cx="46" cy="70" r="12" fill="#8fd400" filter="url(#gF1)"/></g>
-          <circle class="o-core" cx="60" cy="60" r="9" fill="#f6ffb0" filter="url(#gF2)"/>
+      <ellipse class="a-glow" cx="70" cy="82" rx="88" ry="92" fill="url(#lH)"/>
+      <g class="a-pupil l-mark">
+        <g class="l-bars" fill="url(#lB)">
+          <polygon class="l-b l-b1" points="15,100 35,100 39,57 19,57"/>
+          <polygon class="l-b l-b2" points="46,116 66,116 70,42 50,42"/>
+          <polygon class="l-b l-b3" points="75,125 95,125 99,35 79,35"/>
+          <polygon class="l-b l-b4" points="108,159 128,159 132,8 112,8"/>
         </g>
-        <ellipse cx="60" cy="108" rx="30" ry="14" fill="url(#gL)"/>
+        <polygon points="15,102 15,72 105,48 105,78" fill="#d7f24a" filter="url(#lF)" opacity=".75" class="l-stripe-glow"/>
+        <polygon class="l-stripe" points="15,102 15,72 105,48 105,78" fill="#d7f24a"/>
       </g>
-      <circle cx="60" cy="60" r="43" fill="none" stroke="url(#gR)" stroke-width="2.2"/>
-      <circle cx="60" cy="60" r="39.500" fill="none" stroke="#fff" stroke-opacity=".12" stroke-width="1"/>
-      <ellipse cx="45" cy="38" rx="16" ry="9" fill="url(#gS)" transform="rotate(-32 45 38)"/>
-      <circle cx="39" cy="33" r="2.600" fill="#fff" opacity=".95"/>
-      <path d="M40 92q20 12 40 0" stroke="#eaff70" stroke-opacity=".7" stroke-width="1.6" fill="none" stroke-linecap="round"/>
     </svg>
   </button>
 </div>
@@ -326,6 +316,6 @@
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/SplitText.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.18/dist/lenis.min.js"></script>
-<script src="js/v2.js?v=57"></script>
+<script src="js/v2.js?v=58"></script>
 </body>
 </html>
