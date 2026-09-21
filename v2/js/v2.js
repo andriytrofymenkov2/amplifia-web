@@ -139,28 +139,58 @@
     contacto: "¿Hablamos? Empezamos por un <b>diagnóstico</b>."
   };
   var ampli = $("#ampli"), ampliBubble = $("#ampliBubble"), ampliBtn = $("#ampliBtn"), ampliId = null, ampliT = null, ampliShown = null, ampliX = 0, ampliSide = null;
-  /* dónde se para Ampli en cada sección: lado (L/R) y altura (fracción de la pantalla medida desde abajo) — recorre toda la página */
-  var AMPLI_SPOT = { hero: ["L", .10], manifiesto: ["R", .52], problema: ["L", .58], "que-hacemos": ["R", .42], frentes: ["L", .40], metodo: ["R", .30], consultora: ["L", .55], proyectos: ["R", .55], clientes: ["L", .26], faq: ["L", .34], contacto: ["R", .60] };
-  var ampliY = 0;
-  function ampliTarget(side) { var w = ampli.offsetWidth || 70; return side === "R" ? Math.max(12, window.innerWidth - w - (phone ? 8 : 6)) : (phone ? 6 : 4); }
-  function ampliTargetY(f) { return -Math.max(0, f * window.innerHeight - 30); }
-  function ampliWalk(spot, done) {
-    var side = spot[0], to = ampliTarget(side), toY = phone ? 0 : ampliTargetY(spot[1]);
-    if (ampliSide === null) { gsap.set(ampli, { x: to, y: toY }); ampliX = to; ampliY = toY; ampliSide = side; ampli.classList.toggle("on-right", side === "R"); if (done) done(); return; }
-    if (Math.abs(to - ampliX) < 2 && Math.abs(toY - ampliY) < 2) { if (done) done(); return; }
+  /* Ampli mide dónde hay texto en pantalla y elige un lugar LIBRE, siempre distinto al anterior: nunca se para encima de una palabra */
+  var ampliY = 0, TEXT_SEL = "h1,h2,h3,h4,p,li,label,input,textarea,button:not(.ampli-btn):not(.menu-btn),.tiny,.btn,.nav-cta,.rm-num,.cap-title,.pr-t,.c3d-name,b";
+  function textRects() {
+    var out = [], vw = window.innerWidth, vh = window.innerHeight;
+    $$(TEXT_SEL).forEach(function (el) {
+      if (el.closest(".ampli, .hdr, .social, .wa, .rail, .menu, .fq-zoom, .progress, .pre")) return;
+      var cs = getComputedStyle(el); if (cs.visibility === "hidden" || cs.display === "none") return;
+      var r0 = el.getBoundingClientRect(); if (r0.bottom < 0 || r0.top > vh || r0.right < 0 || r0.left > vw || !r0.width) return;
+      var rg = document.createRange(); rg.selectNodeContents(el);
+      var rs = rg.getClientRects();
+      for (var i = 0; i < rs.length; i++) { var r = rs[i]; if (r.width > 2 && r.height > 2 && r.bottom > 0 && r.top < vh) out.push(r); }
+    });
+    return out;
+  }
+  function hit(r, tr, pad) { return !(r.right + pad < tr.left || r.left - pad > tr.right || r.bottom + pad < tr.top || r.top - pad > tr.bottom); }
+  function ampliBox() { var r = ampli.getBoundingClientRect(); var b = ampliBtn.getBoundingClientRect(); return { l: b.left, t: b.top, w: b.width, h: b.height }; }
+  function ampliPick(avoidNear) {
+    var box = ampliBox(), vw = window.innerWidth, vh = window.innerHeight, rects = textRects();
+    var top0 = 100, bot = vh - 24, cols = 9, rows = 6, cands = [];
+    for (var c = 0; c < cols; c++) for (var r = 0; r < rows; r++) {
+      var l = 8 + (vw - box.w - 16) * c / (cols - 1) + (Math.random() - .5) * 30, t = top0 + (bot - top0 - box.h) * r / (rows - 1) + (Math.random() - .5) * 30;
+      l = clamp(l, 6, vw - box.w - 6); t = clamp(t, top0, bot - box.h);
+      var me = { left: l, right: l + box.w, top: t, bottom: t + box.h }, bub = { left: l - 4, right: l + 310, top: t - 78, bottom: t };
+      if (l > vw / 2) bub = { left: l + box.w - 310, right: l + box.w + 4, top: t - 78, bottom: t };
+      var hitsMe = 0, hitsBub = 0;
+      for (var i = 0; i < rects.length; i++) { if (hit(me, rects[i], 14)) hitsMe++; if (hit(bub, rects[i], 2)) hitsBub++; }
+      var d = Math.hypot(l - box.l, t - box.t);
+      cands.push({ l: l, t: t, s: hitsMe * 1000 + hitsBub * 40 + (d < (avoidNear || 220) ? 500 : 0) + Math.random() * 30 - Math.min(d, 900) / 40 });
+    }
+    cands.sort(function (a, b) { return a.s - b.s; });
+    return cands[0];
+  }
+  function ampliWalkTo(p, done) {
+    var box = ampliBox(), x = gsap.getProperty(ampli, "x"), y = gsap.getProperty(ampli, "y");
+    var to = p.l - (box.l - x), toY = p.t - (box.t - y);
+    var side = p.l > window.innerWidth / 2 ? "R" : "L";
     ampli.classList.remove("is-open");
     ampli.classList.add("is-walking");
-    var dist = Math.hypot(to - ampliX, toY - ampliY);
-    var dur = Math.min(2.8, 0.8 + dist / 800);
+    var dist = Math.hypot(to - x, toY - y), dur = Math.min(3.2, 0.9 + dist / 700);
     gsap.to(ampli, { x: to, duration: dur, ease: "sine.inOut", overwrite: true });
-    gsap.to(ampli, { y: toY, duration: dur, ease: "power2.inOut", onUpdate: function () { ampliX = gsap.getProperty(ampli, "x"); ampliY = gsap.getProperty(ampli, "y"); },
-      onComplete: function () { ampliX = to; ampliY = toY; ampliSide = side; ampli.classList.remove("is-walking"); ampli.classList.toggle("on-right", side === "R"); if (done) done(); } });
+    gsap.to(ampli, { y: toY, duration: dur * 1.05, ease: "power2.inOut", onComplete: function () { ampliSide = side; ampli.classList.remove("is-walking"); ampli.classList.toggle("on-right", side === "R"); if (done) done(); } });
+  }
+  function ampliWalk(id, done) {
+    if (phone) { if (ampliSide === null) { gsap.set(ampli, { x: 6, y: 0 }); ampliSide = "L"; } if (done) done(); return; }
+    if (ampliSide === null) { gsap.set(ampli, { x: 0, y: 0 }); ampliSide = "L"; ampli.classList.remove("on-right"); }
+    ampliWalkTo(ampliPick(260), done);
   }
   function ampliSay(id) {
     if (!ampliBubble || !AMPLI_LINES[id]) return;
     ampliId = id; clearTimeout(ampliT);
     ampliBubble.classList.remove("is-on");
-    ampliWalk(AMPLI_SPOT[id] || ["L", .1], function () {
+    ampliWalk(id, function () {
       ampliT = setTimeout(function () {
         if (ampliId !== id) return;
         ampliBubble.innerHTML = AMPLI_LINES[id]; ampliBubble.classList.add("is-on");
@@ -181,7 +211,17 @@
   $("#ampliX").addEventListener("click", function () { ampliOpen(false); });
   $(".ampli-cta").addEventListener("click", function () { ampliOpen(false); });
   document.addEventListener("keydown", function (e) { if (e.key === "Escape") ampliOpen(false); });
-  window.addEventListener("resize", function () { if (ampliSide) { ampliX = ampliTarget(ampliSide); var sp = AMPLI_SPOT[ampliShown] || ["L", .1]; ampliY = phone ? 0 : ampliTargetY(sp[1]); gsap.set(ampli, { x: ampliX, y: ampliY }); } });
+  var ampliIdle = null;
+  function ampliCheck() {
+    if (phone || !ampliSide || ampli.classList.contains("is-open") || ampli.classList.contains("is-walking")) return;
+    var b = ampliBox(), me = { left: b.l, right: b.l + b.w, top: b.t, bottom: b.t + b.h }, rs = textRects(), bad = b.t < 90;
+    for (var i = 0; i < rs.length && !bad; i++) if (hit(me, rs[i], 6)) bad = true;
+    if (bad) ampliWalkTo(ampliPick(160));
+  }
+  window.addEventListener("scroll", function () { clearTimeout(ampliIdle); ampliIdle = setTimeout(ampliCheck, 900); }, { passive: true });
+  window.addEventListener("resize", function () { clearTimeout(ampliIdle); ampliIdle = setTimeout(ampliCheck, 500); });
+  /* de vez en cuando pasea a otro lugar libre (movimiento natural) */
+  setInterval(function () { if (!phone && ampliSide && !document.hidden && !ampli.classList.contains("is-open") && !ampli.classList.contains("is-walking")) ampliWalkTo(ampliPick(300)); }, 16000);
   gsap.to("#prog", { scaleX: 1, ease: "none", scrollTrigger: { start: 0, end: "max", scrub: 0.2 } });
   ScrollTrigger.create({ trigger: "#hero", start: "bottom 60%", end: "max", onToggle: function (s) { $("#wa").classList.toggle("is-on", s.isActive); $("#social").classList.toggle("is-on", s.isActive); } });
 
