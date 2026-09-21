@@ -267,3 +267,19 @@ html[data-hdr="light"] .rail { color: var(--ink); }
 @media (prefers-reduced-motion: reduce) {
   .mq-track { animation: none; }
 }
+
+/* fondos negros con un brillo sutil (sin video) */
+.ambient { position: absolute; inset: 0; pointer-events: none; }
+.a1 { background: radial-gradient(ellipse 60% 55% at 78% 88%, rgba(215,242,74,0.16), transparent 70%); }
+.a2 { background: radial-gradient(ellipse 55% 60% at 18% 20%, rgba(215,242,74,0.13), transparent 70%); }
+.a3 { background: radial-gradient(ellipse 70% 50% at 50% 100%, rgba(215,242,74,0.18), transparent 72%); }
+.a4 { background: radial-gradient(ellipse 50% 60% at 90% 30%, rgba(215,242,74,0.14), transparent 70%); }
+.a5 { background: radial-gradient(ellipse 65% 55% at 30% 85%, rgba(215,242,74,0.15), transparent 70%); }
+.card-img::after { background: linear-gradient(180deg, rgba(7,7,7,0), rgba(7,7,7,0.5)); }
+.card { border: 1px solid rgba(239,236,229,0.12); background: #0b0b0b; }
+.hero-cta { margin-top: clamp(10px, 2vh, 22px); }
+.cta { position: relative; z-index: 5; overflow: hidden; margin-top: calc(var(--r) * -1); border-radius: var(--r) var(--r) 0 0; background: var(--ink); padding: clamp(120px, 20vh, 240px) var(--pad); display: grid; gap: 26px; justify-items: start; }
+.cta > *:not(.ambient) { position: relative; z-index: 1; }
+.cta .btn { margin-top: 8px; }
+.pn:nth-child(2) { background: #0c0e07; } .pn:nth-child(3) { background: #0a0d0b; } .pn:nth-child(4) { background: #10130a; }
+.pn::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 1px; background: rgba(215,242,74,0.55); z-index: 3; }
