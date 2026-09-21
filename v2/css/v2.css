@@ -582,3 +582,13 @@ html[data-hdr="light"] .nav a.is-on { color: var(--olive); }
 .rm-spark::after { left: 100%; background: linear-gradient(90deg, rgba(215,242,74,0.9), rgba(215,242,74,0)); }
 .rm-col b { color: var(--lime); font-size: 15px; letter-spacing: 0.2em; opacity: 1; margin-bottom: 10px; }
 .rm-col p { font-size: clamp(15px, 1.2vw, 19px); }
+
+/* Preguntas: texto más chico para que las nueve entren en una sola pantalla */
+.faq { padding-top: clamp(96px, 13vh, 120px); padding-bottom: clamp(28px, 5vh, 56px); min-height: 100vh; align-items: center; }
+.faq .qa > button { font-size: clamp(16px, 1.45vw, 23px); padding: clamp(9px, 1.5vh, 15px) 0; line-height: 1.2; gap: 18px; }
+.faq .qa i { width: 28px; height: 28px; }
+.faq .qa i::before { width: 10px; margin: -0.5px 0 0 -5px; }
+.faq .qa i::after { height: 10px; margin: -5px 0 0 -0.5px; }
+.faq .faq-side h2 { font-size: clamp(38px, 5.6vw, 100px); }
+.faq .qa-a p { font-size: clamp(14px, 1.05vw, 16px); padding-bottom: 14px; }
+@media (max-width: 1499px) and (min-width: 861px) { .faq { padding-right: calc(var(--pad) + 46px); } }
