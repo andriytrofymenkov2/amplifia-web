@@ -2891,3 +2891,41 @@ html.perf-3 *, html.perf-3 *::before, html.perf-3 *::after { box-shadow: none !i
 html.perf-3 .offer-heading, html.perf-3 .problem-statement, html.perf-3 .fronts-statement,
 html.perf-3 .roadmap-statement, html.perf-3 .who-statement, html.perf-3 .proj-statement,
 html.perf-3 .faq-statement, html.perf-3 .contact-statement, html.perf-3 .wordmark { text-shadow: 0 1px 2px rgba(0, 0, 0, 0.95) !important; }
+
+
+/* ============ Sombras de los titulos grandes (solo computadora) ============
+   Medido (Chrome real, CPU x3, rueda de mouse, 3 corridas): estas sombras de texto con 22 y
+   48 px de desenfoque eran lo que mas costaba al scrollear. Con 12 px los cuadros lentos
+   bajan de 177 a 77 en total (Roadmap 31 a 9, Frentes 20 a 4, Quienes somos 27 a 7,
+   Empresas 19 a 7); cambia solo un 1-2 por ciento de los pixeles. Las sombras de las tarjetas
+   casi no influian y no se tocan. El titulo del hero tampoco (ahi ya iba perfecto).
+   En celular y pantallas tactiles rige su propia regla, mas abajo en el archivo. */
+@media (hover: hover) and (min-width: 861px) {
+  .section-problem .offer-heading,
+  .problem-statement,
+  .problem-close,
+  .section-offer .offer-heading,
+  .offer-closing,
+  .section-roadmap .offer-heading,
+  .roadmap-statement,
+  .roadmap-sub,
+  .road-loop,
+  .section-fronts .offer-heading,
+  .fronts-statement,
+  .fronts-sub,
+  .section-who .offer-heading,
+  .who-statement,
+  .who-close,
+  .section-trust .offer-heading,
+  .c3d-hint,
+  .proj-head .offer-heading,
+  .proj-statement,
+  .faq-intro .offer-heading,
+  .faq-statement,
+  .faq-sub,
+  .section-contact .offer-heading,
+  .contact-statement,
+  .contact-sub,
+  .contact-steps,
+  .contact-direct { text-shadow: 0 1px 3px rgba(0, 0, 0, 0.95), 0 0 12px rgba(0, 0, 0, 0.8); }
+}

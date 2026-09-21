@@ -58,8 +58,14 @@
      smooth scroll (Lenis) inherits every hiccup of the main thread. ?lenis=1 brings it back. */
   window.AMP_NATIVE = !/[?&]lenis=1/.test(location.search);
   window.AMP_ETS = +((/[?&]ets=(\d+)/.exec(location.search) || [0, 1])[1]) || 1;   /* entrance speed on computers (experiment) */
-  window.AMP_KEEP = /[?&]keep=1/.test(location.search);                                   /* never release videos already loaded (experiment) */
-  window.AMP_AHEAD = +((/[?&]ahead=(\d)/.exec(location.search) || [0, 1])[1]) || 1;      /* how many videos ahead are prepared (experiment) */
+  /* Computers: video creation/release is deferred until you stop scrolling. Each one stalls the
+     GPU 40-160 ms (measured), and used to land right at the middle of Frentes, Roadmap, Quienes
+     somos and Empresas. Keeping every video loaded instead was WORSE (nine paused decoders
+     saturate the GPU: 102 slow frames, 267 ms peaks). ?keep=1 / ?preload=1 / ?idleops=0 are tests. */
+  window.AMP_KEEP = /[?&]keep=1/.test(location.search);
+  window.AMP_PRELOAD = /[?&]preload=1/.test(location.search);
+  window.AMP_IDLEOPS = !window.AMP_PHONE && !/[?&]idleops=0/.test(location.search);
+  window.AMP_AHEAD = +((/[?&]ahead=(\d)/.exec(location.search) || [0, 0])[1]) || (window.AMP_IDLEOPS ? 2 : 1);                                   /* never release videos already loaded (experiment) */
   window.AMP_AV1 = false;
   window.ampReady = Promise.resolve();
   try {
@@ -76,9 +82,38 @@
      en medio del scroll es justo lo que producia los tirones largos que no
      aparecian atribuidos a ninguna funcion. Aqui ese trabajo se hace siempre
      en un hueco libre, nunca dentro de un cuadro de scroll. */
+  var lastScrollT = 0;
+  window.addEventListener("scroll", function () { lastScrollT = performance.now(); }, { passive: true });
+  /* Video operations run ONE AT A TIME, at least 260 ms apart, each as soon as the page has not
+     scrolled for 150 ms (or 1.5 s after being asked at the latest). Serialised on purpose: when
+     the deadline expired for several at once they used to fire together in one frame (a 147 ms
+     stall); now the worst case is a short stall per operation, spread out. */
+  var opQ = [], opBusy = false, lastOp = 0;
+  function pumpOps() {
+    if (opBusy || !opQ.length) return;
+    opBusy = true;
+    (function check() {
+      var now = performance.now(), idle = now - lastScrollT > 150, pick = -1, i, o;
+      if (now - lastOp >= 260) {
+        /* loads first (they are needed soon: 0.9 s at most), releases last (only when resting,
+           or after 2.5 s so they never pile up: too many loaded videos saturate the GPU) */
+        for (i = 0; i < opQ.length && pick < 0; i++) { o = opQ[i]; if (!o.free && (idle || now - o.t0 > 900)) pick = i; }
+        if (pick < 0 && !opQ.some(function (q) { return !q.free; })) {
+          for (i = 0; i < opQ.length && pick < 0; i++) { o = opQ[i]; if (o.free && (idle || now - o.t0 > 2500)) pick = i; }
+        }
+      }
+      if (pick >= 0) {
+        o = opQ.splice(pick, 1)[0]; lastOp = now;
+        try { o.fn(); } catch (e) {}
+        opBusy = false; pumpOps();
+      } else setTimeout(check, 50);
+    })();
+  }
+  function whenScrollIdle(fn, free) { opQ.push({ fn: fn, free: !!free, t0: performance.now() }); pumpOps(); }
   var idleQ = [], idlePending = false;
   var idle = window.requestIdleCallback || function (f) { return setTimeout(f, 80); };
-  function whenIdle(fn) {
+  function whenIdle(fn, free) {
+    if (window.AMP_IDLEOPS) { whenScrollIdle(fn, free); return; }
     idleQ.push(fn);
     if (idlePending) return;
     idlePending = true;
@@ -88,11 +123,11 @@
       for (var i = 0; i < q.length; i++) q[i]();
     }, { timeout: 500 });
   }
-  window.ampSrc = function (v) {
+  window.ampSrc = function (v, urgent) {
     if (!v || v.getAttribute("src") || v._want || window.ampOff("videos")) return;
     v._want = true;
     window.ampReady.then(function () {
-      whenIdle(function () {
+      (urgent && window.AMP_IDLEOPS ? function (f) { f(); } : whenIdle)(function () {
         if (!v._want || v.getAttribute("src")) return;
         var full = v.getAttribute("data-full"), av1 = v.getAttribute("data-av1");
         v.preload = "auto";
@@ -121,7 +156,7 @@
       if (v._want || !v.getAttribute("src")) return;
       v._on = false; v.removeAttribute("src"); v.load();
     };
-    if (window.AMP_SLOWFREE) setTimeout(function () { whenIdle(free); }, 900); else whenIdle(free);
+    whenIdle(free, true);
   };
 })();
 </script>
@@ -131,7 +166,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=192">
+<link rel="stylesheet" href="css/style.css?v=193">
 </head>
 <body>
 
@@ -634,6 +669,6 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.18/dist/lenis.min.js"></script>
-<script src="js/main.js?v=162"></script>
+<script src="js/main.js?v=168"></script>
 </body>
 </html>

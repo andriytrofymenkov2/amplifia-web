@@ -488,13 +488,13 @@
          keeps showing the frame it stopped on, and a fresh one starts at 0,
          nothing jumps. */
       if (window.AMP_PHONE || window.AMP_ONEVID) {
-        if (h < 1) window.ampSrc(heroVideo); else window.ampFree(heroVideo);
+        if (h < 1) window.ampSrc(heroVideo); else if (!window.AMP_KEEP) window.ampFree(heroVideo);
         /* decided on the next frame, once every hand-over has written its
            opacity for this frame — reading them earlier can catch a stale value
            and leave the visible layer frozen */
         phoneCheck();
       } else {
-        if (h < 1) window.ampSrc(heroVideo); else window.ampFree(heroVideo);
+        if (h < 1) window.ampSrc(heroVideo); else if (!window.AMP_KEEP) window.ampFree(heroVideo);
         setPlaying(heroVideo, h < 1);
         for (i = 0; i < videoLayers.length; i++) setPlaying(videoLayers[i], on[i]);
       }
@@ -502,16 +502,35 @@
          memory, everything else is released */
       if (cur < 0) window.ampSrc(videoLayers[0]);
       else for (i = 0; i < videoLayers.length; i++) {
-        if (!window.AMP_PHONE && i >= cur - 1 && i <= cur + window.AMP_AHEAD) window.ampSrc(videoLayers[i]);
-        else if (!window.AMP_PHONE && window.AMP_KEEP && i < cur - 1) { /* kept loaded: no teardown while scrolling */ }
+        if (!window.AMP_PHONE && i >= cur - 1 && i <= cur + window.AMP_AHEAD) window.ampSrc(videoLayers[i], i <= cur + 1 || (videoLayers[i]._op || 0) > 0.001);
+        else if (window.AMP_KEEP) { /* kept loaded: no teardown while scrolling */ }
         else if (window.AMP_PHONE && Math.abs(i - cur) <= 1) window.ampSrc(videoLayers[i]);
         /* A layer that is still fading out must not be released: the release empties
            it, so a video sitting at 20 % opacity used to VANISH in one frame - the pop
            at every hand-over. It is freed once it is really gone (computers only;
            phones keep their own approved behaviour). */
-        else if (!window.AMP_PHONE && (videoLayers[i]._op || 0) >= 0.02) window.ampSrc(videoLayers[i]);
+        else if (!window.AMP_PHONE && (videoLayers[i]._op || 0) >= 0.02) window.ampSrc(videoLayers[i], true);
         else window.ampFree(videoLayers[i]);
       }
+    }
+    /* Staggered preload (computers): one video at a time, each waiting for the previous one to
+       be decoded, starting once the hero has settled. By the time you reach the slides that need
+       them they are already there, so nothing is created while you scroll. */
+    if (window.AMP_PRELOAD) {
+      window.addEventListener("load", function () {
+        var q = videoLayers.slice(), gap = 250;
+        function next() {
+          var v = q.shift();
+          if (!v) return;
+          if (document.hidden) { q.unshift(v); return setTimeout(next, 1500); }
+          window.ampSrc(v);
+          var done = false;
+          function go() { if (done) return; done = true; setTimeout(next, gap); }
+          v.addEventListener("loadeddata", go, { once: true });
+          setTimeout(go, 3500);
+        }
+        setTimeout(next, 1200);
+      });
     }
     ScrollTrigger.addEventListener("scrollEnd", syncVideos);
     ScrollTrigger.create({ start: 0, end: "max", onUpdate: syncVideos });
