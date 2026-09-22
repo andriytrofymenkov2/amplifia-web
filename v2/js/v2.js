@@ -334,12 +334,19 @@
   function buildHero() {
     if (heroBuilt) return; heroBuilt = true;
     var hw = $(".hero-word");
-    if (HAS_SPLIT) { heroChars = SplitText.create(hw, { type: "chars", charsClass: "ch" }).chars; gsap.set(heroChars, { yPercent: 115 }); }
+    /* AMPLIFIA entra como un solo bloque (no letra por letra): con el brillo de neón, separar en 8
+       letras significa 8 capas con desenfoque pesado para componer — de a una sola, es una sola. */
+    gsap.set(hw, { yPercent: 60, opacity: 0 });
     var heroTrack = $("#hero .track");
     if (!lowTier) gsap.to("#heroMedia", { scale: 1.22, ease: "none", scrollTrigger: { trigger: heroTrack, start: "top top", end: "bottom bottom", scrub: true } });
     gsap.to("#heroCopy", { yPercent: -16, opacity: 0, ease: "none", scrollTrigger: { trigger: heroTrack, start: "top top", end: "62% top", scrub: true } });
     gsap.to(".hero-scroll", { opacity: 0, ease: "none", scrollTrigger: { trigger: heroTrack, start: "top top", end: "10% top", scrub: true } });
-    feed(heroTrack, [$("#hero video")]);
+    var hv = $("#hero video");
+    feed(heroTrack, [hv]);
+    /* el video arranca ya (detrás de la cortina, que todavía tapa todo): el primer arranque de un video
+       siempre tiene un pequeño bache al crear el decodificador — mejor pagarlo ahora, escondido, que
+       exactamente cuando se levanta la cortina y hay que animar */
+    if (hv) vplay(hv);
   }
   /* el resto de la página (frentes, roadmap, preguntas, anillo 3D…) se arma después, ya con la
      cortina en movimiento, para que ese trabajo pesado no le robe cuadros justo al efecto de entrada */
@@ -700,12 +707,15 @@
     if (finished) return; finished = true;
     body.classList.remove("is-loading");
     var hv = $("#hero video"); if (hv) vplay(hv);
-    if (reduce) { pre.remove(); if (lenis) lenis.start(); ScrollTrigger.refresh(); return; }
-    var tl = gsap.timeline({ onComplete: function () { pre.remove(); if (lenis) lenis.start(); ScrollTrigger.refresh(); } });
+    if (reduce) { gsap.set(".hero-word", { yPercent: 0, opacity: 1 }); pre.remove(); if (lenis) lenis.start(); ScrollTrigger.refresh(); return; }
+    var tl = gsap.timeline({ onComplete: function () {
+      pre.remove(); if (lenis) lenis.start(); ScrollTrigger.refresh();
+      $(".hero-word").style.willChange = "auto";   /* ya llegó a su lugar: se suelta la capa de video */
+    } });
     tl.to([".pre-mark", ".pre-count"], { opacity: 0, y: -24, duration: 0.5, ease: "power2.in" })
       .to(pre, { yPercent: -100, duration: 1.2, ease: "power4.inOut" }, 0.35)
-      .fromTo("#heroMedia img, #heroMedia video", { scale: 1.35 }, { scale: 1, duration: 2.4, ease: "power3.out" }, 0.35);
-    if (heroChars.length) tl.to(heroChars, { yPercent: 0, duration: 1.4, stagger: 0.06, ease: "power4.out" }, 0.95);
+      .fromTo("#heroMedia img, #heroMedia video", { scale: 1.35 }, { scale: 1, duration: 2.4, ease: "power3.out" }, 0.35)
+      .to(".hero-word", { yPercent: 0, opacity: 1, duration: 1.2, ease: "power3.out" }, 0.85);
     tl.from([".hero-kicker", ".hero-tag", ".hero-scroll", ".hdr", ".rail"], { opacity: 0, y: 16, duration: 1, stagger: 0.12, ease: "power3.out" }, 1.4);
   }
   var fontsReady = document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve();

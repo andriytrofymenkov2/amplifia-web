@@ -901,9 +901,12 @@ input, textarea { -webkit-appearance: none; appearance: none; border-radius: 0; 
 .ampli-bubble { max-width: min(340px, calc(100vw - 28px)); }
 .ampli-panel { width: min(320px, calc(100vw - 28px)); }
 
-/* ---------- Portada liviana ---------- */
-.hero-word .ch { will-change: auto; }
-.hero-word { text-shadow: 0 0 8px rgba(255,255,255,0.9), 0 0 34px rgba(215,242,74,0.45); }
+/* ---------- Portada liviana ----------
+   AMPLIFIA entra como un solo bloque, con un brillo de neón con desenfoque pesado. Si ese bloque
+   no está en su propia capa de video (will-change: transform), el navegador tiene que repintar el
+   desenfoque a mano en cada cuadro mientras se mueve — eso era el "bugueado" al entrar. Queda
+   promovido mientras sube y se libera solo apenas termina (ver v2.js). */
+.hero-word { text-shadow: 0 0 8px rgba(255,255,255,0.9), 0 0 34px rgba(215,242,74,0.45); will-change: transform, opacity; }
 .lowtier .hero-word { text-shadow: 0 0 6px rgba(255,255,255,0.85), 0 0 18px rgba(215,242,74,0.4); }
 .lowtier .shade-hero, .novideo .shade-hero { background: linear-gradient(180deg, rgba(7,7,7,0.55), rgba(7,7,7,0.25) 45%, rgba(7,7,7,0.7)); }
 .novideo #heroMedia video, .novideo .vfreeze { display: none !important; }
