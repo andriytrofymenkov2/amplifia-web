@@ -191,9 +191,23 @@
     });
     return out;
   }
+  /* Antes esto recorría TODO el texto de la página (150-250 elementos) cada vez que Ampli cambiaba
+     de sección: forzaba al navegador a recalcular el diseño entero en plena animación de scroll —
+     el "tirón" justo al cruzar de una sección a otra. Ahora solo mira la sección actual y sus vecinas
+     (Ampli nunca se para fuera de la sección visible igual), que son apenas un puñado de elementos. */
+  function textScope() {
+    var el = ampliId && document.getElementById(ampliId);
+    if (!el) return null;
+    var roots = [el];
+    if (el.previousElementSibling) roots.push(el.previousElementSibling);
+    if (el.nextElementSibling) roots.push(el.nextElementSibling);
+    return roots;
+  }
   function textRects() {
     var out = [], vw = window.innerWidth, vh = window.innerHeight;
-    $$(TEXT_SEL).forEach(function (el) {
+    var roots = textScope();
+    var els = roots ? roots.reduce(function (a, r) { return a.concat($$(TEXT_SEL, r)); }, []) : $$(TEXT_SEL);
+    els.forEach(function (el) {
       if (el.closest(".ampli, .hdr, .social, .wa, .rail, .menu, .fq-zoom, .progress, .pre")) return;
       var cs = getComputedStyle(el); if (cs.visibility === "hidden" || cs.display === "none") return;
       var r0 = el.getBoundingClientRect(); if (r0.bottom < 0 || r0.top > vh || r0.right < 0 || r0.left > vw || !r0.width) return;
@@ -237,7 +251,10 @@
     var dist = Math.hypot(to - x, toY - y), dur = Math.min(1.0, 0.4 + dist / 2200);
     ampli._target = { l: p.l, t: p.t, w: box.w, h: box.h };
     gsap.to(ampli, { x: to, duration: dur, ease: "sine.inOut", overwrite: true });
-    gsap.to(ampli, { y: toY, duration: dur * 1.05, ease: "power2.inOut", onUpdate: function () { if (ampliBubble.classList.contains("is-on")) ampliFitNow(ampliBubble); }, onComplete: function () { ampliSide = side; ampli.classList.remove("is-walking"); ampli.classList.toggle("on-right", side === "R"); if (ampliBubble.classList.contains("is-on")) { ampliTips(); ampliFit(ampliBubble); } if (done) done(); } });
+    /* el globo va montado sobre Ampli (es hijo suyo, se mueve solo con él); no hace falta releerlo
+       en cada cuadro mientras camina — eso era leer la posición justo después de escribirla, cuadro
+       a cuadro, forzando a recalcular el diseño en pleno scroll. Se corrige una vez al llegar. */
+    gsap.to(ampli, { y: toY, duration: dur * 1.05, ease: "power2.inOut", onComplete: function () { ampliSide = side; ampli.classList.remove("is-walking"); ampli.classList.toggle("on-right", side === "R"); if (ampliBubble.classList.contains("is-on")) { ampliTips(); ampliFit(ampliBubble); } if (done) done(); } });
   }
   function ampliWalk(id, done) {
     if (phone) { if (ampliSide === null) { gsap.set(ampli, { x: 6, y: 0 }); ampliSide = "L"; } if (done) done(); return; }
