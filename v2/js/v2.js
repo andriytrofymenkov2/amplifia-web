@@ -165,9 +165,32 @@
   };
 
 
+  var BH_TIP = 84, BUB_GAP = 8, LINE_PAD = 26;
+  function metodoZone(boxH) {
+    var ln = $(".rm-line"); if (!ln) return null;
+    var lr = ln.getBoundingClientRect(); if (!lr.width) return null;
+    var lineTop = lr.top - LINE_PAD, lineBottom = lr.bottom + LINE_PAD, vh = window.innerHeight;
+    var roomAbove = lineTop - 130 - boxH - (BH_TIP + BUB_GAP + 10);      /* franja + hueco para el globo arriba de todo */
+    if (roomAbove > 20) return { top0: 130, bot: lineTop - boxH - (BH_TIP + BUB_GAP + 10), tipBelow: false };
+    var belowStart = lineBottom + BH_TIP + BUB_GAP + 10, roomBelow = (vh - 24) - boxH - belowStart;
+    if (roomBelow > 20) return { top0: belowStart, bot: vh - 24 - boxH, tipBelow: false };
+    /* casi sin lugar en ningún lado: se usa el que tenga más espacio, con el globo hacia ese mismo lado */
+    if (lineTop - 100 > vh - lineBottom) return { top0: 100, bot: Math.max(100, lineTop - boxH - 6), tipBelow: false };
+    return { top0: Math.min(vh - 24 - boxH, lineBottom + 6), bot: vh - 24 - boxH, tipBelow: true };
+  }
   var ampli = $("#ampli"), ampliBubble = $("#ampliBubble"), ampliBtn = $("#ampliBtn"), ampliId = null, ampliT = null, ampliShown = null, ampliX = 0, ampliSide = null;
   /* Ampli mide dónde hay texto en pantalla y elige un lugar LIBRE, siempre distinto al anterior: nunca se para encima de una palabra */
   var ampliY = 0, TEXT_SEL = "h1,h2,h3,h4,p,li,label,input,textarea,button:not(.ampli-btn):not(.menu-btn),.tiny,.btn,.nav-cta,.rm-num,.cap-title,.pr-t,.c3d-name,b";
+  var LINE_SEL = ".rm-line, .hz-bar";
+  function avoidRects() {
+    var out = textRects(), vw = window.innerWidth, vh = window.innerHeight;
+    $$(LINE_SEL).forEach(function (el) {
+      var cs = getComputedStyle(el); if (cs.visibility === "hidden" || cs.display === "none") return;
+      var r = el.getBoundingClientRect(); if (r.bottom < 0 || r.top > vh || !r.width) return;
+      out.push({ left: r.left, right: r.right, top: r.top - 22, bottom: r.bottom + 22 });
+    });
+    return out;
+  }
   function textRects() {
     var out = [], vw = window.innerWidth, vh = window.innerHeight;
     $$(TEXT_SEL).forEach(function (el) {
@@ -183,18 +206,20 @@
   function hit(r, tr, pad) { return !(r.right + pad < tr.left || r.left - pad > tr.right || r.bottom + pad < tr.top || r.top - pad > tr.bottom); }
   function ampliBox() { var r = ampli.getBoundingClientRect(); var b = ampliBtn.getBoundingClientRect(); return { l: b.left, t: b.top, w: b.width, h: b.height }; }
   function ampliPick(avoidNear) {
-    var box = ampliBox(), vw = window.innerWidth, vh = window.innerHeight, rects = textRects();
+    var box = ampliBox(), vw = window.innerWidth, vh = window.innerHeight, rects = avoidRects();
     var top0 = 100, bot = vh - 24, rows = 14, cands = [], first = ampliSide === null;
+    var mz = ampliId === "metodo" ? metodoZone(box.h) : null;
+    if (mz) { top0 = mz.top0; bot = mz.bot; }
     var cols = first ? 2 : 1;
     for (var c = 0; c < cols; c++) for (var r = 0; r < rows; r++) {
       var inset = clamp((vw * 0.044) - box.w - 8, 12, 34);
       var l = first ? (c === 0 ? inset : vw - box.w - inset) : box.l, t = top0 + (bot - top0 - box.h) * r / (rows - 1) + (Math.random() - .5) * 20;
       l = clamp(l, 12, vw - box.w - 12); t = clamp(t, top0, bot - box.h);
-      var me = { left: l, right: l + box.w, top: t, bottom: t + box.h }, BW = 350, BH = 84;
+    var me = { left: l, right: l + box.w, top: t, bottom: t + box.h }, BW = 350, BH = 84;
       var bl = l > vw / 2 ? l + box.w - BW : l, br = bl + BW;
       var up = { left: bl, right: br, top: t - BH - 8, bottom: t - 8 }, dn = { left: bl, right: br, top: t + box.h + 8, bottom: t + box.h + 8 + BH };
       var hitsMe = 0, hu = 0, hd = 0;
-      for (var i = 0; i < rects.length; i++) { if (hit(me, rects[i], 14)) hitsMe++; if (up.top > 88 && hit(up, rects[i], 4)) hu++; else if (up.top <= 88) hu += 99; if (dn.bottom < vh - 10 && hit(dn, rects[i], 4)) hd++; else if (dn.bottom >= vh - 10) hd += 99; }
+      for (var i = 0; i < rects.length; i++) { if (hit(me, rects[i], 4)) hitsMe++; if (up.top > 88 && hit(up, rects[i], 4)) hu++; else if (up.top <= 88) hu += 99; if (dn.bottom < vh - 10 && hit(dn, rects[i], 4)) hd++; else if (dn.bottom >= vh - 10) hd += 99; }
       var hitsBub = Math.min(hu, hd);
       var waHit = (l + box.w > vw - 110 && t + box.h > vh - 120) ? 2000 : 0;
       var d = Math.hypot(l - box.l, t - box.t);
@@ -224,11 +249,16 @@
   }
   /* si Ampli está en la parte de arriba, el globo y el panel se abren hacia abajo para no salirse de la pantalla */
   function ampliTips(tb) {
-    var b = tb || ampliBox(), rs = textRects(), vh = window.innerHeight, BW = 350, BH = 84, right = b.l + b.w / 2 > window.innerWidth / 2;
+    var b = tb || ampliBox(), rs = avoidRects(), vh = window.innerHeight, BW = 350, BH = 84, right = b.l + b.w / 2 > window.innerWidth / 2;
     var bl = right ? b.l + b.w - BW : b.l, br = bl + BW;
     var up = { left: bl, right: br, top: b.t - BH - 8, bottom: b.t - 8 }, dn = { left: bl, right: br, top: b.t + b.h + 8, bottom: b.t + b.h + 8 + BH }, hu = up.top < 90 ? 99 : 0, hd = dn.bottom > vh - 10 ? 99 : 0;
     for (var i = 0; i < rs.length; i++) { if (hit(up, rs[i], 4)) hu++; if (hit(dn, rs[i], 4)) hd++; }
-    ampli.classList.toggle("tip-below", hd < hu || (hd === hu && b.t < 270));
+    if (ampliId === "metodo") {
+      var mz2 = metodoZone(b.h);
+      ampli.classList.toggle("tip-below", mz2 ? mz2.tipBelow : false);
+    } else {
+      ampli.classList.toggle("tip-below", hd < hu || (hd === hu && b.t < 270));
+    }
     ampli.classList.toggle("on-right", right);
   }
   function ampliFitNow(el) {
@@ -276,35 +306,8 @@
   }
   /* panel: se abre con un toque y lleva al diagnóstico */
   function ampliOpen(o) { if (o) { ampliTips(); ampliFit($("#ampliPanel")); } ampli.classList.toggle("is-open", o); ampliBtn.setAttribute("aria-expanded", o ? "true" : "false"); if (o) { clearTimeout(ampliT); ampliBubble.classList.remove("is-on"); } }
-  ampliBtn.addEventListener("click", function () { if (dragMoved) return; if (ampli.classList.contains("is-open")) ampliOpen(false); else if (phone) ampliOpen(true); else { ampliOpen(true); } });
-    /* arrastrar a Ampli: clic sostenido y moverlo adonde quieras (mouse o dedo) */
-  (function ampliDrag() {
-    var sx, sy, bx0, by0, w, h, pid = null;
-    ampliBtn.addEventListener("pointerdown", function (e) {
-      if (e.button && e.button !== 0) return;
-      e.preventDefault();
-      pid = e.pointerId; dragMoved = false; sx = e.clientX; sy = e.clientY;
-      var b = ampliBox(); w = b.w; h = b.h; bx0 = b.l - gsap.getProperty(ampli, "x"); by0 = b.t - gsap.getProperty(ampli, "y");
-      try { ampliBtn.setPointerCapture(pid); } catch (er) {}
-    });
-    ampliBtn.addEventListener("pointermove", function (e) {
-      if (pid === null || e.pointerId !== pid) return;
-      if (!dragMoved && Math.hypot(e.clientX - sx, e.clientY - sy) < 6) return;
-      if (!dragMoved) { dragMoved = true; dragging = true; gsap.killTweensOf(ampli); ampli.classList.remove("is-walking", "is-open"); ampli.classList.add("is-dragging"); ampliBubble.classList.remove("is-on"); clearTimeout(ampliT); }
-      var nx = clamp(e.clientX - w / 2, 14, window.innerWidth - w - 14), ny = clamp(e.clientY - h / 2, 14, window.innerHeight - h - 14);
-      gsap.set(ampli, { x: nx - bx0, y: ny - by0 });
-    });
-    function end(e) {
-      if (pid === null || (e && e.pointerId !== pid)) return;
-      try { ampliBtn.releasePointerCapture(pid); } catch (er) {}
-      pid = null;
-      if (dragMoved) { dragging = false; ampli.classList.remove("is-dragging"); ampliPinned = Date.now() + 6000; ampliSide = ampliBox().l > window.innerWidth / 2 ? "R" : "L"; ampliTips(); setTimeout(function () { dragMoved = false; }, 60); }
-    }
-    ampliBtn.addEventListener("dragstart", function (e) { e.preventDefault(); });
-    ampliBtn.addEventListener("selectstart", function (e) { e.preventDefault(); });
-    ampliBtn.addEventListener("pointerup", end); ampliBtn.addEventListener("pointercancel", end);
-  })();
-  $("#ampliX").addEventListener("click", function () { ampliOpen(false); });
+  ampliBtn.addEventListener("click", function () { if (ampli.classList.contains("is-open")) ampliOpen(false); else if (phone) ampliOpen(true); else { ampliOpen(true); } });
+    $("#ampliX").addEventListener("click", function () { ampliOpen(false); });
   $(".ampli-cta").addEventListener("click", function () { ampliOpen(false); });
   document.addEventListener("keydown", function (e) { if (e.key === "Escape") ampliOpen(false); });
   var ampliIdle = null;
@@ -612,23 +615,34 @@
       if (window.gsap) gsap.fromTo(zoom, { opacity: 0, scale: 0.72 }, { opacity: 1, scale: 1, duration: 0.32, ease: "power3.out", overwrite: true });
       else zoom.style.opacity = 1;
     }
-    var lastScrollAt = 0;
+    var lastScrollAt = 0, mx = -1, my = -1, scrollEndT = null;
     function hide(instant) {
       clearTimeout(hideT); cur = null;
       if (instant) { if (window.gsap) gsap.killTweensOf(zoom); zoom.style.opacity = 0; zoom.classList.remove("is-on"); return; }
       anim({ opacity: 0, scale: 0.94, duration: 0.1, ease: "power1.in" }, function () { if (!cur) zoom.classList.remove("is-on"); });
     }
     function cardOf(e) { return e.target && e.target.closest ? e.target.closest(".fq-card") : null; }
+    document.addEventListener("pointermove", function (e) { mx = e.clientX; my = e.clientY; }, { passive: true });
     rows.addEventListener("pointerdown", function (e) { lastType = e.pointerType || "mouse"; }, true);
     var over = window.PointerEvent ? "pointerover" : "mouseover", out = window.PointerEvent ? "pointerout" : "mouseout";
-    rows.addEventListener(over, function (e) { var c = cardOf(e); if (c && (e.pointerType || "mouse") !== "touch" && Date.now() - lastScrollAt > 250) show(c); });
+    rows.addEventListener(over, function (e) { var c = cardOf(e); if (c && (e.pointerType || "mouse") !== "touch" && Date.now() - lastScrollAt > 120) show(c); });
     rows.addEventListener(out, function (e) { var c = cardOf(e); if (c && (e.pointerType || "mouse") !== "touch" && !(e.relatedTarget && c.contains(e.relatedTarget))) hide(); });
     rows.addEventListener("mouseleave", function () { hide(true); });
     rows.addEventListener("pointerleave", function () { hide(true); });
     rows.addEventListener("click", function (e) { var c = cardOf(e); if (c && lastType === "touch") { if (cur === c) hide(); else show(c); } });
     document.addEventListener("click", function (e) { if (!cardOf(e) && cur) hide(true); });
-    /* cualquier scroll, rueda o toque en pantalla la apaga al instante: la lupa nunca sigue a otra sección */
-    function killNow() { lastScrollAt = Date.now(); if (cur || zoom.classList.contains("is-on")) hide(true); }
+    /* cualquier scroll, rueda o toque en pantalla la apaga al instante; al asentarse, si el mouse (quieto) quedó
+       sobre una tarjeta, la lupa se activa igual — no depende de que el mouse se haya movido después */
+    function killNow() {
+      lastScrollAt = Date.now();
+      if (cur || zoom.classList.contains("is-on")) hide(true);
+      clearTimeout(scrollEndT);
+      scrollEndT = setTimeout(function () {
+        if (mx < 0 || lastType === "touch") return;
+        var el = document.elementFromPoint(mx, my), c = el && el.closest ? el.closest(".fq-card") : null;
+        if (c) show(c);
+      }, 140);
+    }
     window.addEventListener("scroll", killNow, { passive: true });
     window.addEventListener("wheel", killNow, { passive: true });
     window.addEventListener("touchmove", killNow, { passive: true });

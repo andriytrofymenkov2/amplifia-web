@@ -383,7 +383,7 @@ html[data-hdr="light"] .rail { color: var(--ink); }
 .pr-line { position: absolute; left: 0; right: 0; top: 0; height: 1px; background: rgba(239,236,229,0.2); transform-origin: left; }
 .pr-row:last-child::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 1px; background: rgba(239,236,229,0.2); }
 .pr-n { font-size: 11px; letter-spacing: 0.22em; opacity: 0.55; font-weight: 500; }
-.pr-t { font-family: var(--serif); font-weight: 400; font-size: clamp(30px, 4.3vw, 80px); line-height: 0.98; letter-spacing: -0.02em; transition: color 0.5s var(--ease), transform 0.6s var(--ease); }
+.pr-t { font-family: var(--serif); font-weight: 400; font-size: clamp(26px, 3.6vw, 66px); line-height: 0.98; letter-spacing: -0.02em; transition: color 0.5s var(--ease), transform 0.6s var(--ease); }
 .pr-s { font-size: clamp(14px, 1.15vw, 19px); line-height: 1.5; opacity: 0.7; max-width: 34ch; transition: opacity 0.5s var(--ease); }
 @media (any-hover: hover) {
   .pr-list:hover .pr-row { opacity: 0.32; }
@@ -880,9 +880,7 @@ input, textarea { -webkit-appearance: none; appearance: none; border-radius: 0; 
 @media (prefers-reduced-motion: reduce) { .l-b, .l-stripe-glow { animation: none; } }
 
 /* Ampli: arrastrable; el globo y el panel se abren hacia abajo cuando está arriba */
-.ampli-btn { touch-action: none; cursor: grab; -webkit-user-select: none; user-select: none; }
-.ampli.is-dragging .ampli-btn { cursor: grabbing; }
-.ampli.is-dragging .ampli-btn svg { animation: none; transform: scale(1.12); }
+.ampli-btn { -webkit-user-select: none; user-select: none; }
 .ampli.tip-below .ampli-bubble, .ampli.tip-below .ampli-panel { bottom: auto; top: 100%; margin: 8px 0 0; }
 .ampli.tip-below .ampli-bubble { border-radius: 4px 14px 14px 14px; transform-origin: 0 0; }
 .ampli.tip-below.on-right .ampli-bubble { border-radius: 14px 4px 14px 14px; transform-origin: 100% 0; }
