@@ -568,10 +568,11 @@
     var acc = 0;
     gsap.ticker.add(function (time, deltaMs) {
       if (!running || tweening) return;
+      if (dragging) { apply(true); return; }
       acc += deltaMs || 16;
       if (phone && (gsap.ticker.frame & 1)) return;
       var dt = Math.min(0.1, acc / 1000); acc = 0;
-      if (!dragging) { vel += (CRUISE - vel) * (1 - Math.exp(-dt * 1.7)); rot += vel * dt; }
+      vel += (CRUISE - vel) * (1 - Math.exp(-dt * 1.7)); rot += vel * dt;
       apply();
     });
     stage.addEventListener("pointerdown", function (e) {
@@ -586,7 +587,7 @@
       var now = performance.now(), dx = e.clientX - lastX, dtm = Math.max(1, now - lastT);
       moved += Math.abs(dx); rot += dx * 0.28;
       dragVel = dragVel * 0.6 + (dx * 0.28 / dtm * 1000) * 0.4;
-      lastX = e.clientX; lastT = now; apply(true);
+      lastX = e.clientX; lastT = now;
     });
     function release() { if (!dragging) return; dragging = false; stage.classList.remove("is-dragging"); vel = clamp(dragVel, -260, 260); }
     stage.addEventListener("pointerup", release); stage.addEventListener("pointercancel", release);
