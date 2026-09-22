@@ -327,9 +327,12 @@
   function onceIn(t, fn, start) { ScrollTrigger.create({ trigger: t, start: start || "top 70%", once: true, onEnter: fn }); }
 
   /* ---------- construcción de las escenas ---------- */
-  var heroChars = [];
-  function build() {
-    /* 01 · inicio */
+  var heroChars = [], heroBuilt = false;
+  /* Todo lo del hero se arma apenas la tipografía está lista, en paralelo a la barra de carga —
+     así, cuando la cortina se levanta, las letras ya están separadas y ubicadas: nada que calcular
+     en el mismo instante en que hay que animar, que es lo que causaba el salto al aparecer. */
+  function buildHero() {
+    if (heroBuilt) return; heroBuilt = true;
     var hw = $(".hero-word");
     if (HAS_SPLIT) { heroChars = SplitText.create(hw, { type: "chars", charsClass: "ch" }).chars; gsap.set(heroChars, { yPercent: 115 }); }
     var heroTrack = $("#hero .track");
@@ -337,6 +340,11 @@
     gsap.to("#heroCopy", { yPercent: -16, opacity: 0, ease: "none", scrollTrigger: { trigger: heroTrack, start: "top top", end: "62% top", scrub: true } });
     gsap.to(".hero-scroll", { opacity: 0, ease: "none", scrollTrigger: { trigger: heroTrack, start: "top top", end: "10% top", scrub: true } });
     feed(heroTrack, [$("#hero video")]);
+  }
+  /* el resto de la página (frentes, roadmap, preguntas, anillo 3D…) se arma después, ya con la
+     cortina en movimiento, para que ese trabajo pesado no le robe cuadros justo al efecto de entrada */
+  function build() {
+    buildHero();
 
     /* 02 · manifiesto: se enciende solo al llegar */
     var mw = words($("#manifText"), false);
@@ -707,9 +715,17 @@
     .from(".pre-mark .bar", { scaleY: 0, duration: 0.9, stagger: 0.12, ease: "power3.out" }, 0)
     .to(counter, { v: 100, duration: 1.9, ease: "power2.inOut", onUpdate: function () { preN.textContent = Math.round(counter.v); } }, 0);
   var minTime = new Promise(function (res) { setTimeout(res, 2000); });
+  /* el hero se prepara en cuanto la tipografía está lista, mientras la barra de carga todavía sube:
+     así llega ya armado (letras separadas, en su lugar) al momento de la cortina, sin nada que calcular */
+  fontsReady.then(function () { try { buildHero(); } catch (e) { if (window.console) console.error(e); } });
   Promise.race([Promise.all([fontsReady, loaded, minTime]), new Promise(function (res) { setTimeout(res, 5500); })]).then(function () {
-    try { build(); } catch (e) { if (window.console) console.error(e); }
+    try { buildHero(); } catch (e) { if (window.console) console.error(e); }
     finish();
+    /* el resto de la página (más pesado: frentes, roadmap, preguntas, anillo 3D…) se arma después de que
+       el navegador ya pintó el primer cuadro de la cortina, para no competirle cuadros al efecto de entrada */
+    requestAnimationFrame(function () { requestAnimationFrame(function () {
+      try { build(); } catch (e) { if (window.console) console.error(e); }
+    }); });
   });
   setTimeout(function () { if (!finished) { body.classList.remove("is-loading"); if (pre.parentNode) pre.remove(); if (lenis) lenis.start(); } }, 9000);
   window.addEventListener("load", function () { setTimeout(function () { ScrollTrigger.refresh(); }, 600); });
