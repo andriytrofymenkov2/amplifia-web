@@ -159,7 +159,7 @@
     metodo: "Cuatro pasos a tu medida, empezando por un <b>diagnóstico</b> con procesos y personas.",
     consultora: "Andriy lidera los procesos y Christian, las personas. Tocá el <b>+</b> para conocer sus proyectos.",
     proyectos: "Ya hicimos un workshop ejecutivo en Río Gallegos y ahora viene una <b>plataforma de cursos</b>.",
-    clientes: "Trabajamos con salud, industria, servicios y aeropuertos: Medisur, SS Servicios, MS Patagonia y más.",
+    clientes: "Tiempo Sur, MS Patagonia, SS Servicios, Farmacia La Franco y Siglo 21 ya confían en nosotros.",
     faq: "¿Dudas sobre alcance, tiempos o costos? Poné el mouse sobre una pregunta: la respuesta está <b>acá</b>.",
     contacto: "Contanos tu desafío: conversamos y te proponemos un camino <b>a la medida</b> de tu empresa."
   };

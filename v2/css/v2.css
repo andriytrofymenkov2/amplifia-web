@@ -936,3 +936,9 @@ input, textarea { -webkit-appearance: none; appearance: none; border-radius: 0; 
 
 /* Mejora continua: que la flecha no se corte (menos zoom, encuadre hacia arriba) */
 .card-img img.fit-top { left: 0; width: 100%; object-position: 50% 12%; opacity: 0.85; }
+
+/* Empresas: logos reales sobre una placa blanca (los logos son de fondo transparente, pensados para fondo claro) */
+.c3d-card.has-logo { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; }
+.c3d-badge { display: flex; align-items: center; justify-content: center; width: 78%; height: 52%; padding: clamp(14px, 2.4vw, 26px); background: #fff; border-radius: 14px; box-shadow: 0 10px 26px rgba(0,0,0,0.35); }
+.c3d-badge img { max-width: 100%; max-height: 100%; object-fit: contain; }
+.c3d-card figcaption { font-family: var(--sans); font-size: 12px; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; color: var(--paper); opacity: 0.75; text-align: center; }
