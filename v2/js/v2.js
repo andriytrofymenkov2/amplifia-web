@@ -337,14 +337,14 @@
   (function () {
     var log = $("#acLog"), form = $("#acForm"), inp = $("#acIn"), sugg = $("#acSugg"), hist = [], busy = false;
     var FB = [
-      [/cuest|precio|valor|costo|tarifa|presupuesto|inversi/, "El alcance y la inversión se definen con el equipo de Amplifia en una conversación posterior; no puedo adelantarlos. Si lo desea, puede escribirnos por WhatsApp al +54 9 11 3327-8023."],
-      [/empie|empez|primer|diagn|dura|plazo|tiempo/, "Recomendamos comenzar por un diagnóstico: relevamos datos y conversamos con líderes y equipos para entender cómo funciona hoy su organización. Los detalles y plazos los define el equipo en una primera conversación."],
-      [/contact|whats|mail|agend|reuni|hablar/, "Puede escribirnos por WhatsApp al +54 9 11 3327-8023, al correo andriytrofymenko@gmail.com, o completar el formulario de la sección Contacto."],
-      [/ia\b|inteligencia|artificial|automat|dato/, "La inteligencia artificial es uno de nuestros seis frentes: la integramos en decisiones reales, automatizamos tareas y armamos tableros con datos. Primero comprendemos su organización y luego incorporamos tecnología donde aporta valor."],
+      [/cuest|precio|valor|costo|tarifa|presupuesto|inversi/, "El alcance y la inversión los definen los socios de Amplifia en una conversación posterior; no puedo adelantarlos. Si quieres, puedes escribirnos por WhatsApp al +54 9 11 3327-8023."],
+      [/empie|empez|primer|diagn|dura|plazo|tiempo/, "Recomendamos comenzar por un diagnóstico: relevamos datos y conversamos con líderes y equipos para entender cómo funciona hoy tu organización. Los detalles y plazos los definen los socios en una primera conversación."],
+      [/contact|whats|mail|agend|reuni|hablar/, "Puedes escribirnos por WhatsApp al +54 9 11 3327-8023, al correo andriytrofymenko@gmail.com, o completar el formulario de la sección Contacto."],
+      [/ia\b|inteligencia|artificial|automat|dato/, "La inteligencia artificial es uno de nuestros seis frentes: la integramos en decisiones reales, automatizamos tareas y armamos tableros con datos. Primero comprendemos tu organización y luego incorporamos tecnología donde aporta valor."],
       [/qu[eé] hac|servicio|frente|ofrec|hacen/, "Trabajamos tres áreas: procesos (Lean, Kaizen, indicadores), personas (liderazgo, coaching, equipos comerciales) e inteligencia artificial y datos. Son seis frentes que operan como un solo sistema."]
     ];
     function add(cls, txt) { var d = document.createElement("div"); d.className = "ac-m " + cls; d.textContent = txt; log.appendChild(d); log.scrollTop = log.scrollHeight; return d; }
-    function fallback(q) { q = q.toLowerCase(); for (var i = 0; i < FB.length; i++) if (FB[i][0].test(q)) return FB[i][1]; return "Para responderle con precisión, lo más conveniente es conversarlo con nuestro equipo: puede escribirnos por WhatsApp al +54 9 11 3327-8023 o solicitar un diagnóstico."; }
+    function fallback(q) { q = q.toLowerCase(); for (var i = 0; i < FB.length; i++) if (FB[i][0].test(q)) return FB[i][1]; return "Para responderte con precisión, lo más conveniente es conversarlo con nuestros socios: puedes escribirnos por WhatsApp al +54 9 11 3327-8023 o solicitar un diagnóstico."; }
     function ask(q) {
       q = (q || "").trim(); if (!q || busy) return;
       busy = true; sugg.classList.add("is-gone"); add("me", q); inp.value = ""; hist.push({ role: "user", content: q });
@@ -356,7 +356,7 @@
         .then(function (d) { done(d.reply || fallback(q)); })
         .catch(function () { done(fallback(q)); });
     }
-    add("bot", "Buenas, soy Ampli, asistente de Amplifia. Cuénteme qué desafío enfrenta su organización y le indico cómo podemos acompañarla.");
+    add("bot", "Hola, soy Ampli, del equipo de Amplifia. Cuéntame qué desafío enfrenta tu organización y te indico cómo podemos acompañarla.");
     form.addEventListener("submit", function (e) { e.preventDefault(); ask(inp.value); });
     sugg.addEventListener("click", function (e) { if (e.target.tagName === "BUTTON") ask(e.target.textContent); });
     ampliBtn.addEventListener("click", function () { if (!phone) setTimeout(function () { if (ampli.classList.contains("is-open")) inp.focus({ preventScroll: true }); }, 350); });
