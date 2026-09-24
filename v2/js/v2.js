@@ -429,17 +429,6 @@
       if (ic) { var wm = ic.cloneNode(true); wm.setAttribute("class", "sg-wm"); p.insertBefore(wm, p.firstChild); }
       p.insertAdjacentHTML("beforeend", '<i class="sg-prog" aria-hidden="true"></i>');
     });
-    /* la etiqueta "Se resuelve en..." lleva a la tarjeta de ese frente dentro del recorrido horizontal */
-    $$("#sgRow .sg-go").forEach(function (a) {
-      a.addEventListener("click", function (e) {
-        e.preventDefault(); e.stopPropagation();
-        var card = $$("#frentes .card")[+a.getAttribute("data-card")], hzEl = $("#frentes"), track = $("#hzTrack");
-        if (!card || !hzEl || !track) return;
-        var dist = Math.max(0, track.offsetWidth - window.innerWidth), len = dist * 0.85;
-        var want = clamp(card.offsetLeft - window.innerWidth * 0.08, 0, dist);
-        scrollToY(hzEl.getBoundingClientRect().top + window.pageYOffset + (dist ? want / dist : 0) * len);
-      });
-    });
     var sgRow = $("#sgRow");
     sgRow.addEventListener("mouseleave", sgRelease);
     sgRow.addEventListener("focusout", function (e) { if (!sgRow.contains(e.relatedTarget)) sgRelease(); });
