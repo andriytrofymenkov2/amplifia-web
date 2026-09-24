@@ -414,7 +414,8 @@
     var sgs = $$("#sgRow .sg"), sgCur = 0, sgStarted = false, sgOn = false, sgHeld = false, sgTimer = null;
     var sgStack = window.matchMedia("(max-width: 860px)");
     function sgShow(i) { if (i === sgCur && sgs[i].classList.contains("is-open")) return; sgCur = i; sgs.forEach(function (p, k) { p.classList.toggle("is-open", k === i); p.setAttribute("aria-expanded", k === i ? "true" : "false"); }); }
-    function sgSchedule() { clearTimeout(sgTimer); if (phone || sgStack.matches) return; if (sgStarted && sgOn && !sgHeld) sgTimer = setTimeout(function () { sgShow((sgCur + 1) % sgs.length); sgSchedule(); }, 3600); }
+    function sgProg(i, on) { sgs.forEach(function (p, k) { var pg = $(".sg-prog", p); if (!pg) return; pg.classList.remove("run"); if (on && k === i) { void pg.offsetWidth; pg.classList.add("run"); } }); }
+    function sgSchedule() { clearTimeout(sgTimer); if (phone || sgStack.matches) { sgProg(-1, false); return; } if (sgStarted && sgOn && !sgHeld) { sgTimer = setTimeout(function () { sgShow((sgCur + 1) % sgs.length); sgSchedule(); }, 3600); sgProg(sgCur, true); } else sgProg(-1, false); }
     function sgPick(i) { if (!sgStarted) return; sgHeld = true; clearTimeout(sgTimer); sgShow(i); }
     function sgRelease() { sgHeld = false; clearTimeout(sgTimer); sgTimer = setTimeout(sgSchedule, 2400); }
     sgs.forEach(function (p, i) {
@@ -422,6 +423,22 @@
       p.addEventListener("focus", function () { sgPick(i); });
       p.addEventListener("click", function () { sgPick(i); });
       p.addEventListener("keydown", function (e) { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); sgPick(i); } });
+    });
+    sgs.forEach(function (p) {
+      var ic = $(".sg-ic", p);
+      if (ic) { var wm = ic.cloneNode(true); wm.setAttribute("class", "sg-wm"); p.insertBefore(wm, p.firstChild); }
+      p.insertAdjacentHTML("beforeend", '<i class="sg-prog" aria-hidden="true"></i>');
+    });
+    /* la etiqueta "Se resuelve en..." lleva a la tarjeta de ese frente dentro del recorrido horizontal */
+    $$("#sgRow .sg-go").forEach(function (a) {
+      a.addEventListener("click", function (e) {
+        e.preventDefault(); e.stopPropagation();
+        var card = $$("#frentes .card")[+a.getAttribute("data-card")], hzEl = $("#frentes"), track = $("#hzTrack");
+        if (!card || !hzEl || !track) return;
+        var dist = Math.max(0, track.offsetWidth - window.innerWidth), len = dist * 0.85;
+        var want = clamp(card.offsetLeft - window.innerWidth * 0.08, 0, dist);
+        scrollToY(hzEl.getBoundingClientRect().top + window.pageYOffset + (dist ? want / dist : 0) * len);
+      });
     });
     var sgRow = $("#sgRow");
     sgRow.addEventListener("mouseleave", sgRelease);
