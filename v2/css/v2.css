@@ -986,10 +986,13 @@ input, textarea { -webkit-appearance: none; appearance: none; border-radius: 0; 
 .card-icon { flex: 1 1 0; min-height: 0; width: 100%; height: auto; margin: clamp(8px, 1.6vh, 20px) 0 clamp(6px, 1.2vh, 16px); stroke-width: 2px; }
 .card-icon * { vector-effect: non-scaling-stroke; }
 
-/* ===== Degradado sutil en el verde de la marca =====
-   Vuelve al negro de siempre; solo se insinúa el verde lima al centro, en horizontal y con el mismo valor en todas las secciones
-   (sin costuras entre ellas ni capas fijas: no pesa al scrollear). */
-:root { --bgsub: linear-gradient(90deg, #070707 0%, #0a0c06 26%, #12160a 50%, #0a0c06 74%, #070707 100%); }
+/* ===== Fondo tipo malla suave (manchas del verde lima que se funden sobre el negro) =====
+   Cada sección pinta su propia malla y todas se apagan a negro antes de tocar el borde: no hay costuras entre secciones.
+   Es estático (sin capas fijas ni filtros), así que no pesa al scrollear. */
+:root { --bgsub: radial-gradient(ellipse 52% 38% at 20% 32%, rgba(215,242,74,0.17), transparent 74%),
+                 radial-gradient(ellipse 56% 38% at 80% 64%, rgba(215,242,74,0.22), transparent 74%),
+                 radial-gradient(ellipse 40% 28% at 52% 50%, rgba(160,200,40,0.09), transparent 74%),
+                 #070707; }
 .stage, .manif .stage, .manif-in, .prob, .caps, .fr, .rm, .cta, .trust, .us, .pj, .faq, .ct, .mq, .sheet:not(.paper), .pn { background: var(--bgsub); }
 .hero .stage { background: var(--ink); }
 /* brillos lima de cada sección: se desvanecen antes de tocar el borde (sin corte visible entre secciones) */
