@@ -224,10 +224,12 @@
     var top0 = 100, bot = vh - 24, rows = 14, cands = [], first = ampliSide === null;
     var mz = ampliId === "metodo" ? metodoZone(box.h) : null;
     if (mz) { top0 = mz.top0; bot = mz.bot; }
-    var cols = first ? 2 : 1;
+    /* siempre en la columna del botón de WhatsApp (mismo eje vertical) y por encima de él */
+    var wa = $(".wa").getBoundingClientRect(), alignL = wa.left + wa.width / 2 - box.w / 2;
+    bot = Math.min(bot, wa.top - 12);
+    var cols = 1;
     for (var c = 0; c < cols; c++) for (var r = 0; r < rows; r++) {
-      var inset = clamp((vw * 0.044) - box.w - 8, 12, 34);
-      var l = first ? (c === 0 ? inset : vw - box.w - inset) : box.l, t = top0 + (bot - top0 - box.h) * r / (rows - 1) + (Math.random() - .5) * 20;
+      var l = alignL, t = top0 + (bot - top0 - box.h) * r / (rows - 1) + (Math.random() - .5) * 20;
       l = clamp(l, 12, vw - box.w - 12); t = clamp(t, top0, bot - box.h);
     var me = { left: l, right: l + box.w, top: t, bottom: t + box.h }, BW = 350, BH = 84;
       var bl = l > vw / 2 ? l + box.w - BW : l, br = bl + BW;
@@ -235,7 +237,7 @@
       var hitsMe = 0, hu = 0, hd = 0;
       for (var i = 0; i < rects.length; i++) { if (hit(me, rects[i], 4)) hitsMe++; if (up.top > 88 && hit(up, rects[i], 4)) hu++; else if (up.top <= 88) hu += 99; if (dn.bottom < vh - 10 && hit(dn, rects[i], 4)) hd++; else if (dn.bottom >= vh - 10) hd += 99; }
       var hitsBub = Math.min(hu, hd);
-      var waHit = (l + box.w > vw - 110 && t + box.h > vh - 120) ? 2000 : 0;
+      var waHit = 0;
       var d = Math.hypot(l - box.l, t - box.t);
       cands.push({ l: l, t: t, s: waHit + hitsMe * 1000 + hitsBub * 260 + (d < (avoidNear || 220) ? 500 : 0) + Math.random() * 30 - Math.min(d, 900) / 40 });
     }
@@ -366,7 +368,13 @@
     if (bad) ampliWalkTo(ampliPick(160));
   }
   window.addEventListener("scroll", function () { clearTimeout(ampliIdle); ampliIdle = setTimeout(ampliCheck, 900); }, { passive: true });
-  window.addEventListener("resize", function () { clearTimeout(ampliIdle); ampliIdle = setTimeout(ampliCheck, 500); });
+  function ampliRealign() {
+    if (phone || ampliSide === null || ampli.classList.contains("is-walking")) return;
+    var bx = ampliBox(), wa = $(".wa").getBoundingClientRect(), x0 = gsap.getProperty(ampli, "x"), y0 = gsap.getProperty(ampli, "y");
+    var toX = wa.left + wa.width / 2 - bx.w / 2 - (bx.l - x0), maxT = wa.top - 12 - bx.h, toY = bx.t > maxT ? y0 - (bx.t - maxT) : y0;
+    gsap.set(ampli, { x: toX, y: toY }); ampliSide = "R"; ampli.classList.add("on-right");
+  }
+  window.addEventListener("resize", function () { clearTimeout(ampliIdle); ampliIdle = setTimeout(function () { ampliRealign(); ampliCheck(); }, 300); });
   /* de vez en cuando pasea a otro lugar libre (movimiento natural) */
   setInterval(function () { if (!phone && !dragging && Date.now() > ampliPinned && ampliSide && ampliId !== "hero" && !document.hidden && !ampli.classList.contains("is-open") && !ampli.classList.contains("is-walking")) ampliWalkTo(ampliPick(300)); }, 13000);
   gsap.to("#prog", { scaleX: 1, ease: "none", scrollTrigger: { start: 0, end: "max", scrub: 0.2 } });
