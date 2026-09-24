@@ -986,21 +986,15 @@ input, textarea { -webkit-appearance: none; appearance: none; border-radius: 0; 
 .card-icon { flex: 1 1 0; min-height: 0; width: 100%; height: auto; margin: clamp(8px, 1.6vh, 20px) 0 clamp(6px, 1.2vh, 16px); stroke-width: 2px; }
 .card-icon * { vector-effect: non-scaling-stroke; }
 
-/* ===== Fondo verde profundo con grano fino (premium) =====
-   Degradado horizontal (más luminoso al centro, oscuro en los bordes) igual en todas las secciones: no hay costuras entre ellas.
-   La profundidad extra viene de los brillos suaves de cada sección (.a1-.a5) y de un grano estático muy sutil. Sin capas fijas ni filtros: no pesa al scrollear. */
-:root {
-  --bgdeep: url("../img/grain.png") 0 0 / 200px 200px repeat,
-            linear-gradient(90deg, #040d08 0%, #0a2116 24%, #123822 50%, #0a2116 76%, #040d08 100%);
-}
-html, body { background: #06120b; }
-.stage, .manif .stage, .manif-in, .prob, .caps, .fr, .rm, .cta, .trust, .us, .pj, .faq, .ct, .mq, .sheet:not(.paper), .pn { background: var(--bgdeep); }
+/* ===== Degradado sutil en el verde de la marca =====
+   Vuelve al negro de siempre; solo se insinúa el verde lima al centro, en horizontal y con el mismo valor en todas las secciones
+   (sin costuras entre ellas ni capas fijas: no pesa al scrollear). */
+:root { --bgsub: linear-gradient(90deg, #070707 0%, #0a0c06 26%, #12160a 50%, #0a0c06 74%, #070707 100%); }
+.stage, .manif .stage, .manif-in, .prob, .caps, .fr, .rm, .cta, .trust, .us, .pj, .faq, .ct, .mq, .sheet:not(.paper), .pn { background: var(--bgsub); }
 .hero .stage { background: var(--ink); }
-.a1 { background: radial-gradient(ellipse 36% 30% at 78% 62%, rgba(44,170,96,0.28), transparent 100%); }
-.a2 { background: radial-gradient(ellipse 34% 30% at 22% 34%, rgba(44,170,96,0.25), transparent 100%); }
-.a3 { background: radial-gradient(ellipse 40% 28% at 50% 66%, rgba(44,170,96,0.28), transparent 100%); }
-.a4 { background: radial-gradient(ellipse 34% 32% at 86% 36%, rgba(44,170,96,0.25), transparent 100%); }
-.a5 { background: radial-gradient(ellipse 36% 30% at 30% 62%, rgba(44,170,96,0.27), transparent 100%); }
-.fq-rows::before { background: linear-gradient(90deg, #0b2718, rgba(11,39,24,0)); }
-.fq-rows::after { background: linear-gradient(270deg, #0b2718, rgba(11,39,24,0)); }
-.ct .shade-strong { background: linear-gradient(180deg, rgba(10,32,20,0.55), rgba(7,20,13,0.5) 40%, rgba(5,13,8,0.78)); }
+/* brillos lima de cada sección: se desvanecen antes de tocar el borde (sin corte visible entre secciones) */
+.a1 { background: radial-gradient(ellipse 36% 30% at 78% 62%, rgba(215,242,74,0.15), transparent 100%); }
+.a2 { background: radial-gradient(ellipse 34% 30% at 22% 34%, rgba(215,242,74,0.13), transparent 100%); }
+.a3 { background: radial-gradient(ellipse 40% 28% at 50% 66%, rgba(215,242,74,0.16), transparent 100%); }
+.a4 { background: radial-gradient(ellipse 34% 32% at 86% 36%, rgba(215,242,74,0.13), transparent 100%); }
+.a5 { background: radial-gradient(ellipse 36% 30% at 30% 62%, rgba(215,242,74,0.14), transparent 100%); }
