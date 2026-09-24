@@ -1114,3 +1114,8 @@ input, textarea { -webkit-appearance: none; appearance: none; border-radius: 0; 
 @media (max-width: 860px) { .sg-open { position: static; left: auto; translate: none; } }
 /* Frentes: títulos centrados en cada contenedor */
 .card-body h3 { text-align: center; }
+/* El problema: el símbolo vuelve a verse blanco y nítido arriba del título (se quita el fondo tenue) */
+.sg-wm { display: none; }
+.sg-ic { display: block; width: clamp(88px, 8.6vw, 132px); margin: 0 auto clamp(14px, 2.6vh, 26px); }
+.sg-go { margin-top: clamp(16px, 2.6vh, 28px); }
+.sg-ic { width: clamp(112px, 11vw, 160px); }
