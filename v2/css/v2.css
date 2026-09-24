@@ -969,7 +969,7 @@ input, textarea { -webkit-appearance: none; appearance: none; border-radius: 0; 
 .ampli.on-right .ampli-hint { right: 100%; margin-right: 8px; }
 .ampli:not(.on-right) .ampli-hint { left: 100%; margin-left: 8px; }
 .ampli.hint-on:not(.is-open):not(.speaking) .ampli-hint { opacity: 1; }
-.ampli.seen .ampli-dot, .ampli.seen .ampli-pulse, .ampli.seen .ampli-hint { display: none; }
+.ampli.seen .ampli-pulse, .ampli.seen .ampli-hint { display: none; }
 @media (prefers-reduced-motion: reduce) { .ampli-pulse { animation: none; } }
 @media (max-width: 860px), (hover: none) and (any-hover: none) { .ampli.hint-on:not(.is-open) .ampli-hint { opacity: 1; } }
 .ampli-panel { height: clamp(400px, calc(100vh - 240px), 600px); }

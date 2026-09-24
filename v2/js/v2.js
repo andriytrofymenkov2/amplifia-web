@@ -364,12 +364,12 @@
   })();
 
 
-  /* invitación a conversar: la etiqueta aparece un momento y se retira; el aviso y el pulso quedan hasta el primer clic */
+  /* invitación a conversar: etiqueta y pulso quedan fijos hasta el primer clic */
   (function () {
     var seen = false; try { seen = sessionStorage.getItem("ampliSeen") === "1"; } catch (e) {}
     if (seen) { ampli.classList.add("seen"); return; }
     var kicked = false;
-    ampliHintKick = function () { if (kicked) return; kicked = true; setTimeout(function () { ampli.classList.add("hint-on"); setTimeout(function () { ampli.classList.remove("hint-on"); }, 14000); }, 7500); };
+    ampliHintKick = function () { if (kicked) return; kicked = true; setTimeout(function () { ampli.classList.add("hint-on"); }, 5000); };
     ampliBtn.addEventListener("click", function () { ampli.classList.add("seen"); ampli.classList.remove("hint-on"); try { sessionStorage.setItem("ampliSeen", "1"); } catch (e) {} });
   })();
   var ampliIdle = null;
