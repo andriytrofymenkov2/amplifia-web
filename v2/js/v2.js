@@ -410,23 +410,27 @@
     var mw = words($("#manifText"), false);
     onceIn("#manifiesto", function () { gsap.to(mw, { opacity: 1, stagger: 0.07, duration: 0.7, ease: "power2.out" }); }, "top 55%");
 
-    /* 03 · el problema: las cinco filas se abren solas (línea, título por palabra, texto de costado) */
-    var prRows = $$("#prList .pr-row");
-    var prT = prRows.map(function (r) { return words($(".pr-t", r)); });
-    prRows.forEach(function (r, i) {
-      gsap.set($(".pr-line", r), { scaleX: 0 });
-      gsap.set(prT[i], { yPercent: 40, opacity: 0 });
-      gsap.set($$(".pr-n, .pr-s", r), { opacity: 0, x: i % 2 ? -40 : 40 });
+    /* 03 · el problema: cinco paneles verticales; uno se abre solo, en celular se abre con un toque */
+    var sgs = $$("#sgRow .sg"), sgCur = 0, sgStarted = false, sgOn = false, sgHeld = false, sgTimer = null;
+    var sgStack = window.matchMedia("(max-width: 860px)");
+    function sgShow(i) { if (i === sgCur && sgs[i].classList.contains("is-open")) return; sgCur = i; sgs.forEach(function (p, k) { p.classList.toggle("is-open", k === i); p.setAttribute("aria-expanded", k === i ? "true" : "false"); }); }
+    function sgSchedule() { clearTimeout(sgTimer); if (phone || sgStack.matches) return; if (sgStarted && sgOn && !sgHeld) sgTimer = setTimeout(function () { sgShow((sgCur + 1) % sgs.length); sgSchedule(); }, 3600); }
+    function sgPick(i) { if (!sgStarted) return; sgHeld = true; clearTimeout(sgTimer); sgShow(i); }
+    function sgRelease() { sgHeld = false; clearTimeout(sgTimer); sgTimer = setTimeout(sgSchedule, 2400); }
+    sgs.forEach(function (p, i) {
+      p.addEventListener("mouseenter", function () { if (!sgStack.matches) sgPick(i); });
+      p.addEventListener("focus", function () { sgPick(i); });
+      p.addEventListener("click", function () { sgPick(i); });
+      p.addEventListener("keydown", function (e) { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); sgPick(i); } });
     });
-    onceIn("#prList", function () {
-      prRows.forEach(function (r, i) {
-        var tl = gsap.timeline({ delay: i * 0.18 });
-        tl.to($(".pr-line", r), { scaleX: 1, duration: 1.1, ease: "power3.inOut" })
-          .to(prT[i], { yPercent: 0, opacity: 1, duration: 0.9, stagger: 0.05, ease: "power4.out" }, 0.25)
-          .to($(".pr-n", r), { opacity: 0.55, x: 0, duration: 0.7, ease: "power3.out" }, 0.3)
-          .to($(".pr-s", r), { opacity: 0.7, x: 0, duration: 0.8, ease: "power3.out" }, 0.5);
-      });
-    }, "top 65%");
+    var sgRow = $("#sgRow");
+    sgRow.addEventListener("mouseleave", sgRelease);
+    sgRow.addEventListener("focusout", function (e) { if (!sgRow.contains(e.relatedTarget)) sgRelease(); });
+    gsap.set(sgs, { opacity: 0, y: 40 });
+    onceIn("#sgRow", function () {
+      gsap.to(sgs, { opacity: 1, y: 0, duration: 0.9, stagger: 0.09, ease: "power3.out", onComplete: function () { sgStarted = true; sgSchedule(); } });
+    }, "top 75%");
+    ScrollTrigger.create({ trigger: "#problema", start: "top 85%", end: "bottom 15%", onToggle: function (s) { sgOn = s.isActive; sgSchedule(); } });
 
     /* 04 · qué hacemos: un solo bloque que se abre desde el centro; los tres módulos aparecen integrados */
     var capsCols = $("#capsCols"), capCols = $$(".col", capsCols);
