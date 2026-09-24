@@ -1079,3 +1079,7 @@ input, textarea { -webkit-appearance: none; appearance: none; border-radius: 0; 
 .sg { border-color: rgba(215,242,74,0.24); background-image: radial-gradient(110% 42% at 50% 112%, rgba(215,242,74,0.16), transparent 72%), radial-gradient(70% 30% at 50% -6%, rgba(215,242,74,0.07), transparent 70%), linear-gradient(180deg, #131313 0%, #070707 62%); }
 .sg.is-open { border-color: rgba(215,242,74,0.5); }
 @media (max-width: 860px) { .sg-vt, .sg.is-open .sg-vt { color: #fff; } }
+/* Frentes: símbolos más grandes (tarjeta un poco más alta y menos aire alrededor del símbolo) */
+.hz-track { height: min(78vh, 820px); margin-top: 4vh; }
+.card-icon { margin: clamp(2px, 0.6vh, 8px) 0 clamp(2px, 0.6vh, 8px); }
+@media (max-width: 860px) { .hz-track { height: 66vh; margin-top: 8vh; } }
