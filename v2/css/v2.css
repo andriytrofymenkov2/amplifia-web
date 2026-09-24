@@ -980,3 +980,8 @@ input, textarea { -webkit-appearance: none; appearance: none; border-radius: 0; 
 .card-icon { width: clamp(54px, 4.8vw, 76px); height: auto; color: #fff; flex: none; margin-bottom: clamp(4px, 1vh, 12px); }
 .card-body h3 { color: var(--lime); }
 .card-body h3 { min-height: 2.2em; }
+.ac-sugg { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.ac-sugg button { text-align: center; padding: 8px 10px; line-height: 1.25; }
+/* Símbolos de Frentes: ocupan todo el espacio libre entre el tope de la tarjeta y el título, centrados, con trazo fino constante */
+.card-icon { flex: 1 1 0; min-height: 0; width: 100%; height: auto; margin: clamp(8px, 1.6vh, 20px) 0 clamp(6px, 1.2vh, 16px); stroke-width: 2px; }
+.card-icon * { vector-effect: non-scaling-stroke; }
