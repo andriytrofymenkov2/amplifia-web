@@ -431,6 +431,23 @@
       gsap.to(sgs, { opacity: 1, y: 0, duration: 0.9, stagger: 0.09, ease: "power3.out", onComplete: function () { sgStarted = true; sgSchedule(); } });
     }, "top 75%");
     ScrollTrigger.create({ trigger: "#problema", start: "top 85%", end: "bottom 15%", onToggle: function (s) { sgOn = s.isActive; sgSchedule(); } });
+    /* cada título vertical se agranda hasta ocupar el alto del panel, en una sola línea */
+    var sgCv = document.createElement("canvas").getContext("2d");
+    function sgFit() {
+      var vts = $$(".sg-vt", sgRow);
+      if (sgStack.matches) { vts.forEach(function (v) { v.style.fontSize = ""; }); return; }
+      var rowR = sgRow.getBoundingClientRect(), gap = parseFloat(getComputedStyle(sgRow).columnGap) || 10;
+      var collW = (rowR.width - gap * (sgs.length - 1)) / (sgs.length - 1 + 4.4), avail = rowR.height - 56, cap = collW * 0.5;
+      var cs = getComputedStyle(vts[0]);
+      vts.forEach(function (v) {
+        sgCv.font = "500 100px " + cs.fontFamily;
+        var w100 = sgCv.measureText(v.textContent).width || 1;
+        v.style.fontSize = Math.max(16, Math.min(100 * avail / w100 * 0.97, cap)).toFixed(1) + "px";
+      });
+    }
+    sgFit();
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(sgFit);
+    window.addEventListener("resize", function () { sgFit(); });
 
     /* 04 · qué hacemos: un solo bloque que se abre desde el centro; los tres módulos aparecen integrados */
     var capsCols = $("#capsCols"), capCols = $$(".col", capsCols);

@@ -1039,3 +1039,32 @@ input, textarea { -webkit-appearance: none; appearance: none; border-radius: 0; 
   .sg-inner h3 { display: none; }
   .sg-inner p { margin: 0; font-size: 15px; max-width: none; }
 }
+
+/* El problema: contenido del panel abierto centrado; texto blanco más amplio */
+.sg { --open-w: min(540px, 44vw); }
+.sg-row { --open-w: min(540px, 44vw); }
+.sg-open { left: 50%; translate: -50% 0; align-items: center; justify-content: center; }
+.sg-inner { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: clamp(28px, 4vh, 44px) clamp(24px, 2.4vw, 40px); }
+.sg-ic { margin: 0 auto clamp(18px, 3.6vh, 34px); }
+.sg-inner h3 { font-size: clamp(30px, 3.2vw, 52px); }
+.sg-inner p { margin-inline: auto; margin-top: clamp(14px, 2.4vh, 26px); font-size: clamp(17px, 1.6vw, 24px); line-height: 1.55; max-width: 34ch; color: rgba(239,236,229,0.92); }
+@media (max-width: 860px) {
+  .sg-open { left: auto; translate: none; align-items: stretch; justify-content: stretch; }
+  .sg-inner { flex-direction: column; align-items: center; text-align: center; gap: 14px; padding: 0 20px; }
+  .sg.is-open .sg-inner { padding: 6px 20px 26px; }
+  .sg-ic { width: 76px; margin: 0 auto; }
+  .sg-inner p { font-size: 17px; line-height: 1.5; max-width: 28ch; }
+}
+
+/* El problema: sin números; títulos verticales en verde lima, del mayor tamaño posible en una sola línea (los mide v2.js) */
+.sg-num { display: none; }
+.sg-row { height: min(66vh, 600px); max-height: 66vh; }
+.sg-vt { top: 50%; bottom: auto; translate: -50% -50%; color: var(--lime); font-size: clamp(20px, 2vw, 30px); line-height: 1; font-weight: 500; letter-spacing: 0; }
+.sg:hover .sg-vt { color: var(--lime); }
+@media (max-width: 860px) {
+  .sg-row { height: auto; max-height: none; }
+  .sg-vt { left: 20px; right: 18px; top: 0; translate: none; font-size: 19px; line-height: 1.2; color: var(--lime); }
+  .sg.is-open .sg-vt { color: var(--lime); }
+}
+@media (max-width: 860px) { .sg::before { content: ""; display: block; height: 66px; } .sg-vt { height: 66px; } }
+@media (max-width: 860px) { .sg-vt { left: 18px; justify-content: center; text-align: center; } }
