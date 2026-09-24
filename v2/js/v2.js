@@ -828,9 +828,8 @@
     finish();
     /* el resto de la página (más pesado: frentes, roadmap, preguntas, anillo 3D…) se arma después de que
        el navegador ya pintó el primer cuadro de la cortina, para no competirle cuadros al efecto de entrada */
-    requestAnimationFrame(function () { requestAnimationFrame(function () {
-      try { build(); } catch (e) { if (window.console) console.error(e); }
-    }); });
+    var runBuild = function () { try { build(); } catch (e) { if (window.console) console.error(e); } };
+    setTimeout(function () { if (window.requestIdleCallback) requestIdleCallback(runBuild, { timeout: 1500 }); else runBuild(); }, 1900);
   });
   setTimeout(function () { if (!finished) { body.classList.remove("is-loading"); if (pre.parentNode) pre.remove(); if (lenis) lenis.start(); } }, 9000);
   window.addEventListener("load", function () { setTimeout(function () { ScrollTrigger.refresh(); }, 600); });
