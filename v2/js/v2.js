@@ -329,7 +329,7 @@
   $(".ampli-cta").addEventListener("click", function () { ampliOpen(false); });
   document.addEventListener("keydown", function (e) { if (e.key === "Escape") ampliOpen(false); });
   /* Chat de Ampli: con CHAT_URL usa la IA (Cloudflare Worker); sin URL responde con textos fijos */
-  var CHAT_URL = "";
+  var CHAT_URL = "https://ampli-chat.andriytrofymenko.workers.dev";
   (function () {
     var log = $("#acLog"), form = $("#acForm"), inp = $("#acIn"), sugg = $("#acSugg"), hist = [], busy = false;
     var FB = [
