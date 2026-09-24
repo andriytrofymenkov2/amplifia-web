@@ -941,3 +941,21 @@ input, textarea { -webkit-appearance: none; appearance: none; border-radius: 0; 
 .c3d-card.has-logo { padding: 0; }
 .c3d-badge { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; padding: 7%; background: #fff; border-radius: 17px; }
 .c3d-badge img { width: 100%; height: 100%; object-fit: contain; }
+
+/* Chat de Ampli */
+.ampli-panel { width: min(350px, calc(100vw - 28px)); display: flex; flex-direction: column; gap: 10px; }
+.ac-log { height: min(220px, 30vh); overflow-y: auto; overscroll-behavior: contain; display: flex; flex-direction: column; gap: 8px; padding: 2px 4px 2px 0; margin-top: 4px; scrollbar-width: thin; scrollbar-color: rgba(215,242,74,0.4) transparent; }
+.ac-m { max-width: 88%; padding: 9px 13px; border-radius: 14px; font-size: 14px; line-height: 1.45; white-space: pre-wrap; overflow-wrap: anywhere; }
+.ac-m.bot { align-self: flex-start; background: #1a1a1a; border: 1px solid rgba(255,255,255,0.08); border-bottom-left-radius: 4px; }
+.ac-m.me { align-self: flex-end; background: var(--lime); color: #0a0a0a; border-bottom-right-radius: 4px; }
+.ac-m.typing { opacity: 0.6; }
+.ac-sugg { display: flex; flex-wrap: wrap; gap: 6px; }
+.ac-sugg button { font-size: 12.5px; padding: 6px 11px; border: 1px solid rgba(215,242,74,0.45); border-radius: 999px; color: #f2efe9; transition: background 0.2s ease, color 0.2s ease; }
+.ac-sugg button:hover { background: var(--lime); color: #0a0a0a; }
+.ac-sugg.is-gone { display: none; }
+.ac-form { display: flex; gap: 8px; }
+.ac-form input { flex: 1; min-width: 0; padding: 10px 14px; background: #0a0a0a; border: 1px solid rgba(255,255,255,0.16); border-radius: 999px; color: #f2efe9; font: inherit; font-size: 14px; outline: none; }
+.ac-form input:focus { border-color: var(--lime); }
+.ac-form button { width: 40px; flex: none; border-radius: 50%; background: var(--lime); color: #0a0a0a; font-size: 18px; line-height: 1; }
+.ampli-cta { align-self: flex-start; padding: 9px 16px; font-size: 12px; }
+@media (max-width: 860px) { .ac-form input { font-size: 16px; } }

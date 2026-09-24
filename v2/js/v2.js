@@ -266,7 +266,7 @@
   }
   /* si Ampli está en la parte de arriba, el globo y el panel se abren hacia abajo para no salirse de la pantalla */
   function ampliTips(tb) {
-    var b = tb || ampliBox(), rs = avoidRects(), vh = window.innerHeight, BW = 350, BH = 84, right = b.l + b.w / 2 > window.innerWidth / 2;
+    var b = tb || ampliBox(), rs = avoidRects(), vh = window.innerHeight, BW = 350, BH = ampliBig ? 330 : 84, right = b.l + b.w / 2 > window.innerWidth / 2;
     var bl = right ? b.l + b.w - BW : b.l, br = bl + BW;
     var up = { left: bl, right: br, top: b.t - BH - 8, bottom: b.t - 8 }, dn = { left: bl, right: br, top: b.t + b.h + 8, bottom: b.t + b.h + 8 + BH }, hu = up.top < 90 ? 99 : 0, hd = dn.bottom > vh - 10 ? 99 : 0;
     for (var i = 0; i < rs.length; i++) { if (hit(up, rs[i], 4)) hu++; if (hit(dn, rs[i], 4)) hd++; }
@@ -322,11 +322,42 @@
       pupils.forEach(function (p) { p.style.transform = "translate(" + (dx / d * k).toFixed(2) + "px," + (dy / d * k).toFixed(2) + "px)"; }); }); } }, { passive: true });
   }
   /* panel: se abre con un toque y lleva al diagnóstico */
-  function ampliOpen(o) { if (o) { ampliTips(); ampliFit($("#ampliPanel")); } ampli.classList.toggle("is-open", o); ampliBtn.setAttribute("aria-expanded", o ? "true" : "false"); if (o) { clearTimeout(ampliT); ampliBubble.classList.remove("is-on"); } }
+  var ampliBig = false;
+  function ampliOpen(o) { ampliBig = o; if (o) { ampliTips(); ampliFit($("#ampliPanel")); } ampli.classList.toggle("is-open", o); ampliBtn.setAttribute("aria-expanded", o ? "true" : "false"); if (o) { clearTimeout(ampliT); ampliBubble.classList.remove("is-on"); } }
   ampliBtn.addEventListener("click", function () { if (ampli.classList.contains("is-open")) ampliOpen(false); else if (phone) ampliOpen(true); else { ampliOpen(true); } });
     $("#ampliX").addEventListener("click", function () { ampliOpen(false); });
   $(".ampli-cta").addEventListener("click", function () { ampliOpen(false); });
   document.addEventListener("keydown", function (e) { if (e.key === "Escape") ampliOpen(false); });
+  /* Chat de Ampli: con CHAT_URL usa la IA (Cloudflare Worker); sin URL responde con textos fijos */
+  var CHAT_URL = "";
+  (function () {
+    var log = $("#acLog"), form = $("#acForm"), inp = $("#acIn"), sugg = $("#acSugg"), hist = [], busy = false;
+    var FB = [
+      [/cuest|precio|valor|costo|tarifa|presupuesto/, "Depende del alcance: no vendemos paquetes cerrados. Después del diagnóstico te presentamos una propuesta con alcance, plazos y valores claros."],
+      [/empie|empez|primer|diagn|dura|c[oó]mo (trabaj|arranc)/, "Empezamos siempre por un diagnóstico: relevamos datos y conversamos con líderes y equipos para entender cómo funciona hoy tu organización. La duración depende del tamaño; en la primera charla te damos una estimación."],
+      [/contact|whats|mail|agend|reuni|hablar/, "Podés escribirnos por WhatsApp al +54 9 11 3327-8023 o a andriytrofymenko@gmail.com. También podés usar el formulario de Contacto."],
+      [/ia\b|inteligencia|artificial|automat|dato/, "La IA es uno de nuestros seis frentes: la integramos en decisiones reales, automatizamos tareas y armamos tableros con datos en vivo. Primero entendemos tu organización y después sumamos tecnología donde aporta."],
+      [/qu[eé] hac|servicio|frente|ofrec|hacen/, "Trabajamos tres áreas: procesos (Lean, Kaizen, indicadores), personas (liderazgo, coaching, equipos comerciales) e inteligencia artificial y datos. Son seis frentes, un solo sistema."]
+    ];
+    function add(cls, txt) { var d = document.createElement("div"); d.className = "ac-m " + cls; d.textContent = txt; log.appendChild(d); log.scrollTop = log.scrollHeight; return d; }
+    function fallback(q) { q = q.toLowerCase(); for (var i = 0; i < FB.length; i++) if (FB[i][0].test(q)) return FB[i][1]; return "Para eso lo mejor es que lo charlemos: escribinos por WhatsApp al +54 9 11 3327-8023 o pedí un diagnóstico."; }
+    function ask(q) {
+      q = (q || "").trim(); if (!q || busy) return;
+      busy = true; sugg.classList.add("is-gone"); add("me", q); inp.value = ""; hist.push({ role: "user", content: q });
+      var t = add("bot typing", "Escribiendo…");
+      function done(txt) { t.classList.remove("typing"); t.textContent = txt; hist.push({ role: "assistant", content: txt }); log.scrollTop = log.scrollHeight; busy = false; }
+      if (!CHAT_URL) { setTimeout(function () { done(fallback(q)); }, 600); return; }
+      fetch(CHAT_URL, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ messages: hist.slice(-12) }) })
+        .then(function (r) { if (!r.ok) throw 0; return r.json(); })
+        .then(function (d) { done(d.reply || fallback(q)); })
+        .catch(function () { done(fallback(q)); });
+    }
+    add("bot", "Hola, soy Ampli, el asistente de Amplifia. Contame qué desafío tiene tu organización o preguntame lo que quieras sobre cómo trabajamos.");
+    form.addEventListener("submit", function (e) { e.preventDefault(); ask(inp.value); });
+    sugg.addEventListener("click", function (e) { if (e.target.tagName === "BUTTON") ask(e.target.textContent); });
+    ampliBtn.addEventListener("click", function () { if (!phone) setTimeout(function () { if (ampli.classList.contains("is-open")) inp.focus({ preventScroll: true }); }, 350); });
+  })();
+
   var ampliIdle = null;
   function ampliCheck() {
     if (phone || dragging || Date.now() < ampliPinned || !ampliSide || ampliId === "hero" || ampli.classList.contains("is-open") || ampli.classList.contains("is-walking")) return;

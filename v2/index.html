@@ -10,7 +10,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="preload" as="image" href="../Imagenes%20usadas/hero_poster_1920.jpg">
-<link rel="stylesheet" href="css/v2.css?v=89">
+<link rel="stylesheet" href="css/v2.css?v=90">
 <link rel="preload" as="script" href="vendor/gsap.min.js">
 <link rel="preload" as="script" href="vendor/ScrollTrigger.min.js">
 <link rel="preload" as="script" href="vendor/SplitText.min.js">
@@ -62,8 +62,17 @@
   <div class="ampli-bubble" id="ampliBubble" role="status" aria-live="polite"></div>
   <div class="ampli-panel" id="ampliPanel" role="dialog" aria-label="Ampli, asistente de Amplifia">
     <button class="ampli-x" id="ampliX" type="button" aria-label="Cerrar">&times;</button>
-    <p class="tiny">Hola, soy Ampli</p>
-    <p class="ampli-t">Soy el asistente de Amplifia. Muy pronto vas a poder conversar conmigo para resolver dudas sobre nuestros servicios. Mientras tanto, te acompaño por la página.</p>
+    <p class="tiny">Ampli · asistente de Amplifia</p>
+    <div class="ac-log" id="acLog" data-lenis-prevent aria-live="polite"></div>
+    <div class="ac-sugg" id="acSugg">
+      <button type="button">¿Qué hacen?</button>
+      <button type="button">¿Cómo empezamos?</button>
+      <button type="button">¿Cuánto cuesta?</button>
+    </div>
+    <form class="ac-form" id="acForm" autocomplete="off">
+      <input id="acIn" type="text" maxlength="300" placeholder="Escribí tu consulta" aria-label="Tu consulta">
+      <button type="submit" aria-label="Enviar">&rarr;</button>
+    </form>
     <a class="btn ampli-cta" href="#contacto">Pedir un diagnóstico</a>
   </div>
   <button class="ampli-btn" id="ampliBtn" type="button" aria-label="Ampli, tu guía" aria-expanded="false">
@@ -320,6 +329,6 @@
 <script src="vendor/ScrollTrigger.min.js"></script>
 <script src="vendor/SplitText.min.js"></script>
 <script src="vendor/lenis.min.js"></script>
-<script src="js/v2.js?v=89"></script>
+<script src="js/v2.js?v=90"></script>
 </body>
 </html>
