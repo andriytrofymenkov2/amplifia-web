@@ -1112,3 +1112,5 @@ input, textarea { -webkit-appearance: none; appearance: none; border-radius: 0; 
 .sg.is-open .sg-wm { opacity: 0.12; }
 .sg-inner h3 { text-wrap: balance; }
 @media (max-width: 860px) { .sg-open { position: static; left: auto; translate: none; } }
+/* Frentes: títulos centrados en cada contenedor */
+.card-body h3 { text-align: center; }
