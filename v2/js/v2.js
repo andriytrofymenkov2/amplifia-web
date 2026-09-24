@@ -258,7 +258,14 @@
        a cuadro, forzando a recalcular el diseño en pleno scroll. Se corrige una vez al llegar. */
     gsap.to(ampli, { y: toY, duration: dur * 1.05, ease: "power2.inOut", onComplete: function () { ampliSide = side; ampli.classList.remove("is-walking"); ampli.classList.toggle("on-right", side === "R"); if (ampliBubble.classList.contains("is-on")) { ampliTips(); ampliFit(ampliBubble); } if (done) done(); } });
   }
+  /* Ampli queda fijo justo arriba del botón de WhatsApp, en su mismo eje */
+  function ampliDock() {
+    var bx = ampliBox(), wa = $(".wa").getBoundingClientRect(), x0 = gsap.getProperty(ampli, "x"), y0 = gsap.getProperty(ampli, "y");
+    gsap.set(ampli, { x: wa.left + wa.width / 2 - bx.w / 2 - (bx.l - x0), y: y0 + (wa.top - 12 - (bx.t + bx.h)) });
+    ampliSide = "R"; ampli.classList.add("on-right");
+  }
   function ampliWalk(id, done) {
+    if (!phone) { if (ampliSide === null) ampliDock(); if (done) done(); return; }
     if (phone) { if (ampliSide === null) { gsap.set(ampli, { x: 6, y: 0 }); ampliSide = "L"; } if (done) done(); return; }
     if (ampliSide === null) {
       var p0 = ampliPick(0), bx = ampliBox(), x0 = gsap.getProperty(ampli, "x"), y0 = gsap.getProperty(ampli, "y");
@@ -272,12 +279,7 @@
     var bl = right ? b.l + b.w - BW : b.l, br = bl + BW;
     var up = { left: bl, right: br, top: b.t - BH - 8, bottom: b.t - 8 }, dn = { left: bl, right: br, top: b.t + b.h + 8, bottom: b.t + b.h + 8 + BH }, hu = up.top < 90 ? 99 : 0, hd = dn.bottom > vh - 10 ? 99 : 0;
     for (var i = 0; i < rs.length; i++) { if (hit(up, rs[i], 4)) hu++; if (hit(dn, rs[i], 4)) hd++; }
-    if (ampliId === "metodo") {
-      var mz2 = metodoZone(b.h);
-      ampli.classList.toggle("tip-below", mz2 ? mz2.tipBelow : false);
-    } else {
-      ampli.classList.toggle("tip-below", hd < hu || (hd === hu && b.t < 270));
-    }
+    ampli.classList.toggle("tip-below", phone ? (hd < hu || (hd === hu && b.t < 270)) : false);
     ampli.classList.toggle("on-right", right);
   }
   function ampliFitNow(el) {
@@ -361,22 +363,7 @@
   })();
 
   var ampliIdle = null;
-  function ampliCheck() {
-    if (phone || dragging || Date.now() < ampliPinned || !ampliSide || ampliId === "hero" || ampli.classList.contains("is-open") || ampli.classList.contains("is-walking")) return;
-    var b = ampliBox(), me = { left: b.l, right: b.l + b.w, top: b.t, bottom: b.t + b.h }, rs = textRects(), bad = b.t < 90;
-    for (var i = 0; i < rs.length && !bad; i++) if (hit(me, rs[i], 6)) bad = true;
-    if (bad) ampliWalkTo(ampliPick(160));
-  }
-  window.addEventListener("scroll", function () { clearTimeout(ampliIdle); ampliIdle = setTimeout(ampliCheck, 900); }, { passive: true });
-  function ampliRealign() {
-    if (phone || ampliSide === null || ampli.classList.contains("is-walking")) return;
-    var bx = ampliBox(), wa = $(".wa").getBoundingClientRect(), x0 = gsap.getProperty(ampli, "x"), y0 = gsap.getProperty(ampli, "y");
-    var toX = wa.left + wa.width / 2 - bx.w / 2 - (bx.l - x0), maxT = wa.top - 12 - bx.h, toY = bx.t > maxT ? y0 - (bx.t - maxT) : y0;
-    gsap.set(ampli, { x: toX, y: toY }); ampliSide = "R"; ampli.classList.add("on-right");
-  }
-  window.addEventListener("resize", function () { clearTimeout(ampliIdle); ampliIdle = setTimeout(function () { ampliRealign(); ampliCheck(); }, 300); });
-  /* de vez en cuando pasea a otro lugar libre (movimiento natural) */
-  setInterval(function () { if (!phone && !dragging && Date.now() > ampliPinned && ampliSide && ampliId !== "hero" && !document.hidden && !ampli.classList.contains("is-open") && !ampli.classList.contains("is-walking")) ampliWalkTo(ampliPick(300)); }, 13000);
+  window.addEventListener("resize", function () { clearTimeout(ampliIdle); ampliIdle = setTimeout(function () { if (!phone && ampliSide !== null) ampliDock(); }, 300); });
   gsap.to("#prog", { scaleX: 1, ease: "none", scrollTrigger: { start: 0, end: "max", scrub: 0.2 } });
   ScrollTrigger.create({ trigger: "#hero", start: "bottom 60%", end: "max", onToggle: function (s) { $("#wa").classList.toggle("is-on", s.isActive); $("#social").classList.toggle("is-on", s.isActive); } });
 
