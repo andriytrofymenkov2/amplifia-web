@@ -1119,3 +1119,22 @@ input, textarea { -webkit-appearance: none; appearance: none; border-radius: 0; 
 .sg-ic { display: block; width: clamp(88px, 8.6vw, 132px); margin: 0 auto clamp(14px, 2.6vh, 26px); }
 .sg-go { margin-top: clamp(16px, 2.6vh, 28px); }
 .sg-ic { width: clamp(112px, 11vw, 160px); }
+
+/* El problema (paneles cerrados): símbolo blanco con halo verde, filete fino hacia el título y una luz distinta en cada panel */
+.sg-wm { display: block; position: absolute; left: 50%; top: clamp(20px, 3.4vh, 32px); right: auto; translate: -50% 0; width: clamp(46px, 4.2vw, 64px); height: auto; aspect-ratio: 1; color: #fff; stroke-width: 1.7px; opacity: 1; z-index: 2; transition: opacity 0.3s ease; }
+.sg.is-open .sg-wm, .sg.is-open .sg-halo, .sg.is-open .sg-tick { opacity: 0; }
+.sg-halo { position: absolute; left: 50%; top: clamp(8px, 1.8vh, 20px); width: clamp(110px, 10vw, 150px); aspect-ratio: 1; translate: -50% 0; border-radius: 50%; background: radial-gradient(circle, rgba(215,242,74,0.22), transparent 66%); pointer-events: none; transition: opacity 0.3s ease, transform 0.5s var(--ease); }
+.sg-tick { position: absolute; left: 50%; top: calc(clamp(20px, 3.4vh, 32px) + clamp(46px, 4.2vw, 64px) + 14px); width: 1px; height: 30px; background: linear-gradient(rgba(215,242,74,0.9), rgba(215,242,74,0)); pointer-events: none; transition: opacity 0.3s ease; }
+.sg-vt { top: calc(50% + 62px); }
+.sg:not(.is-open):hover { border-color: rgba(215,242,74,0.55); }
+.sg:not(.is-open):hover .sg-halo { transform: scale(1.15); }
+.sg:nth-child(2) { background-image: radial-gradient(110% 42% at 20% 112%, rgba(215,242,74,0.16), transparent 72%), radial-gradient(70% 30% at 50% -6%, rgba(215,242,74,0.07), transparent 70%), linear-gradient(180deg, #131313 0%, #070707 62%); }
+.sg:nth-child(3) { background-image: radial-gradient(110% 42% at 80% 112%, rgba(215,242,74,0.16), transparent 72%), radial-gradient(70% 30% at 50% -6%, rgba(215,242,74,0.07), transparent 70%), linear-gradient(180deg, #131313 0%, #070707 62%); }
+.sg:nth-child(4) { background-image: radial-gradient(110% 42% at 30% 112%, rgba(215,242,74,0.16), transparent 72%), radial-gradient(70% 30% at 50% -6%, rgba(215,242,74,0.07), transparent 70%), linear-gradient(180deg, #131313 0%, #070707 62%); }
+@media (max-width: 860px) {
+  .sg-halo, .sg-tick { display: none; }
+  .sg-wm { display: block; left: 20px; top: 16px; translate: none; width: 34px; }
+  .sg.is-open .sg-wm { opacity: 0; }
+  .sg-vt { top: 0; left: 64px; right: 18px; }
+}
+@media (max-width: 860px) { .sg.is-open .sg-vt { left: 18px; } .sg-inner .sg-ic { width: 88px; } }

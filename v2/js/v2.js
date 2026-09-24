@@ -426,7 +426,7 @@
     });
     sgs.forEach(function (p) {
       var ic = $(".sg-ic", p);
-      if (ic) { var wm = ic.cloneNode(true); wm.setAttribute("class", "sg-wm"); p.insertBefore(wm, p.firstChild); }
+      if (ic) { var wm = ic.cloneNode(true); wm.setAttribute("class", "sg-wm"); p.insertBefore(wm, p.firstChild); p.insertAdjacentHTML("afterbegin", '<i class="sg-halo" aria-hidden="true"></i><i class="sg-tick" aria-hidden="true"></i>'); }
       p.insertAdjacentHTML("beforeend", '<i class="sg-prog" aria-hidden="true"></i>');
     });
     var sgRow = $("#sgRow");
@@ -443,7 +443,7 @@
       var vts = $$(".sg-vt", sgRow);
       if (sgStack.matches) { vts.forEach(function (v) { v.style.fontSize = ""; }); return; }
       var rowR = sgRow.getBoundingClientRect(), gap = parseFloat(getComputedStyle(sgRow).columnGap) || 10;
-      var collW = (rowR.width - gap * (sgs.length - 1)) / (sgs.length - 1 + 4.4), avail = rowR.height - 56, cap = collW * 0.5;
+      var collW = (rowR.width - gap * (sgs.length - 1)) / (sgs.length - 1 + 4.4), avail = rowR.height - 150, cap = collW * 0.5;
       var cs = getComputedStyle(vts[0]);
       sgCv.font = "500 100px " + cs.fontFamily;
       var size = cap;
