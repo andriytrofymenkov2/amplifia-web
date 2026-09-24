@@ -944,7 +944,7 @@ input, textarea { -webkit-appearance: none; appearance: none; border-radius: 0; 
 
 /* Chat de Ampli */
 .ampli-panel { width: min(350px, calc(100vw - 28px)); display: flex; flex-direction: column; gap: 10px; }
-.ac-log { height: min(220px, 30vh); overflow-y: auto; overscroll-behavior: contain; display: flex; flex-direction: column; gap: 8px; padding: 2px 4px 2px 0; margin-top: 4px; scrollbar-width: thin; scrollbar-color: rgba(215,242,74,0.4) transparent; }
+.ac-log { flex: 1; min-height: 0; overflow-y: auto; overscroll-behavior: contain; display: flex; flex-direction: column; gap: 8px; padding: 2px 4px 2px 0; margin-top: 4px; scrollbar-width: thin; scrollbar-color: rgba(215,242,74,0.4) transparent; }
 .ac-m { max-width: 88%; padding: 9px 13px; border-radius: 14px; font-size: 14px; line-height: 1.45; white-space: pre-wrap; overflow-wrap: anywhere; }
 .ac-m.bot { align-self: flex-start; background: #1a1a1a; border: 1px solid rgba(255,255,255,0.08); border-bottom-left-radius: 4px; }
 .ac-m.me { align-self: flex-end; background: var(--lime); color: #0a0a0a; border-bottom-right-radius: 4px; }
@@ -959,3 +959,17 @@ input, textarea { -webkit-appearance: none; appearance: none; border-radius: 0; 
 .ac-form button { width: 40px; flex: none; border-radius: 50%; background: var(--lime); color: #0a0a0a; font-size: 18px; line-height: 1; }
 .ampli-cta { align-self: flex-start; padding: 9px 16px; font-size: 12px; }
 @media (max-width: 860px) { .ac-form input { font-size: 16px; } }
+
+/* Invitación sutil a conversar con Ampli: aviso, pulso suave y etiqueta que se retira sola */
+.ampli-btn { position: relative; }
+.ampli-dot { position: absolute; top: 6%; right: 2%; width: 9px; height: 9px; border-radius: 50%; background: var(--lime); box-shadow: 0 0 0 2px #0a0a0a, 0 0 8px rgba(215,242,74,0.55); pointer-events: none; }
+.ampli-pulse { position: absolute; left: 50%; top: 50%; width: 130%; aspect-ratio: 1; margin: 0; translate: -50% -50%; border-radius: 50%; border: 1px solid rgba(215,242,74,0.5); opacity: 0; pointer-events: none; animation: ampliPulse 9s ease-out 4s infinite; }
+@keyframes ampliPulse { 0% { transform: scale(0.75); opacity: 0; } 4% { opacity: 0.5; } 18% { transform: scale(1.5); opacity: 0; } 100% { transform: scale(1.5); opacity: 0; } }
+.ampli-hint { position: absolute; top: 50%; translate: 0 -50%; white-space: nowrap; padding: 6px 12px; font-size: 12px; letter-spacing: 0.02em; color: rgba(242,239,233,0.9); background: rgba(13,13,13,0.86); border: 1px solid rgba(215,242,74,0.28); border-radius: 999px; opacity: 0; pointer-events: none; transition: opacity 0.8s ease; }
+.ampli.on-right .ampli-hint { right: 100%; margin-right: 8px; }
+.ampli:not(.on-right) .ampli-hint { left: 100%; margin-left: 8px; }
+.ampli.hint-on:not(.is-open):not(.speaking) .ampli-hint { opacity: 1; }
+.ampli.seen .ampli-dot, .ampli.seen .ampli-pulse, .ampli.seen .ampli-hint { display: none; }
+@media (prefers-reduced-motion: reduce) { .ampli-pulse { animation: none; } }
+@media (max-width: 860px), (hover: none) and (any-hover: none) { .ampli.hint-on:not(.is-open) .ampli-hint { opacity: 1; } }
+.ampli-panel { height: clamp(400px, calc(100vh - 240px), 600px); }

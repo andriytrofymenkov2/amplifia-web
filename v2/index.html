@@ -10,7 +10,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="preload" as="image" href="../Imagenes%20usadas/hero_poster_1920.jpg">
-<link rel="stylesheet" href="css/v2.css?v=92">
+<link rel="stylesheet" href="css/v2.css?v=99">
 <link rel="preload" as="script" href="vendor/gsap.min.js">
 <link rel="preload" as="script" href="vendor/ScrollTrigger.min.js">
 <link rel="preload" as="script" href="vendor/SplitText.min.js">
@@ -65,17 +65,17 @@
     <p class="tiny">Ampli · equipo de Amplifia</p>
     <div class="ac-log" id="acLog" data-lenis-prevent aria-live="polite"></div>
     <div class="ac-sugg" id="acSugg">
-      <button type="button">¿Qué servicios ofrecen?</button>
-      <button type="button">¿Cómo es el primer paso?</button>
-      <button type="button">¿Cómo se define la inversión?</button>
+      <button type="button">¿Qué ofrecen?</button>
+      <button type="button">¿Primer paso?</button>
+      <button type="button">¿Inversión?</button>
     </div>
     <form class="ac-form" id="acForm" autocomplete="off">
-      <input id="acIn" type="text" maxlength="300" placeholder="Escribí tu consulta" aria-label="Tu consulta">
+      <input id="acIn" type="text" maxlength="300" placeholder="Escribe tu consulta" aria-label="Tu consulta">
       <button type="submit" aria-label="Enviar">&rarr;</button>
     </form>
     <a class="btn ampli-cta" href="#contacto">Pedir un diagnóstico</a>
   </div>
-  <button class="ampli-btn" id="ampliBtn" type="button" aria-label="Ampli, tu guía" aria-expanded="false">
+  <button class="ampli-btn" id="ampliBtn" type="button" aria-label="Ampli, tu guía" aria-expanded="false"><span class="ampli-pulse" aria-hidden="true"></span><span class="ampli-dot" aria-hidden="true"></span>
     <svg viewBox="-20 -14 180 190" aria-hidden="true">
       <defs>
         <radialGradient id="lH" cx="50%" cy="50%" r="50%"><stop offset=".3" stop-color="#d7f24a" stop-opacity=".5"/><stop offset="1" stop-color="#d7f24a" stop-opacity="0"/></radialGradient>
@@ -95,6 +95,7 @@
       </g>
     </svg>
   </button>
+  <span class="ampli-hint" aria-hidden="true">Consulta a Ampli</span>
 </div>
 <div class="progress" aria-hidden="true"><i id="prog"></i></div>
 
@@ -329,6 +330,6 @@
 <script src="vendor/ScrollTrigger.min.js"></script>
 <script src="vendor/SplitText.min.js"></script>
 <script src="vendor/lenis.min.js"></script>
-<script src="js/v2.js?v=95"></script>
+<script src="js/v2.js?v=99"></script>
 </body>
 </html>

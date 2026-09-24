@@ -304,12 +304,13 @@
       el.style.translate = dx + "px " + dy + "px";
     });
   }
-  var ampliPinned = 0, dragging = false, dragMoved = false;
+  var ampliHintKick = null, ampliPinned = 0, dragging = false, dragMoved = false;
   function ampliSay(id) {
     if (!ampliBubble || AMPLI_LINES[id] === undefined) return;
     ampliId = id; clearTimeout(ampliT);
     if (id === "hero") { ampli.classList.add("is-hidden"); ampli.classList.remove("is-open"); ampliBubble.classList.remove("is-on"); return; }
     ampli.classList.remove("is-hidden");
+    if (ampliHintKick) ampliHintKick();
     ampliBubble.classList.remove("is-on");
     ampliWalk(id, null);
     ampliT = setTimeout(function () {
@@ -362,6 +363,15 @@
     ampliBtn.addEventListener("click", function () { if (!phone) setTimeout(function () { if (ampli.classList.contains("is-open")) inp.focus({ preventScroll: true }); }, 350); });
   })();
 
+
+  /* invitación a conversar: la etiqueta aparece un momento y se retira; el aviso y el pulso quedan hasta el primer clic */
+  (function () {
+    var seen = false; try { seen = sessionStorage.getItem("ampliSeen") === "1"; } catch (e) {}
+    if (seen) { ampli.classList.add("seen"); return; }
+    var kicked = false;
+    ampliHintKick = function () { if (kicked) return; kicked = true; setTimeout(function () { ampli.classList.add("hint-on"); setTimeout(function () { ampli.classList.remove("hint-on"); }, 14000); }, 7500); };
+    ampliBtn.addEventListener("click", function () { ampli.classList.add("seen"); ampli.classList.remove("hint-on"); try { sessionStorage.setItem("ampliSeen", "1"); } catch (e) {} });
+  })();
   var ampliIdle = null;
   window.addEventListener("resize", function () { clearTimeout(ampliIdle); ampliIdle = setTimeout(function () { if (!phone && ampliSide !== null) ampliDock(); }, 300); });
   gsap.to("#prog", { scaleX: 1, ease: "none", scrollTrigger: { start: 0, end: "max", scrub: 0.2 } });
