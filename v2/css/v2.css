@@ -1068,3 +1068,8 @@ input, textarea { -webkit-appearance: none; appearance: none; border-radius: 0; 
 }
 @media (max-width: 860px) { .sg::before { content: ""; display: block; height: 66px; } .sg-vt { height: 66px; } }
 @media (max-width: 860px) { .sg-vt { left: 18px; justify-content: center; text-align: center; } }
+
+/* Frentes: borde verde fino y barrido circular de luz (anillo enmascarado con un cono que gira; solo transform) */
+.card { border: 1px solid rgba(215,242,74,0.3); }
+.card .ring { position: absolute; inset: 0; z-index: 3; padding: 2px; border-radius: inherit; overflow: hidden; pointer-events: none; opacity: 0; -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); mask-composite: exclude; }
+.card .ring b { position: absolute; left: 50%; top: 50%; width: 240%; aspect-ratio: 1; translate: -50% -50%; background: conic-gradient(from 0deg, transparent 0deg, transparent 240deg, rgba(215,242,74,0.35) 305deg, #d7f24a 352deg, transparent 360deg); will-change: transform; }

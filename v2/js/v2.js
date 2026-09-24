@@ -338,14 +338,14 @@
   (function () {
     var log = $("#acLog"), form = $("#acForm"), inp = $("#acIn"), sugg = $("#acSugg"), hist = [], busy = false;
     var FB = [
-      [/cuest|precio|valor|costo|tarifa|presupuesto|inversi/, "El alcance y la inversión los definen los socios de Amplifia en una conversación posterior; no puedo adelantarlos. Si quieres, puedes escribirnos por WhatsApp al +54 9 11 3327-8023."],
-      [/empie|empez|primer|diagn|dura|plazo|tiempo|trabaj|metod/, "Recomendamos comenzar por un diagnóstico: relevamos datos y conversamos con líderes y equipos para entender cómo funciona hoy tu organización. Los detalles y plazos los definen los socios en una primera conversación."],
+      [/cuest|precio|valor|costo|tarifa|presupuesto|inversi/, "El alcance y la inversión los define el equipo de Amplifia en una conversación posterior; no puedo adelantarlos. Si quieres, puedes escribirnos por WhatsApp al +54 9 11 3327-8023."],
+      [/empie|empez|primer|diagn|dura|plazo|tiempo|trabaj|metod/, "Recomendamos comenzar por un diagnóstico: relevamos datos y conversamos con líderes y equipos para entender cómo funciona hoy tu organización. Los detalles y plazos los define el equipo en una primera conversación."],
       [/contact|whats|mail|agend|reuni|hablar/, "Puedes escribirnos por WhatsApp al +54 9 11 3327-8023, al correo andriytrofymenko@gmail.com, o completar el formulario de la sección Contacto."],
       [/ia\b|inteligencia|artificial|automat|dato/, "La inteligencia artificial es uno de nuestros seis frentes: la integramos en decisiones reales, automatizamos tareas y armamos tableros con datos. Primero comprendemos tu organización y luego incorporamos tecnología donde aporta valor."],
       [/qu[eé] hac|servicio|frente|ofrec|hacen/, "Trabajamos tres áreas: procesos (Lean, Kaizen, indicadores), personas (liderazgo, coaching, equipos comerciales) e inteligencia artificial y datos. Son seis frentes que operan como un solo sistema."]
     ];
     function add(cls, txt) { var d = document.createElement("div"); d.className = "ac-m " + cls; d.textContent = txt; log.appendChild(d); log.scrollTop = log.scrollHeight; return d; }
-    function fallback(q) { q = q.toLowerCase(); for (var i = 0; i < FB.length; i++) if (FB[i][0].test(q)) return FB[i][1]; return "Para responderte con precisión, lo más conveniente es conversarlo con nuestros socios: puedes escribirnos por WhatsApp al +54 9 11 3327-8023 o solicitar un diagnóstico."; }
+    function fallback(q) { q = q.toLowerCase(); for (var i = 0; i < FB.length; i++) if (FB[i][0].test(q)) return FB[i][1]; return "Para responderte con precisión, lo más conveniente es conversarlo con nuestro equipo: puedes escribirnos por WhatsApp al +54 9 11 3327-8023 o solicitar un diagnóstico."; }
     function ask(q) {
       q = (q || "").trim(); if (!q || busy) return;
       busy = true; sugg.classList.add("is-gone"); add("me", q); inp.value = ""; hist.push({ role: "user", content: q });
@@ -474,9 +474,23 @@
     function setH() { hz.style.height = (hzLen() + window.innerHeight) + "px"; }
     setH();
     ScrollTrigger.addEventListener("refreshInit", setH);
-    gsap.to(hzTrack, { x: function () { return -hzDist(); }, ease: "none",
+    var hzTw = gsap.to(hzTrack, { x: function () { return -hzDist(); }, ease: "none",
       scrollTrigger: { trigger: hz, start: "top top", end: function () { return "+=" + hzLen(); }, scrub: 0.8, invalidateOnRefresh: true,
         onUpdate: function (s) { gsap.set("#hzBar", { scaleX: s.progress }); } } });
+
+    /* cada frente: borde verde fino y, al entrar en pantalla, un barrido de luz que le da la vuelta al borde */
+    var hzCards = $$("#frentes .card");
+    hzCards.forEach(function (c) { c.insertAdjacentHTML("beforeend", '<i class="ring" aria-hidden="true"><b></b></i>'); });
+    function hzSweep(c) {
+      var ring = $(".ring", c), b = $(".ring b", c); if (!ring || reduce) return;
+      gsap.killTweensOf([ring, b]);
+      gsap.set(b, { rotation: -140 });
+      gsap.timeline().to(ring, { opacity: 1, duration: 0.25 }, 0).to(b, { rotation: 220, duration: 1.6, ease: "power2.inOut" }, 0).to(ring, { opacity: 0, duration: 0.8, ease: "power1.in" }, 1.0);
+    }
+    if (!phone) hzCards.forEach(function (c) {
+      ScrollTrigger.create({ trigger: c, containerAnimation: hzTw, start: "left 82%", onEnter: function () { hzSweep(c); }, onEnterBack: function () { hzSweep(c); } });
+    });
+    ScrollTrigger.create({ trigger: hz, start: "top 55%", once: true, onEnter: function () { hzCards.forEach(function (c, i) { if (c.getBoundingClientRect().left < window.innerWidth * 0.86) setTimeout(function () { hzSweep(c); }, 250 + i * 260); }); } });
 
     /* 06 · roadmap: la línea se llena y cada etapa aparece cuando la línea la alcanza */
     var cols = $$("#metodo .rm-col");
