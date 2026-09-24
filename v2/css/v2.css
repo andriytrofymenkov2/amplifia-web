@@ -985,3 +985,22 @@ input, textarea { -webkit-appearance: none; appearance: none; border-radius: 0; 
 /* Símbolos de Frentes: ocupan todo el espacio libre entre el tope de la tarjeta y el título, centrados, con trazo fino constante */
 .card-icon { flex: 1 1 0; min-height: 0; width: 100%; height: auto; margin: clamp(8px, 1.6vh, 20px) 0 clamp(6px, 1.2vh, 16px); stroke-width: 2px; }
 .card-icon * { vector-effect: non-scaling-stroke; }
+
+/* ===== Fondo verde profundo con grano fino (premium) =====
+   Degradado horizontal (más luminoso al centro, oscuro en los bordes) igual en todas las secciones: no hay costuras entre ellas.
+   La profundidad extra viene de los brillos suaves de cada sección (.a1-.a5) y de un grano estático muy sutil. Sin capas fijas ni filtros: no pesa al scrollear. */
+:root {
+  --bgdeep: url("../img/grain.png") 0 0 / 200px 200px repeat,
+            linear-gradient(90deg, #040d08 0%, #0a2116 24%, #123822 50%, #0a2116 76%, #040d08 100%);
+}
+html, body { background: #06120b; }
+.stage, .manif .stage, .manif-in, .prob, .caps, .fr, .rm, .cta, .trust, .us, .pj, .faq, .ct, .mq, .sheet:not(.paper), .pn { background: var(--bgdeep); }
+.hero .stage { background: var(--ink); }
+.a1 { background: radial-gradient(ellipse 36% 30% at 78% 62%, rgba(44,170,96,0.28), transparent 100%); }
+.a2 { background: radial-gradient(ellipse 34% 30% at 22% 34%, rgba(44,170,96,0.25), transparent 100%); }
+.a3 { background: radial-gradient(ellipse 40% 28% at 50% 66%, rgba(44,170,96,0.28), transparent 100%); }
+.a4 { background: radial-gradient(ellipse 34% 32% at 86% 36%, rgba(44,170,96,0.25), transparent 100%); }
+.a5 { background: radial-gradient(ellipse 36% 30% at 30% 62%, rgba(44,170,96,0.27), transparent 100%); }
+.fq-rows::before { background: linear-gradient(90deg, #0b2718, rgba(11,39,24,0)); }
+.fq-rows::after { background: linear-gradient(270deg, #0b2718, rgba(11,39,24,0)); }
+.ct .shade-strong { background: linear-gradient(180deg, rgba(10,32,20,0.55), rgba(7,20,13,0.5) 40%, rgba(5,13,8,0.78)); }
