@@ -973,3 +973,10 @@ input, textarea { -webkit-appearance: none; appearance: none; border-radius: 0; 
 @media (prefers-reduced-motion: reduce) { .ampli-pulse { animation: none; } }
 @media (max-width: 860px), (hover: none) and (any-hover: none) { .ampli.hint-on:not(.is-open) .ampli-hint { opacity: 1; } }
 .ampli-panel { height: clamp(400px, calc(100vh - 240px), 600px); }
+
+/* Frentes: sin fotos; símbolo blanco sobre el título y títulos en el verde de la marca */
+.card { background: radial-gradient(120% 70% at 85% 0%, rgba(215,242,74,0.07), transparent 60%), #0b0b0b; }
+.card-body::before { display: none; }
+.card-icon { width: clamp(54px, 4.8vw, 76px); height: auto; color: #fff; flex: none; margin-bottom: clamp(4px, 1vh, 12px); }
+.card-body h3 { color: var(--lime); }
+.card-body h3 { min-height: 2.2em; }
