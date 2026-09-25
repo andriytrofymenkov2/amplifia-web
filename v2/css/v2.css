@@ -1289,3 +1289,32 @@ input, textarea { -webkit-appearance: none; appearance: none; border-radius: 0; 
 .qh-ic, .qh-rule, .qh-halo { flex: none; }
 .cols { height: auto; min-height: 0; }
 .cols .col.qh-card .cap-title { font-size: clamp(32px, 3.2vw, 54px); }
+
+/* Qué hacemos v4 (lista de títulos grandes): el activo se llena de verde, los demás quedan en contorno; a la derecha el símbolo y el texto del activo. Sin animaciones continuas. */
+#capsCols.qs { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); align-items: center; gap: clamp(24px, 4vw, 70px); width: min(100%, 1180px); height: auto; min-height: 0; border: 0; background: none; text-align: left; margin-top: clamp(10px, 3vh, 34px); }
+.qs-list { list-style: none; margin: 0; padding: 0; display: grid; }
+.qs-item { position: relative; display: block; padding: clamp(10px, 2.2vh, 22px) 0; border-top: 1px solid rgba(239,236,229,0.14); cursor: pointer; outline: none; }
+.qs-item:last-child { border-bottom: 1px solid rgba(239,236,229,0.14); }
+.qs-item .cap-title { font-size: clamp(54px, 7.4vw, 128px); line-height: 1; padding: 0 0 0.06em; color: transparent; -webkit-text-stroke: 1px rgba(239,236,229,0.32); transition: color 0.2s ease, -webkit-text-stroke-color 0.2s ease; }
+.qs-item:hover .cap-title { -webkit-text-stroke-color: rgba(215,242,74,0.75); }
+.qs-item.is-on .cap-title { color: var(--lime); -webkit-text-stroke: 1px var(--lime); }
+.qs-item::after { content: "+"; position: absolute; right: 0; top: 50%; translate: 0 -50%; width: 38px; height: 38px; border-radius: 50%; border: 1px solid rgba(215,242,74,0.6); display: grid; place-items: center; font-size: 22px; line-height: 1; color: var(--lime); background: #0b0b0b; opacity: 0.55; transition: opacity 0.2s ease, background 0.2s ease, color 0.2s ease; }
+.qs-item.is-on::after { opacity: 1; background: var(--lime); color: #0a0a0a; content: "\2192"; font-size: 18px; }
+.qs-m { display: none; }
+.qs-stage { position: relative; min-height: clamp(360px, 52vh, 480px); }
+.qs-panel { display: none; position: absolute; inset: 0; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 0; padding: clamp(24px, 3vw, 44px); border: 1px solid rgba(215,242,74,0.5); border-radius: 22px; background: #0b0b0b; overflow: hidden; }
+.qs-panel.is-on { display: flex; }
+.qs-panel::after { content: ""; position: absolute; inset: 0; pointer-events: none; opacity: 0.7; background: linear-gradient(var(--lime), var(--lime)) left 14px top 14px / 14px 1px no-repeat, linear-gradient(var(--lime), var(--lime)) left 14px top 14px / 1px 14px no-repeat, linear-gradient(var(--lime), var(--lime)) right 14px bottom 14px / 14px 1px no-repeat, linear-gradient(var(--lime), var(--lime)) right 14px bottom 14px / 1px 14px no-repeat; }
+.qs-halo { position: absolute; left: 50%; top: 6%; width: 70%; aspect-ratio: 1; translate: -50% 0; border-radius: 50%; background: radial-gradient(circle, rgba(215,242,74,0.22), transparent 66%); pointer-events: none; }
+.qs-ic { position: relative; display: block; width: clamp(130px, 13vw, 200px); height: auto; color: #fff; filter: drop-shadow(0 0 14px rgba(215,242,74,0.2)); flex: none; }
+.qs-ic .ac { stroke: var(--lime); }
+.qs-rule { position: relative; display: block; width: min(60%, 220px); height: 1px; margin: clamp(18px, 3vh, 30px) 0 clamp(16px, 2.6vh, 26px); background: linear-gradient(90deg, transparent, rgba(215,242,74,0.7) 50%, transparent); flex: none; }
+.qs-rule::after { content: ""; position: absolute; left: 50%; top: 50%; width: 7px; height: 7px; translate: -50% -50%; rotate: 45deg; background: #0b0b0b; border: 1px solid var(--lime); box-shadow: 0 0 10px rgba(215,242,74,0.5); }
+.qs-panel p { position: relative; margin: 0; max-width: 30ch; font-size: clamp(15px, 1.3vw, 20px); line-height: 1.55; color: rgba(239,236,229,0.9); }
+@media (max-width: 860px) {
+  #capsCols.qs { grid-template-columns: 1fr; gap: 0; }
+  .qs-stage { display: none; }
+  .qs-item .cap-title { font-size: clamp(44px, 14vw, 72px); padding-right: 52px; }
+  .qs-item::after { width: 34px; height: 34px; }
+  .qs-item.is-on .qs-m { display: block; margin: 4px 52px 6px 0; font-size: 16px; line-height: 1.55; color: rgba(239,236,229,0.88); }
+}
