@@ -1183,3 +1183,7 @@ input, textarea { -webkit-appearance: none; appearance: none; border-radius: 0; 
 .sg-vt { top: auto; bottom: clamp(20px, 3vh, 30px); translate: -50% 0; }
 @media (max-width: 860px) { .sg-row { height: auto; max-height: none; } .sg-vt { top: 0; bottom: auto; translate: none; } }
 .hero-kicker { text-wrap: balance; max-width: 92vw; text-align: center; margin-inline: auto; }
+
+/* Frentes: frase de posicionamiento bajo el título */
+.hz-sub { font-family: var(--serif); font-style: italic; font-size: clamp(20px, 2vw, 34px); line-height: 1.25; color: rgba(239,236,229,0.82); max-width: 20em; margin-top: clamp(4px, 1vh, 14px); }
+.hz-sub { text-wrap: balance; max-width: 17em; }
