@@ -9,7 +9,7 @@
 <link rel="preload" as="font" type="font/woff2" href="v2/fonts/inter-var.woff2" crossorigin>
 <link rel="preload" as="font" type="font/woff2" href="v2/fonts/instrument-serif.woff2" crossorigin>
 <link rel="stylesheet" href="v2/css/v2.css?v=185">
-<link rel="stylesheet" href="v2/css/casos.css?v=4">
+<link rel="stylesheet" href="v2/css/casos.css?v=5">
 </head>
 <body class="cs-page">
 <header class="hdr">
@@ -87,7 +87,7 @@
         <div><h3>El desafío</h3><p>La planta necesitaba ampliarse y el layout existente limitaba el flujo operativo y la productividad.</p></div>
         <div><h3>Qué hicimos</h3><p>Aplicamos la metodología de Planificación Sistemática de Layout para rediseñar y ampliar la planta, mejorando el recorrido de materiales y personas.</p></div>
       </div>
-      <div class="cs-imgs"><div class="cs-ph" role="img" aria-label="Espacio para imagen 1"><span>Imagen 1</span></div><figure class="cs-fig"><img src="Imagenes%20usadas/casos/layout_2.jpg" alt="Diagrama de relaciones entre áreas de la planta según su necesidad de cercanía" loading="lazy" width="1400" height="781"><figcaption>Diagrama de relaciones entre áreas (SLP)</figcaption></figure></div>
+      <div class="cs-imgs"><div class="cs-ph" role="img" aria-label="Espacio para imagen 1"><span>Imagen 1</span></div><figure class="cs-fig"><img src="Imagenes%20usadas/casos/layout_2.jpg" alt="Diagrama de relaciones entre áreas de la planta según su necesidad de cercanía" loading="lazy" width="1400" height="781"><button class="cs-zoom" type="button" aria-label="Ampliar imagen"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5 21 21M10.5 7.5v6M7.5 10.5h6"/></svg></button></figure></div>
     </div>
   </article>
   <article class="cs" id="polietileno">
@@ -117,6 +117,7 @@
 
 <a class="wa is-on" id="wa" href="https://wa.me/5491133278023" target="_blank" rel="noopener" aria-label="Escribinos por WhatsApp"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 3a13 13 0 0 0-11 19.9L3 29l6.300-2A13 13 0 1 0 16 3zm0 2.400a10.600 10.600 0 1 1-5.400 19.700l-.4-.2-3.700 1.200 1.200-3.600-.3-.4A10.600 10.600 0 0 1 16 5.400zm-4 5.200c-.3 0-.7.100-1 .5-.4.400-1.300 1.300-1.300 3.100s1.400 3.600 1.500 3.800c.2.200 2.600 4.100 6.500 5.600 3.200 1.200 3.900 1 4.600.9.700-.1 2.300-.9 2.600-1.800.3-.9.300-1.600.2-1.800-.1-.2-.4-.3-.8-.5l-2.600-1.200c-.3-.1-.6-.2-.9.200-.3.400-1 1.200-1.200 1.400-.2.200-.4.300-.8.100-.4-.2-1.600-.6-3-1.900-1.100-1-1.900-2.300-2.100-2.700-.2-.4 0-.6.200-.8l.6-.7c.2-.2.200-.4.400-.6.100-.3.100-.5 0-.7l-1.200-2.900c-.3-.7-.6-.6-.9-.6z"/></svg></a>
 
+<div class="cs-lb" id="csLb" role="dialog" aria-modal="true" aria-label="Imagen ampliada" hidden><button class="cs-lb-x" type="button" aria-label="Cerrar">&times;</button><img alt=""></div>
 <script>
 (function () {
   var root = document.documentElement, btn = document.querySelector(".menu-btn"), menu = document.getElementById("menu");
@@ -129,6 +130,14 @@
   if (back && document.referrer && document.referrer.indexOf(location.origin) === 0 && document.referrer.indexOf("casos.html") < 0 && history.length > 1) {
     back.addEventListener("click", function (e) { e.preventDefault(); history.back(); });
   }
+  /* lupa: abre la imagen en grande */
+  var lb = document.getElementById("csLb"), lbImg = lb.querySelector("img");
+  function lbClose() { lb.hidden = true; document.body.style.overflow = ""; }
+  document.querySelectorAll(".cs-zoom").forEach(function (z) {
+    z.addEventListener("click", function () { var im = z.parentNode.querySelector("img"); lbImg.src = im.src; lbImg.alt = im.alt; lb.hidden = false; document.body.style.overflow = "hidden"; lb.querySelector(".cs-lb-x").focus(); });
+  });
+  lb.addEventListener("click", function (e) { if (e.target !== lbImg) lbClose(); });
+  document.addEventListener("keydown", function (e) { if (e.key === "Escape" && !lb.hidden) lbClose(); });
   /* el video de YouTube se carga recién cuando se toca (la página queda liviana) */
   document.querySelectorAll(".cs-video").forEach(function (v) {
     v.querySelector(".cs-play").addEventListener("click", function () {
