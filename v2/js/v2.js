@@ -901,9 +901,16 @@
   /* ---------- pantalla de carga y entrada ---------- */
   var pre = $("#pre"), preN = $("#preN"), finished = false;
   /* regreso desde la página de casos (o link con #sección): sin pantalla de carga, directo a la sección */
+  /* solo cuando se vuelve de casos.html (con "atrás" o con su botón "Volver"); en cualquier otra entrada la carga es la de siempre */
   var backTo = null;
-  try { backTo = (location.hash || "").replace("#", "") || sessionStorage.getItem("ampBack"); sessionStorage.removeItem("ampBack"); } catch (e) {}
+  try {
+    var flag = sessionStorage.getItem("ampBack"); sessionStorage.removeItem("ampBack");
+    var nav = (performance.getEntriesByType && performance.getEntriesByType("navigation")[0]) || {};
+    var ref = document.referrer || "", fromCasos = ref.indexOf(location.host) >= 0 && /\/casos\.html/.test(ref);
+    if (fromCasos || (flag && nav.type === "back_forward")) backTo = (location.hash || "").replace("#", "") || "casos";
+  } catch (e) {}
   if (backTo && !document.getElementById(backTo)) backTo = null;
+  if (backTo && location.hash) { try { history.replaceState(null, "", location.pathname + location.search); } catch (e) {} }
   if (backTo) root.classList.add("quick");
   document.addEventListener("click", function (e) {
     var a = e.target.closest && e.target.closest('a[href*="casos.html"]');
