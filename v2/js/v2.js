@@ -408,7 +408,15 @@
 
     /* 02 · manifiesto: se enciende solo al llegar */
     var mw = words($("#manifText"), false);
-    onceIn("#manifiesto", function () { gsap.to(mw, { opacity: 1, stagger: 0.07, duration: 0.7, ease: "power2.out" }); }, "top 55%");
+    var mfNet = $("#mfNet"), mfNodes = $$(".mf-n", mfNet), mfText = $("#manifText");
+    onceIn("#manifiesto", function () {
+      gsap.to(mw, { opacity: 1, stagger: 0.07, duration: 0.7, ease: "power2.out" });
+      var tot = 0.07 * mw.length + 0.7;
+      var pr = { p: 0 };
+      gsap.to(pr, { p: 1, duration: reduce ? 0.01 : 1.5, delay: reduce ? 0 : tot * 0.72, ease: "power2.inOut",
+        onUpdate: function () { mfNet.style.setProperty("--p", pr.p.toFixed(3)); mfNodes.forEach(function (n, i) { n.classList.toggle("on", pr.p >= i * 0.5 - 0.001 && (i === 0 || pr.p > 0.02)); }); },
+        onComplete: function () { mfText.classList.add("is-linked"); } });
+    }, "top 55%");
 
     /* 03 · el problema: cinco paneles verticales; uno se abre solo, en celular se abre con un toque */
     var sgs = $$("#sgRow .sg"), sgCur = 0, sgStarted = false, sgOn = false, sgHeld = false, sgTimer = null;

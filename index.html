@@ -10,7 +10,7 @@
 <link rel="preload" as="font" type="font/woff2" href="v2/fonts/instrument-serif.woff2" crossorigin>
 <link rel="preload" as="font" type="font/woff2" href="v2/fonts/instrument-serif-italic.woff2" crossorigin>
 <link rel="preload" as="image" href="Imagenes%20usadas/hero_poster_1920.jpg">
-<link rel="stylesheet" href="v2/css/v2.css?v=146">
+<link rel="stylesheet" href="v2/css/v2.css?v=148">
 <link rel="preload" as="script" href="v2/vendor/gsap.min.js">
 <link rel="preload" as="script" href="v2/vendor/ScrollTrigger.min.js">
 <link rel="preload" as="script" href="v2/vendor/SplitText.min.js">
@@ -124,14 +124,18 @@
 
 <!-- ===== 02 · MANIFIESTO ===== -->
 <section class="manif" id="manifiesto" data-hdr="dark" data-name="Manifiesto">
-  <div class="manif-in"><p class="manif-text xl" id="manifText">Las organizaciones no se transforman mejorando procesos, personas o tecnologías por separado. Se transforman cuando todo funciona <em>conectado</em>.</p></div>
+  <div class="manif-in"><div class="mf-wrap">
+    <span class="tiny mf-label">Nuestra mirada</span>
+    <p class="manif-text xl" id="manifText">Las organizaciones no se transforman mejorando procesos, personas o tecnologías por separado. Se transforman cuando todo funciona <em>conectado</em>.</p>
+    <div class="mf-net" id="mfNet" aria-hidden="true"><span class="mf-n"><i></i>Procesos</span><span class="mf-n"><i></i>Personas</span><span class="mf-n"><i></i>Tecnología</span></div>
+  </div></div>
 </section>
 
 <!-- ===== 03 · EL PROBLEMA ===== -->
 <section class="prob" id="problema" data-hdr="dark" data-name="El problema">
   <div class="ambient a2"></div>
   <div class="prob-in">
-    <div class="prob-head"><span class="tiny">Cuándo necesitas Amplifia</span><span class="tiny">Cinco señales</span></div>
+    <div class="prob-head"><span class="tiny">¿Cuándo necesitas Amplifia?</span><span class="tiny">Cinco señales</span></div>
     <p class="sg-hint">Tocá una señal para ver de qué se trata.</p>
     <div class="sg-row" id="sgRow">
       <article class="sg is-open" tabindex="0" aria-label="Procesos que no escalan." aria-expanded="true"><span class="sg-vt">Procesos que no escalan.</span><div class="sg-open"><div class="sg-inner"><svg class="sg-ic" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 8h52L40 32v18l-16 8V32z"/><circle cx="19" cy="17" r="4"/><circle cx="32" cy="15" r="4"/><circle cx="45" cy="17" r="4"/><circle cx="26" cy="25" r="3.5"/><circle cx="38" cy="25" r="3.5"/><path d="M32 60v0"/></svg><h3>Procesos que no escalan.</h3><p>Lo que funcionaba con pocos clientes se desordena cuando el volumen crece, y todo termina dependiendo de resolverlo a mano.</p></div></div></article>
@@ -332,6 +336,6 @@
 <script src="v2/vendor/ScrollTrigger.min.js"></script>
 <script src="v2/vendor/SplitText.min.js"></script>
 <script src="v2/vendor/lenis.min.js"></script>
-<script src="v2/js/v2.js?v=143"></script>
+<script src="v2/js/v2.js?v=145"></script>
 </body>
 </html>
