@@ -1240,3 +1240,6 @@ input, textarea { -webkit-appearance: none; appearance: none; border-radius: 0; 
 .sg-prog { display: none !important; }
 .sg-row .sg:nth-child(n) { transition: flex-grow 0.22s ease-out, border-color 0.2s ease; }
 .sg-row .sg::after { transition: opacity 0.2s ease; }
+
+/* Cuándo necesitas Amplifia: sin ningún movimiento; el panel cambia al instante */
+.sg-row .sg:nth-child(n), .sg-row .sg::after, .sg-row .sg *, .sg-halo { transition: none !important; animation: none !important; }

@@ -453,10 +453,7 @@
     var sgRow = $("#sgRow");
     sgRow.addEventListener("mouseleave", sgRelease);
     sgRow.addEventListener("focusout", function (e) { if (!sgRow.contains(e.relatedTarget)) sgRelease(); });
-    gsap.set(sgs, { opacity: 0, y: 40 });
-    onceIn("#sgRow", function () {
-      gsap.to(sgs, { opacity: 1, y: 0, duration: 0.9, stagger: 0.09, ease: "power3.out", onComplete: function () { sgStarted = true; sgSchedule(); } });
-    }, "top 75%");
+    sgStarted = true;
     ScrollTrigger.create({ trigger: "#problema", start: "top 85%", end: "bottom 15%", onToggle: function (s) { sgOn = s.isActive; sgSchedule(); } });
     /* los cinco títulos verticales comparten el mismo tamaño: el mayor que deja entrar el más largo en una sola línea */
     var sgCv = document.createElement("canvas").getContext("2d");
