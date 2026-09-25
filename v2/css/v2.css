@@ -1155,3 +1155,4 @@ input, textarea { -webkit-appearance: none; appearance: none; border-radius: 0; 
     linear-gradient(var(--lime), var(--lime)) left 16px top 16px / 1px 16px no-repeat,
     linear-gradient(var(--lime), var(--lime)) right 16px bottom 16px / 16px 1px no-repeat,
     linear-gradient(var(--lime), var(--lime)) right 16px bottom 16px / 1px 16px no-repeat; }
+.hero-tag { text-wrap: balance; }
