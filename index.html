@@ -10,7 +10,7 @@
 <link rel="preload" as="font" type="font/woff2" href="v2/fonts/instrument-serif.woff2" crossorigin>
 <link rel="preload" as="font" type="font/woff2" href="v2/fonts/instrument-serif-italic.woff2" crossorigin>
 <link rel="preload" as="image" href="Imagenes%20usadas/hero_poster_1920.jpg">
-<link rel="stylesheet" href="v2/css/v2.css?v=168">
+<link rel="stylesheet" href="v2/css/v2.css?v=169">
 <link rel="preload" as="script" href="v2/vendor/gsap.min.js">
 <link rel="preload" as="script" href="v2/vendor/ScrollTrigger.min.js">
 <link rel="preload" as="script" href="v2/vendor/SplitText.min.js">
@@ -244,22 +244,44 @@
 </section>
 
 <!-- ===== 08 · PROYECTOS ===== -->
-<section class="pj sheet" id="proyectos" data-hdr="dark" data-name="Proyectos">
-  <div class="pj-head"><span class="tiny">Proyectos</span></div>
-  <a class="pj-row" href="https://lideresaumentados.com.ar" target="_blank" rel="noopener">
-    <div class="pj-bg"><div class="ambient a4"></div></div>
-    <span class="tiny pj-tag">Workshop ejecutivo · Ya realizado · Río Gallegos 2026</span>
-    <h3 class="xl pj-title">Líderes Aumentados</h3>
-    <p class="pj-desc">Web de nuestro workshop para directivos y referentes: una jornada intensiva de liderazgo, inteligencia artificial aplicada y trabajo en equipo. La primera edición ya se realizó. <em>La IA no reemplaza líderes: los amplifica.</em></p>
-    <span class="pj-go">Ver la web del workshop <i>↗</i></span>
-  </a>
-  <a class="pj-row" href="https://wa.me/5491133278023?text=Hola%2C%20quiero%20acceso%20anticipado%20a%20la%20plataforma%20de%20capacitaci%C3%B3n." target="_blank" rel="noopener">
-    <div class="pj-bg"><div class="ambient a5"></div></div>
-    <span class="tiny pj-tag">Próximamente · Cursos</span>
-    <h3 class="xl pj-title">Plataforma de capacitación</h3>
-    <p class="pj-desc">Una plataforma online donde líderes y equipos acceden a nuestros cursos y capacitaciones, a su ritmo y desde cualquier lugar. <em>Aprendemos juntos: la misma metodología para cada persona del equipo.</em></p>
-    <span class="pj-go">Quiero acceso anticipado <i>↗</i></span>
-  </a>
+<section class="pj sheet" id="proyectos" data-hdr="dark" data-name="Programas">
+  <div class="pj-head"><span class="tiny">Programas</span></div>
+  <article class="pg-main">
+    <div class="pg-glow" aria-hidden="true"></div>
+    <div class="pg-copy">
+      <span class="pg-tag">Workshop ejecutivo · Ya realizado · Río Gallegos 2026</span>
+      <h3 class="xl pg-title">Líderes Aumentados</h3>
+      <p class="pg-lead">Un workshop que ya realizamos y que podemos llevar a tu empresa. <em>La IA no reemplaza líderes: los amplifica.</em></p>
+      <div class="pg-cta">
+        <a class="btn" href="https://wa.me/5491133278023?text=Hola%2C%20quiero%20que%20Am%C3%ADplifia%20lleve%20el%20workshop%20L%C3%ADderes%20Aumentados%20a%20mi%20empresa." target="_blank" rel="noopener">Quiero este workshop en mi empresa</a>
+        <a class="pg-link" href="https://lideresaumentados.com.ar" target="_blank" rel="noopener">Ver la web del workshop <i>&nearr;</i></a>
+      </div>
+    </div>
+    <ul class="pg-facts">
+      <li><b>Formato</b><span>Jornada intensiva presencial</span></li>
+      <li><b>Para quién</b><span>Directivos y referentes</span></li>
+      <li><b>Qué se trabaja</b><span>Liderazgo, inteligencia artificial aplicada y trabajo en equipo</span></li>
+      <li><b>Alcance</b><span>Se adapta a cada empresa</span></li>
+    </ul>
+  </article>
+  <article class="pg-soon" id="pgSoon">
+    <div class="pg-soon-copy">
+      <span class="pg-badge"><i aria-hidden="true"></i>En construcción</span>
+      <h3 class="lg pg-soon-title">Plataforma de capacitación</h3>
+      <p>Una plataforma online donde líderes y equipos acceden a nuestros cursos, a su ritmo y desde cualquier lugar.</p>
+    </div>
+    <button class="pg-soon-btn" type="button" id="pgSoonBtn" aria-haspopup="dialog">Más información <i aria-hidden="true">&rarr;</i></button>
+  </article>
+  <div class="pg-modal" id="pgModal" role="dialog" aria-modal="true" aria-labelledby="pgModalT" hidden>
+    <div class="pg-modal-card">
+      <button class="pg-modal-x" type="button" id="pgModalX" aria-label="Cerrar">&times;</button>
+      <span class="pg-badge"><i aria-hidden="true"></i>En construcción</span>
+      <h3 class="lg" id="pgModalT">Estamos construyendo la plataforma</h3>
+      <p>Trabajamos en un espacio online para que líderes y equipos accedan a nuestros cursos y capacitaciones, a su ritmo y desde cualquier lugar. Todavía no está disponible.</p>
+      <div class="pg-bar" aria-hidden="true"><i></i></div>
+      <button class="btn" type="button" id="pgModalOk">Entendido</button>
+    </div>
+  </div>
 </section>
 
 <!-- ===== 09 · EMPRESAS (anillo 3D) ===== -->
@@ -333,6 +355,6 @@
 <script src="v2/vendor/ScrollTrigger.min.js"></script>
 <script src="v2/vendor/SplitText.min.js"></script>
 <script src="v2/vendor/lenis.min.js"></script>
-<script src="v2/js/v2.js?v=155"></script>
+<script src="v2/js/v2.js?v=156"></script>
 </body>
 </html>

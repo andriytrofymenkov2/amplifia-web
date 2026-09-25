@@ -158,7 +158,7 @@
     frentes: "Seis frentes, desde Lean y Kaizen hasta IA y tableros en vivo. Elegí por dónde <b>empezar</b>.",
     metodo: "Cuatro pasos a tu medida, empezando por un <b>diagnóstico</b> con procesos y personas.",
     consultora: "Andriy lidera los procesos y Christian, las personas. Tocá el <b>+</b> para conocer sus proyectos.",
-    proyectos: "Ya hicimos un workshop ejecutivo en Río Gallegos y ahora viene una <b>plataforma de cursos</b>.",
+    proyectos: "<b>Líderes Aumentados</b> ya se hizo en Río Gallegos y lo podemos llevar a tu empresa.",
     clientes: "Tiempo Sur, MS Patagonia, SS Servicios, Farmacia La Franco y Siglo 21 ya confían en nosotros.",
     faq: "¿Dudas sobre alcance, tiempos o costos? Poné el mouse sobre una pregunta: la respuesta está <b>acá</b>.",
     contacto: "Contanos tu desafío: conversamos y te proponemos un camino <b>a la medida</b> de tu empresa."
@@ -372,6 +372,17 @@
     ampliHintKick = function () { if (kicked) return; kicked = true; setTimeout(function () { ampli.classList.add("hint-on"); }, 5000); };
     ampliBtn.addEventListener("click", function () { ampli.classList.add("seen"); ampli.classList.remove("hint-on"); try { sessionStorage.setItem("ampliSeen", "1"); } catch (e) {} });
   })();
+  /* Plataforma de capacitación: ventana "en construcción" */
+  (function () {
+    var btn = $("#pgSoonBtn"), modal = $("#pgModal"); if (!btn || !modal) return;
+    function open() { modal.hidden = false; if (lenis) lenis.stop(); var ok = $("#pgModalOk"); if (ok) ok.focus({ preventScroll: true }); }
+    function close() { modal.hidden = true; if (lenis) lenis.start(); btn.focus({ preventScroll: true }); }
+    btn.addEventListener("click", open);
+    $("#pgModalX").addEventListener("click", close); $("#pgModalOk").addEventListener("click", close);
+    modal.addEventListener("click", function (e) { if (e.target === modal) close(); });
+    document.addEventListener("keydown", function (e) { if (e.key === "Escape" && !modal.hidden) close(); });
+  })();
+
   var ampliIdle = null;
   window.addEventListener("resize", function () { clearTimeout(ampliIdle); ampliIdle = setTimeout(function () { if (!phone && ampliSide !== null) ampliDock(); }, 300); });
   gsap.to("#prog", { scaleX: 1, ease: "none", scrollTrigger: { start: 0, end: "max", scrub: 0.2 } });
