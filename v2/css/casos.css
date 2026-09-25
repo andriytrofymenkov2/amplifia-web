@@ -65,3 +65,11 @@
 .cs-lb img { max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 10px; cursor: default; }
 .cs-lb-x { position: absolute; top: 14px; right: 20px; font-size: 38px; line-height: 1; color: #fff; }
 .cs-lb-x:hover { color: var(--lime); }
+
+/* Video del mismo alto que las imágenes de los otros casos (antes ocupaba todo el ancho) */
+@media (min-width: 861px) { .cs-video { width: calc((100% - clamp(12px, 1.4vw, 20px)) * 0.667); } }
+/* Visor de la lupa: tamaño contenido, fondo difuminado, la imagen crece desde su miniatura */
+.cs-fig img { cursor: zoom-in; }
+.cs-lb { background: rgba(4,5,3,0.78); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); padding: 0; cursor: zoom-out; }
+.cs-lb img { width: min(1100px, 86vw); height: auto; max-height: 80vh; max-width: none; object-fit: contain; border-radius: 14px; border: 1px solid rgba(215,242,74,0.55); box-shadow: 0 30px 90px rgba(0,0,0,0.75), 0 0 40px rgba(215,242,74,0.12); background: #000; transform-origin: 0 0; cursor: zoom-out; will-change: transform; }
+.cs-lb-x { top: 18px; right: 22px; width: 44px; height: 44px; border-radius: 50%; border: 1px solid rgba(215,242,74,0.6); background: rgba(10,10,10,0.8); font-size: 26px; display: grid; place-items: center; }

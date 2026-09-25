@@ -9,7 +9,7 @@
 <link rel="preload" as="font" type="font/woff2" href="v2/fonts/inter-var.woff2" crossorigin>
 <link rel="preload" as="font" type="font/woff2" href="v2/fonts/instrument-serif.woff2" crossorigin>
 <link rel="stylesheet" href="v2/css/v2.css?v=185">
-<link rel="stylesheet" href="v2/css/casos.css?v=5">
+<link rel="stylesheet" href="v2/css/casos.css?v=6">
 </head>
 <body class="cs-page">
 <header class="hdr">
@@ -130,14 +130,37 @@
   if (back && document.referrer && document.referrer.indexOf(location.origin) === 0 && document.referrer.indexOf("casos.html") < 0 && history.length > 1) {
     back.addEventListener("click", function (e) { e.preventDefault(); history.back(); });
   }
-  /* lupa: abre la imagen en grande */
-  var lb = document.getElementById("csLb"), lbImg = lb.querySelector("img");
-  function lbClose() { lb.hidden = true; document.body.style.overflow = ""; }
+  /* lupa: la imagen crece desde su lugar hasta un tamaño cómodo (no pantalla completa) y vuelve a achicarse al cerrar */
+  var lb = document.getElementById("csLb"), lbImg = lb.querySelector("img"), lbSrc = null, lbBusy = false;
+  var calm = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  function rectDelta(from, to) { return "translate(" + (from.left - to.left) + "px," + (from.top - to.top) + "px) scale(" + (from.width / to.width) + "," + (from.height / to.height) + ")"; }
+  function lbOpen(im) {
+    if (lbBusy) return; lbBusy = true; lbSrc = im;
+    lbImg.src = im.src; lbImg.alt = im.alt;
+    lb.hidden = false; document.body.style.overflow = "hidden";
+    var to = lbImg.getBoundingClientRect(), from = im.getBoundingClientRect();
+    im.style.visibility = "hidden";
+    var d = calm ? 1 : 520;
+    lb.animate([{ opacity: 0 }, { opacity: 1 }], { duration: d * 0.8, easing: "ease-out", fill: "both" });
+    lbImg.animate([{ transform: rectDelta(from, to), borderRadius: "18px" }, { transform: "none", borderRadius: "14px" }], { duration: d, easing: "cubic-bezier(0.2, 0.8, 0.2, 1)", fill: "both" }).onfinish = function () { lbBusy = false; };
+    lb.querySelector(".cs-lb-x").focus({ preventScroll: true });
+  }
+  function lbClose() {
+    if (lbBusy || lb.hidden) return; lbBusy = true;
+    var from = lbImg.getBoundingClientRect(), to = lbSrc.getBoundingClientRect(), d = calm ? 1 : 420;
+    lb.animate([{ opacity: 1 }, { opacity: 0 }], { duration: d, easing: "ease-in", fill: "both" });
+    lbImg.animate([{ transform: "none" }, { transform: rectDelta(to, from), borderRadius: "18px" }], { duration: d, easing: "cubic-bezier(0.5, 0, 0.3, 1)", fill: "both" }).onfinish = function () {
+      lb.hidden = true; document.body.style.overflow = ""; lbSrc.style.visibility = ""; lbBusy = false;
+      lb.getAnimations().forEach(function (a) { a.cancel(); }); lbImg.getAnimations().forEach(function (a) { a.cancel(); });
+    };
+  }
   document.querySelectorAll(".cs-zoom").forEach(function (z) {
-    z.addEventListener("click", function () { var im = z.parentNode.querySelector("img"); lbImg.src = im.src; lbImg.alt = im.alt; lb.hidden = false; document.body.style.overflow = "hidden"; lb.querySelector(".cs-lb-x").focus(); });
+    var im = z.parentNode.querySelector("img");
+    z.addEventListener("click", function () { lbOpen(im); });
+    im.addEventListener("click", function () { lbOpen(im); });
   });
-  lb.addEventListener("click", function (e) { if (e.target !== lbImg) lbClose(); });
-  document.addEventListener("keydown", function (e) { if (e.key === "Escape" && !lb.hidden) lbClose(); });
+  lb.addEventListener("click", lbClose);
+  document.addEventListener("keydown", function (e) { if (e.key === "Escape") lbClose(); });
   /* el video de YouTube se carga recién cuando se toca (la página queda liviana) */
   document.querySelectorAll(".cs-video").forEach(function (v) {
     v.querySelector(".cs-play").addEventListener("click", function () {
