@@ -155,6 +155,7 @@
     manifiesto: "Más herramientas no alcanzan. Las integramos con tus procesos y tu gente para que den <b>resultados</b>.",
     problema: "<b>Hola, soy Ampli.</b> Si te suena alguna de estas señales, un diagnóstico es el primer paso.",
     "que-hacemos": "Procesos, IA y personas en un solo equipo: por eso las mejoras <b>se sostienen</b>.",
+    casos: "Casos reales con números: tocá uno para ver <b>qué hicimos</b> y qué cambió.",
     frentes: "Seis frentes, desde Lean y Kaizen hasta IA y tableros en vivo. Elegí por dónde <b>empezar</b>.",
     metodo: "Cuatro pasos a tu medida, empezando por un <b>diagnóstico</b> con procesos y personas.",
     consultora: "Andriy lidera los procesos y Christian, las personas. Tocá el <b>+</b> para conocer sus proyectos.",
