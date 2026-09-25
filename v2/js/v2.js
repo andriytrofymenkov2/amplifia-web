@@ -436,7 +436,7 @@
     var sgStack = window.matchMedia("(max-width: 860px)");
     function sgShow(i) { if (i === sgCur && sgs[i].classList.contains("is-open")) return; sgCur = i; sgs.forEach(function (p, k) { p.classList.toggle("is-open", k === i); p.setAttribute("aria-expanded", k === i ? "true" : "false"); }); }
     function sgProg(i, on) { sgs.forEach(function (p, k) { var pg = $(".sg-prog", p); if (!pg) return; pg.classList.remove("run"); if (on && k === i) { void pg.offsetWidth; pg.classList.add("run"); } }); }
-    function sgSchedule() { clearTimeout(sgTimer); if (phone || sgStack.matches) { sgProg(-1, false); return; } if (sgStarted && sgOn && !sgHeld) { sgTimer = setTimeout(function () { sgShow((sgCur + 1) % sgs.length); sgSchedule(); }, 3600); sgProg(sgCur, true); } else sgProg(-1, false); }
+    function sgSchedule() { clearTimeout(sgTimer); if (phone || sgStack.matches || lowTier || reduce) { sgProg(-1, false); return; } if (sgStarted && sgOn && !sgHeld) { sgTimer = setTimeout(function () { sgShow((sgCur + 1) % sgs.length); sgSchedule(); }, 3600); sgProg(sgCur, true); } else sgProg(-1, false); }
     function sgPick(i) { if (!sgStarted) return; sgHeld = true; clearTimeout(sgTimer); sgShow(i); }
     function sgRelease() { sgHeld = false; clearTimeout(sgTimer); sgTimer = setTimeout(sgSchedule, 2400); }
     sgs.forEach(function (p, i) {
@@ -480,17 +480,17 @@
     var capsCols = $("#capsCols"), capCols = $$(".col", capsCols);
     var cw = capCols.map(function (c) { return words($(".cap-title", c)); });
     var capRest = $$(".col .tiny, .col .sub", capsCols), nodes = $$(".cols-node", capsCols);
-    capsCols.style.clipPath = "inset(0% 50% 0% 50% round 8px)";
+    gsap.set(capsCols, { opacity: 0, y: 36, scale: 0.965 });
     gsap.set(cw, { yPercent: 40, opacity: 0 }); gsap.set(capRest, { opacity: 0, y: 16 });
     gsap.set(".cols-link", { scaleX: 0 }); gsap.set(nodes, { scale: 0 });
     onceIn(capsCols, function () {
       gsap.timeline()
-        .fromTo(capsCols, { clipPath: "inset(0% 50% 0% 50% round 8px)" }, { clipPath: "inset(0% 0% 0% 0% round 8px)", duration: 1.5, ease: "power3.inOut" })
+        .to(capsCols, { opacity: 1, y: 0, scale: 1, duration: 1.3, ease: "power3.out" })
         .to(".cols-link", { scaleX: 1, duration: 1.4, ease: "power2.inOut" }, 0.1)
         .to(cw[1], { yPercent: 0, opacity: 1, duration: 0.9, stagger: 0.05, ease: "power4.out" }, 0.7)
         .to([cw[0], cw[2]], { yPercent: 0, opacity: 1, duration: 0.9, stagger: 0.05, ease: "power4.out" }, 0.95)
         .to(capRest, { opacity: 0.8, y: 0, duration: 0.7, stagger: 0.06, ease: "power2.out" }, 1.0)
-        .fromTo(".col-img img", { scale: 1.25 }, { scale: 1, duration: 2.4, ease: "power2.out" }, 0.2)
+        .fromTo(".col-img img", { scale: 1.12 }, { scale: 1, duration: 2.0, ease: "power2.out" }, 0.2)
         .to(nodes, { scale: 1, duration: 0.6, stagger: 0.15, ease: "back.out(2.4)" }, 1.3);
     }, "top 70%");
 
