@@ -1,0 +1,50 @@
+/* Casos de estudio (página aparte). Usa las variables y tipografías de v2.css. */
+.cs-page { background: var(--bgsub, #070707); }
+.cs-page main { overflow-x: clip; }
+.cs-hero { padding: clamp(130px, 20vh, 200px) var(--pad) clamp(40px, 8vh, 90px); display: grid; gap: clamp(16px, 2.6vh, 26px); max-width: 1500px; }
+.cs-back { width: fit-content; font-size: 13px; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(239,236,229,0.75); border-bottom: 1px solid rgba(215,242,74,0.5); padding-bottom: 4px; }
+.cs-back:hover { color: var(--lime); }
+.cs-kicker { color: #fff; }
+.cs-hero h1 em { color: var(--lime); }
+.cs-intro { max-width: 40em; font-size: clamp(16px, 1.45vw, 22px); line-height: 1.55; color: rgba(239,236,229,0.86); }
+.cs-index { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px; }
+.cs-index a { display: inline-flex; gap: 10px; align-items: baseline; padding: 10px 16px; border: 1px solid rgba(215,242,74,0.35); border-radius: 999px; font-size: 14px; color: rgba(239,236,229,0.9); transition: background 0.2s ease, color 0.2s ease; }
+.cs-index a span { font-size: 11px; letter-spacing: 0.16em; color: var(--lime); }
+.cs-index a:hover { background: var(--lime); color: #0a0a0a; }
+.cs-index a:hover span { color: #0a0a0a; }
+.cs { scroll-margin-top: 90px; display: grid; grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.3fr); gap: clamp(26px, 4vw, 70px); padding: clamp(50px, 9vh, 100px) var(--pad); border-top: 1px solid rgba(239,236,229,0.14); }
+.cs-head { display: grid; gap: 14px; align-content: start; }
+.cs-n { font-family: var(--serif); font-style: italic; font-size: clamp(22px, 2vw, 30px); color: var(--lime); }
+.cs-tag { font-size: 11px; font-weight: 500; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(239,236,229,0.65); }
+.cs-title { margin: 2px 0 8px; }
+.cs-metrics { list-style: none; margin: 0; padding: 0; display: grid; gap: 0; }
+.cs-metrics li { display: grid; gap: 4px; padding: 16px 0; border-top: 1px solid rgba(215,242,74,0.28); }
+.cs-metrics li:last-child { border-bottom: 1px solid rgba(215,242,74,0.28); }
+.cs-metrics b { font-family: var(--serif); font-weight: 400; font-size: clamp(38px, 4.4vw, 72px); line-height: 1; color: var(--lime); }
+.cs-metrics span { font-size: clamp(13px, 1vw, 15px); letter-spacing: 0.04em; color: rgba(239,236,229,0.8); }
+.cs-body { display: grid; gap: clamp(20px, 3vh, 32px); align-content: start; }
+.cs-text { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(18px, 2.4vw, 40px); }
+.cs-text h3 { font-size: 11px; font-weight: 500; letter-spacing: 0.22em; text-transform: uppercase; color: var(--lime); margin-bottom: 10px; }
+.cs-text p { font-size: clamp(15px, 1.2vw, 18px); line-height: 1.6; color: rgba(239,236,229,0.9); }
+.cs-video { position: relative; aspect-ratio: 16 / 9; border-radius: 18px; overflow: hidden; border: 1px solid rgba(215,242,74,0.4); background: #0b0b0b; }
+.cs-video img { width: 100%; height: 100%; object-fit: cover; opacity: 0.8; }
+.cs-video iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+.cs-play { position: absolute; left: 50%; top: 50%; translate: -50% -50%; width: 78px; height: 78px; border-radius: 50%; background: var(--lime); box-shadow: 0 0 0 10px rgba(215,242,74,0.18), 0 10px 30px rgba(0,0,0,0.5); transition: transform 0.2s ease; }
+.cs-play:hover { transform: scale(1.06); }
+.cs-play i { position: absolute; left: 52%; top: 50%; translate: -50% -50%; border-style: solid; border-width: 13px 0 13px 21px; border-color: transparent transparent transparent #0a0a0a; }
+.cs-imgs { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(12px, 1.4vw, 20px); }
+.cs-ph { aspect-ratio: 4 / 3; display: grid; place-items: center; border: 1px dashed rgba(215,242,74,0.5); border-radius: 18px; background: radial-gradient(70% 60% at 50% 50%, rgba(215,242,74,0.08), transparent 70%), #0b0b0b; }
+.cs-ph span { font-size: 12px; letter-spacing: 0.22em; text-transform: uppercase; color: rgba(239,236,229,0.6); }
+.cs-cta { display: grid; gap: 18px; justify-items: start; padding: clamp(70px, 12vh, 140px) var(--pad); border-top: 1px solid rgba(239,236,229,0.14); }
+.cs-cta .tiny { color: #fff; }
+.cs-cta p { max-width: 36em; color: rgba(239,236,229,0.85); line-height: 1.55; }
+.cs-anim { opacity: 0; transform: translateY(26px); transition: opacity 0.7s ease, transform 0.7s var(--ease); }
+.cs-anim.is-in { opacity: 1; transform: none; }
+.hdr .nav a[aria-current="page"] { color: var(--lime); }
+@media (max-width: 860px) {
+  .cs { grid-template-columns: 1fr; }
+  .cs-text { grid-template-columns: 1fr; }
+  .cs-metrics b { font-size: clamp(34px, 11vw, 52px); }
+  .cs-play { width: 64px; height: 64px; }
+}
+.cs-page .rail, .cs-page .progress { display: none !important; }

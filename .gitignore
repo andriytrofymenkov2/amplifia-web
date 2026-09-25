@@ -77,3 +77,8 @@ Imagenes usadas/logos/*
 
 # originales pesados de la carpeta de trabajo (se suben versiones optimizadas)
 imagenes usadas página nueva/
+
+!Imagenes usadas/casos/
+Imagenes usadas/casos/*
+!Imagenes usadas/casos/video_clinica.jpg
+!Imagenes usadas/casos/video_canamo.jpg
