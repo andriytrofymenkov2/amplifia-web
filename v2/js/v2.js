@@ -476,6 +476,11 @@
     /* 04 · qué hacemos: un solo bloque que se abre desde el centro; los tres módulos aparecen integrados */
     var capsCols = $("#capsCols"), capsIntro = $("#capsIntro");
     if (!reduce) { gsap.set([capsIntro, capsCols], { opacity: 0, y: 24 }); }
+    if (!phone && !reduce) $$(".qh-card", capsCols).forEach(function (c) {
+      var raf = 0, ex = 0, ey = 0;
+      c.addEventListener("pointermove", function (e) { ex = e.clientX; ey = e.clientY; if (!raf) raf = requestAnimationFrame(function () { raf = 0; var r = c.getBoundingClientRect(); c.style.setProperty("--mx", (ex - r.left).toFixed(0) + "px"); c.style.setProperty("--my", (ey - r.top).toFixed(0) + "px"); }); });
+      c.addEventListener("pointerleave", function () { c.style.setProperty("--mx", "50%"); c.style.setProperty("--my", "100%"); });
+    });
     onceIn(capsCols, function () { gsap.to([capsIntro, capsCols], { opacity: 1, y: 0, duration: 0.7, stagger: 0.12, ease: "power3.out" }); }, "top 80%");
 
     /* 05 · frentes: recorrido horizontal */

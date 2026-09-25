@@ -1261,3 +1261,31 @@ input, textarea { -webkit-appearance: none; appearance: none; border-radius: 0; 
 .cols .col .sub { max-width: 24ch; margin: 0 auto; font-size: clamp(14px, 1.15vw, 18px); line-height: 1.55; color: rgba(239,236,229,0.86); opacity: 1; }
 @media (max-width: 860px) { .cols { grid-template-columns: 1fr; height: auto; } .cols .col, .cols .col + .col { padding: 26px 22px; } .cols .col .sub { max-width: 30ch; } }
 @media (min-width: 861px) { .cols .col, .cols .col + .col { justify-content: flex-start; padding-top: clamp(48px, 9vh, 90px); } }
+
+/* Qué hacemos v3: tarjetas separadas por un "+" verde, símbolo bicolor, halo, filete con rombo y luz que sigue al cursor (solo escritorio) */
+.cols { display: grid; grid-template-columns: 1fr 64px 1fr 64px 1fr; gap: 0; width: min(100%, 1180px); align-items: stretch; }
+.cols .col.qh-card { --mx: 50%; --my: 100%; position: relative; overflow: hidden; justify-content: flex-start; padding: clamp(28px, 4.6vh, 46px) clamp(22px, 2vw, 34px) clamp(24px, 4vh, 40px); border: 1px solid rgba(215,242,74,0.38); border-radius: 22px; background: #0b0b0b; transition: border-color 0.3s ease; }
+.qh-card::before { content: ""; position: absolute; inset: 0; pointer-events: none; z-index: 0; background: radial-gradient(360px circle at var(--mx) var(--my), rgba(215,242,74,0.16), transparent 62%); opacity: 0.55; transition: opacity 0.3s ease; }
+.qh-card:hover { border-color: rgba(215,242,74,0.85); }
+.qh-card:hover::before { opacity: 1; }
+.qh-card::after { content: ""; position: absolute; inset: 0; z-index: 2; pointer-events: none; opacity: 0.7; background: linear-gradient(var(--lime), var(--lime)) left 14px top 14px / 14px 1px no-repeat, linear-gradient(var(--lime), var(--lime)) left 14px top 14px / 1px 14px no-repeat, linear-gradient(var(--lime), var(--lime)) right 14px bottom 14px / 14px 1px no-repeat, linear-gradient(var(--lime), var(--lime)) right 14px bottom 14px / 1px 14px no-repeat; }
+.qh-card > * { position: relative; z-index: 1; }
+.qh-halo { position: absolute !important; left: 50%; top: 4%; width: 62%; aspect-ratio: 1; translate: -50% 0; border-radius: 50%; background: radial-gradient(circle, rgba(215,242,74,0.2), transparent 66%); pointer-events: none; z-index: 0 !important; }
+.qh-ic { display: block; width: clamp(96px, 9vw, 140px); height: auto; color: #fff; margin: 0 auto; filter: drop-shadow(0 0 12px rgba(215,242,74,0.18)); }
+.qh-ic .ac { stroke: var(--lime); }
+.qh-rule { display: block; width: min(64%, 200px); height: 1px; margin: clamp(14px, 2.4vh, 24px) auto 0; background: linear-gradient(90deg, transparent, rgba(215,242,74,0.7) 50%, transparent); position: relative; }
+.qh-rule::after { content: ""; position: absolute; left: 50%; top: 50%; width: 7px; height: 7px; translate: -50% -50%; rotate: 45deg; background: #0b0b0b; border: 1px solid var(--lime); box-shadow: 0 0 10px rgba(215,242,74,0.5); }
+.cols .qh-card .cap-title { margin-top: clamp(10px, 1.6vh, 18px); }
+.qh-plus { position: relative; align-self: center; justify-self: center; width: 40px; height: 40px; border-radius: 50%; border: 1px solid rgba(215,242,74,0.7); background: #0b0b0b; box-shadow: 0 0 0 6px rgba(215,242,74,0.12), 0 0 22px rgba(215,242,74,0.4); z-index: 2; }
+.qh-plus::before, .qh-plus::after { content: ""; position: absolute; left: 50%; top: 50%; background: var(--lime); border-radius: 1px; }
+.qh-plus::before { width: 14px; height: 2px; margin: -1px 0 0 -7px; }
+.qh-plus::after { width: 2px; height: 14px; margin: -7px 0 0 -1px; }
+@media (max-width: 860px) {
+  .cols { grid-template-columns: 1fr; width: 100%; }
+  .cols .col.qh-card { min-height: 0; }
+  .qh-plus { width: 34px; height: 34px; margin: 10px 0; }
+  .qh-card::before { background: radial-gradient(360px circle at 50% 100%, rgba(215,242,74,0.16), transparent 62%); }
+}
+.qh-ic, .qh-rule, .qh-halo { flex: none; }
+.cols { height: auto; min-height: 0; }
+.cols .col.qh-card .cap-title { font-size: clamp(32px, 3.2vw, 54px); }
