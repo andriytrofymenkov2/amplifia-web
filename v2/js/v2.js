@@ -474,22 +474,9 @@
     window.addEventListener("resize", function () { sgFit(); });
 
     /* 04 · qué hacemos: un solo bloque que se abre desde el centro; los tres módulos aparecen integrados */
-    var capsCols = $("#capsCols"), capCols = $$(".col", capsCols);
-    var cw = capCols.map(function (c) { return words($(".cap-title", c)); });
-    var capRest = $$(".col .tiny, .col .sub", capsCols), nodes = $$(".cols-node", capsCols);
-    gsap.set(capsCols, { opacity: 0, y: 36, scale: 0.965 });
-    gsap.set(cw, { yPercent: 40, opacity: 0 }); gsap.set(capRest, { opacity: 0, y: 16 });
-    gsap.set(".cols-link", { scaleX: 0 }); gsap.set(nodes, { scale: 0 });
-    onceIn(capsCols, function () {
-      gsap.timeline()
-        .to(capsCols, { opacity: 1, y: 0, scale: 1, duration: 1.3, ease: "power3.out" })
-        .to(".cols-link", { scaleX: 1, duration: 1.4, ease: "power2.inOut" }, 0.1)
-        .to(cw[1], { yPercent: 0, opacity: 1, duration: 0.9, stagger: 0.05, ease: "power4.out" }, 0.7)
-        .to([cw[0], cw[2]], { yPercent: 0, opacity: 1, duration: 0.9, stagger: 0.05, ease: "power4.out" }, 0.95)
-        .to(capRest, { opacity: 0.8, y: 0, duration: 0.7, stagger: 0.06, ease: "power2.out" }, 1.0)
-        .fromTo(".col-img img", { scale: 1.12 }, { scale: 1, duration: 2.0, ease: "power2.out" }, 0.2)
-        .to(nodes, { scale: 1, duration: 0.6, stagger: 0.15, ease: "back.out(2.4)" }, 1.3);
-    }, "top 70%");
+    var capsCols = $("#capsCols"), capsIntro = $("#capsIntro");
+    if (!reduce) { gsap.set([capsIntro, capsCols], { opacity: 0, y: 24 }); }
+    onceIn(capsCols, function () { gsap.to([capsIntro, capsCols], { opacity: 1, y: 0, duration: 0.7, stagger: 0.12, ease: "power3.out" }); }, "top 80%");
 
     /* 05 · frentes: recorrido horizontal */
     var hz = $("#frentes"), hzTrack = $("#hzTrack");
