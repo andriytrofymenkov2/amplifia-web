@@ -372,6 +372,17 @@
     ampliHintKick = function () { if (kicked) return; kicked = true; setTimeout(function () { ampli.classList.add("hint-on"); }, 5000); };
     ampliBtn.addEventListener("click", function () { ampli.classList.add("seen"); ampli.classList.remove("hint-on"); try { sessionStorage.setItem("ampliSeen", "1"); } catch (e) {} });
   })();
+  /* Líderes Aumentados: el título arranca blanco y se tiñe de verde de izquierda a derecha, una sola vez al llegar */
+  (function () {
+    var ti = $(".pg-title"); if (!ti) return;
+    if (reduce) { ti.style.setProperty("--gp", 1); return; }
+    ti.style.setProperty("--gp", 0);
+    var o = { v: 0 };
+    ScrollTrigger.create({ trigger: ti, start: "top 80%", once: true, onEnter: function () {
+      gsap.to(o, { v: 1, duration: 1.8, delay: 0.25, ease: "power2.inOut", onUpdate: function () { ti.style.setProperty("--gp", o.v.toFixed(3)); } });
+    } });
+  })();
+
   /* Plataforma de capacitación: ventana "en construcción" */
   (function () {
     var btn = $("#pgSoonBtn"), modal = $("#pgModal"); if (!btn || !modal) return;
