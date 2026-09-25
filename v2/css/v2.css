@@ -1385,3 +1385,23 @@ input, textarea { -webkit-appearance: none; appearance: none; border-radius: 0; 
 
 /* Carrusel: el brillo de cada tarjeta se actualiza unas 8 veces por segundo, sin transición (las transiciones se calculaban cuadro a cuadro) */
 .c3d-card, .c3d-back { transition: border-color 0.5s ease; }
+
+/* Frentes en celular: carrusel nativo con encastre (sin pin ni movimiento atado al scroll) */
+.hz.hz-swipe { height: auto !important; }
+.hz.hz-swipe .stage { position: relative; height: auto; overflow: visible; display: flex; flex-direction: column; align-items: stretch; padding: clamp(96px, 14vh, 120px) 0 clamp(56px, 8vh, 80px); }
+.hz-swipe .hz-intro { width: auto; padding: 0 var(--pad); margin-bottom: 26px; gap: 14px; }
+.hz-swipe .hz-track { width: auto; height: min(64vh, 540px); margin-top: 0; transform: none !important; will-change: auto; overflow-x: auto; overflow-y: hidden; scroll-snap-type: x mandatory; scroll-padding-inline: var(--pad); overscroll-behavior-x: contain; -webkit-overflow-scrolling: touch; scrollbar-width: none; padding: 4px var(--pad) 8px; gap: 14px; }
+.hz-swipe .hz-track::-webkit-scrollbar { display: none; }
+.hz-swipe .card { width: 80vw; max-width: 380px; scroll-snap-align: start; }
+.hz-swipe .hz-end { width: 1px; }
+.hz-swipe .hz-bar { position: relative; left: auto; right: auto; bottom: auto; margin: 22px var(--pad) 0; }
+.hz-swipe .hz-intro::after { content: "Deslizá para ver los seis frentes  →"; font-size: 12px; letter-spacing: 0.18em; text-transform: uppercase; color: rgba(239,236,229,0.6); }
+
+/* Celular: tarjetas de Frentes con alto según su contenido (así la lista nunca queda cortada) */
+.hz-swipe .hz-track { height: auto; align-items: stretch; }
+.hz-swipe .card { height: auto; min-height: 0; }
+.hz-swipe .card-body { position: relative; inset: auto; height: 100%; justify-content: flex-start; padding: 26px 22px 24px; }
+.hz-swipe .card-icon { flex: none; height: clamp(96px, 26vw, 130px); width: 100%; margin: 6px 0 4px; }
+.hz-swipe .card-body h3 { min-height: 2.2em; display: flex; align-items: center; justify-content: center; }
+/* Celular: el rótulo de las señales va solo; "Cinco señales" se oculta para que no se apriete */
+@media (max-width: 860px) { .prob-head .tiny:last-child { display: none; } }

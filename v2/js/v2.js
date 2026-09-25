@@ -369,7 +369,7 @@
     var seen = false; try { seen = sessionStorage.getItem("ampliSeen") === "1"; } catch (e) {}
     if (seen) { ampli.classList.add("seen"); return; }
     var kicked = false;
-    ampliHintKick = function () { if (kicked) return; kicked = true; setTimeout(function () { ampli.classList.add("hint-on"); }, 5000); };
+    ampliHintKick = function () { if (kicked) return; kicked = true; setTimeout(function () { ampli.classList.add("hint-on"); if (phone) setTimeout(function () { ampli.classList.remove("hint-on"); }, 7000); }, 5000); };
     ampliBtn.addEventListener("click", function () { ampli.classList.add("seen"); ampli.classList.remove("hint-on"); try { sessionStorage.setItem("ampliSeen", "1"); } catch (e) {} });
   })();
   /* Líderes Aumentados: el título arranca blanco y se tiñe de verde de izquierda a derecha, una sola vez al llegar */
@@ -518,6 +518,15 @@
     steps.push(function () {
     /* 05 · frentes: recorrido horizontal */
     var hz = $("#frentes"), hzTrack = $("#hzTrack");
+    /* en celular: carrusel nativo para deslizar con el dedo (lo mueve el propio teléfono, sin trabajo por cuadro).
+       El recorrido horizontal atado al scroll vertical era lo que se trababa en los celulares. */
+    if (phone) {
+      hz.classList.add("hz-swipe");
+      var intro = $(".hz-intro", hzTrack); if (intro) hzTrack.parentNode.insertBefore(intro, hzTrack);
+      var bar = $("#hzBar"), bq = false;
+      hzTrack.addEventListener("scroll", function () { if (bq) return; bq = true; requestAnimationFrame(function () { bq = false; var m = hzTrack.scrollWidth - hzTrack.clientWidth; bar.style.transform = "scaleX(" + (m > 0 ? hzTrack.scrollLeft / m : 0).toFixed(3) + ")"; }); }, { passive: true });
+      return;
+    }
     function hzDist() { return Math.max(0, hzTrack.offsetWidth - window.innerWidth); }
     function hzLen() { return hzDist() * 0.85; }
     function setH() { hz.style.height = (hzLen() + window.innerHeight) + "px"; }
