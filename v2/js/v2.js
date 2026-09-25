@@ -676,10 +676,10 @@
     /* cada sección se arma en su propio paso, cuando el navegador está libre: antes era un solo bloque de ~60 ms
        (240 ms en equipos lentos) que frenaba el video del inicio */
     (function run(i) {
-      if (i >= steps.length) { ScrollTrigger.refresh(); return; }
+      if (i >= steps.length) { ScrollTrigger.refresh(); if (backTo) goBackTo(); return; }
       try { steps[i](); } catch (e) { if (window.console) console.error(e); }
       var next = function () { run(i + 1); };
-      if (window.requestIdleCallback) requestIdleCallback(next, { timeout: 400 }); else setTimeout(next, 30);
+      if (backTo) next(); else if (window.requestIdleCallback) requestIdleCallback(next, { timeout: 400 }); else setTimeout(next, 30);
     })(0);
   }
 
@@ -900,8 +900,30 @@
 
   /* ---------- pantalla de carga y entrada ---------- */
   var pre = $("#pre"), preN = $("#preN"), finished = false;
+  /* regreso desde la página de casos (o link con #sección): sin pantalla de carga, directo a la sección */
+  var backTo = null;
+  try { backTo = (location.hash || "").replace("#", "") || sessionStorage.getItem("ampBack"); sessionStorage.removeItem("ampBack"); } catch (e) {}
+  if (backTo && !document.getElementById(backTo)) backTo = null;
+  if (backTo) root.classList.add("quick");
+  document.addEventListener("click", function (e) {
+    var a = e.target.closest && e.target.closest('a[href*="casos.html"]');
+    if (a) { try { sessionStorage.setItem("ampBack", "casos"); } catch (err) {} }
+  });
+  function goBackTo() {
+    var el = document.getElementById(backTo); if (!el) return;
+    var y = el.getBoundingClientRect().top + window.pageYOffset;
+    if (lenis) lenis.scrollTo(y, { immediate: true, force: true }); else window.scrollTo(0, y);
+    ScrollTrigger.update();
+    requestAnimationFrame(function () { root.classList.add("quick-done"); setTimeout(function () { if (pre.parentNode) pre.remove(); }, 450); });
+  }
   function finish() {
     if (finished) return; finished = true;
+    if (backTo) {
+      body.classList.remove("is-loading");
+      gsap.set(".hero-word", { yPercent: 0, opacity: 1 });
+      if (lenis) lenis.start();
+      return;
+    }
     body.classList.remove("is-loading");
     var hv = $("#hero video"); if (hv) vplay(hv);
     if (reduce) { gsap.set(".hero-word", { yPercent: 0, opacity: 1 }); pre.remove(); if (lenis) lenis.start(); ScrollTrigger.refresh(); return; }
@@ -921,7 +943,7 @@
   gsap.timeline()
     .from(".pre-mark .bar", { scaleY: 0, duration: 0.9, stagger: 0.12, ease: "power3.out" }, 0)
     .to(counter, { v: 100, duration: 1.9, ease: "power2.inOut", onUpdate: function () { preN.textContent = Math.round(counter.v); } }, 0);
-  var minTime = new Promise(function (res) { setTimeout(res, 2000); });
+  var minTime = new Promise(function (res) { setTimeout(res, backTo ? 0 : 2000); });
   /* el hero se prepara en cuanto la tipografía está lista, mientras la barra de carga todavía sube:
      así llega ya armado (letras separadas, en su lugar) al momento de la cortina, sin nada que calcular */
   fontsReady.then(function () { try { buildHero(); } catch (e) { if (window.console) console.error(e); } });
@@ -931,7 +953,7 @@
     /* el resto de la página (más pesado: frentes, roadmap, preguntas, anillo 3D…) se arma después de que
        el navegador ya pintó el primer cuadro de la cortina, para no competirle cuadros al efecto de entrada */
     var runBuild = function () { try { build(); } catch (e) { if (window.console) console.error(e); } };
-    setTimeout(function () { if (window.requestIdleCallback) requestIdleCallback(runBuild, { timeout: 1500 }); else runBuild(); }, 1900);
+    if (backTo) runBuild(); else setTimeout(function () { if (window.requestIdleCallback) requestIdleCallback(runBuild, { timeout: 1500 }); else runBuild(); }, 1900);
   });
   setTimeout(function () { if (!finished) { body.classList.remove("is-loading"); if (pre.parentNode) pre.remove(); if (lenis) lenis.start(); } }, 9000);
   window.addEventListener("load", function () { setTimeout(function () { ScrollTrigger.refresh(); }, 600); });

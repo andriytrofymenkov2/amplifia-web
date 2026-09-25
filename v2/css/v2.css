@@ -1463,3 +1463,8 @@ input, textarea { -webkit-appearance: none; appearance: none; border-radius: 0; 
 @media (max-width: 700px) { .ks-grid { grid-template-columns: 1fr; } }
 @media (min-width: 701px) { .ks-desc { min-height: 3em; } }
 .ks-sub { font-size: clamp(15px, 1.3vw, 20px); color: rgba(239,236,229,0.78); }
+
+/* Regreso desde casos: la pantalla de carga queda como un velo negro liso (sin logo) hasta posicionarse en la sección */
+.quick .pre { display: flex !important; transition: opacity 0.4s ease; }
+.quick .pre > * { display: none !important; }
+.quick.quick-done .pre { opacity: 0; pointer-events: none; }

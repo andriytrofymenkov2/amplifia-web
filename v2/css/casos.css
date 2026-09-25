@@ -48,3 +48,10 @@
   .cs-play { width: 64px; height: 64px; }
 }
 .cs-page .rail, .cs-page .progress { display: none !important; }
+
+.cs-fig { margin: 0; display: grid; gap: 8px; }
+.cs-fig img { width: 100%; height: auto; aspect-ratio: 1400 / 781; object-fit: contain; border-radius: 18px; border: 1px solid rgba(215,242,74,0.4); background: #000; }
+.cs-fig figcaption { font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(239,236,229,0.6); }
+/* en el caso de layout, el diagrama ocupa todo el ancho (es apaisado y tiene texto chico) */
+#layout .cs-imgs { grid-template-columns: 1fr; }
+#layout .cs-ph { aspect-ratio: 1400 / 781; }

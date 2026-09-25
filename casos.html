@@ -8,8 +8,8 @@
 <meta name="theme-color" content="#070707">
 <link rel="preload" as="font" type="font/woff2" href="v2/fonts/inter-var.woff2" crossorigin>
 <link rel="preload" as="font" type="font/woff2" href="v2/fonts/instrument-serif.woff2" crossorigin>
-<link rel="stylesheet" href="v2/css/v2.css?v=184">
-<link rel="stylesheet" href="v2/css/casos.css?v=2">
+<link rel="stylesheet" href="v2/css/v2.css?v=185">
+<link rel="stylesheet" href="v2/css/casos.css?v=4">
 </head>
 <body class="cs-page">
 <header class="hdr">
@@ -51,7 +51,7 @@
 
 <main id="top">
   <section class="cs-hero">
-    <a class="cs-back" href="index.html">&larr; Volver al inicio</a>
+    <a class="cs-back" href="index.html#casos">&larr; Volver a casos en el inicio</a>
     <span class="tiny cs-kicker">Casos de estudio</span>
     <h1 class="xl">Resultados que se <em>pueden medir</em>.</h1>
     <p class="cs-intro">Algunos de los proyectos de nuestro equipo en industria y salud: qué problema había, qué hicimos y qué cambió.</p>
@@ -87,7 +87,7 @@
         <div><h3>El desafío</h3><p>La planta necesitaba ampliarse y el layout existente limitaba el flujo operativo y la productividad.</p></div>
         <div><h3>Qué hicimos</h3><p>Aplicamos la metodología de Planificación Sistemática de Layout para rediseñar y ampliar la planta, mejorando el recorrido de materiales y personas.</p></div>
       </div>
-      <div class="cs-imgs"><div class="cs-ph" role="img" aria-label="Espacio para imagen 1"><span>Imagen 1</span></div><div class="cs-ph" role="img" aria-label="Espacio para imagen 2"><span>Imagen 2</span></div></div>
+      <div class="cs-imgs"><div class="cs-ph" role="img" aria-label="Espacio para imagen 1"><span>Imagen 1</span></div><figure class="cs-fig"><img src="Imagenes%20usadas/casos/layout_2.jpg" alt="Diagrama de relaciones entre áreas de la planta según su necesidad de cercanía" loading="lazy" width="1400" height="781"><figcaption>Diagrama de relaciones entre áreas (SLP)</figcaption></figure></div>
     </div>
   </article>
   <article class="cs" id="polietileno">
@@ -124,6 +124,11 @@
   btn.addEventListener("click", function () { setMenu(!root.classList.contains("menu-open")); });
   document.addEventListener("keydown", function (e) { if (e.key === "Escape") setMenu(false); });
   menu.addEventListener("click", function (e) { if (e.target.closest("a")) setMenu(false); });
+  /* "Volver": si venís del inicio, vuelve atrás (el navegador recupera la página tal como estaba) */
+  var back = document.querySelector(".cs-back");
+  if (back && document.referrer && document.referrer.indexOf(location.origin) === 0 && document.referrer.indexOf("casos.html") < 0 && history.length > 1) {
+    back.addEventListener("click", function (e) { e.preventDefault(); history.back(); });
+  }
   /* el video de YouTube se carga recién cuando se toca (la página queda liviana) */
   document.querySelectorAll(".cs-video").forEach(function (v) {
     v.querySelector(".cs-play").addEventListener("click", function () {
