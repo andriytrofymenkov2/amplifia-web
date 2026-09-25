@@ -1206,3 +1206,19 @@ input, textarea { -webkit-appearance: none; appearance: none; border-radius: 0; 
 .mf-n.on { color: #fff; }
 .mf-n.on i { background: var(--lime); border-color: var(--lime); box-shadow: 0 0 16px rgba(215,242,74,0.65); }
 @media (max-width: 860px) { .manif-text { font-size: clamp(30px, 8.2vw, 46px); } .mf-n { font-size: 10.5px; letter-spacing: 0.16em; } }
+
+/* Manifiesto centrado y con tres nodos con símbolo: Procesos, Personas y Tecnología */
+.manif-in { justify-content: center; text-align: center; }
+.manif-text { margin: 0 auto; text-align: center; max-width: 19em; }
+.mf-wrap { align-items: center; text-align: center; }
+.mf-label::after { content: ""; width: 34px; height: 1px; background: var(--lime); }
+.mf-net { width: min(100%, 780px); display: grid; grid-template-columns: repeat(3, 1fr); padding-top: 0; margin-top: clamp(4px, 1.2vh, 14px); }
+.mf-net::before, .mf-net::after { left: 16.667%; right: 16.667%; top: 26px; }
+.mf-n, .mf-n:nth-child(2), .mf-n:nth-child(3) { align-items: center; gap: 16px; font-size: clamp(11px, 0.95vw, 14px); }
+.mf-n i { width: 54px; height: 54px; display: grid; place-items: center; border-radius: 50%; border: 1px solid rgba(239,236,229,0.4); background: #070707; color: rgba(239,236,229,0.7); transition: background 0.5s ease, border-color 0.5s ease, box-shadow 0.5s ease, color 0.5s ease; }
+.mf-n i svg { width: 26px; height: 26px; }
+.mf-n b { font-weight: 500; }
+.mf-n.on i { background: #0d1206; border-color: var(--lime); color: var(--lime); box-shadow: 0 0 22px rgba(215,242,74,0.35), inset 0 0 12px rgba(215,242,74,0.12); }
+@media (max-width: 860px) { .mf-net { width: 100%; } .mf-n i { width: 46px; height: 46px; } .mf-n i svg { width: 22px; height: 22px; } .mf-net::before, .mf-net::after { top: 22px; } .mf-n { font-size: 10px; letter-spacing: 0.14em; gap: 12px; } }
+.mf-n b { display: block; line-height: 1.5; min-height: 1.5em; }
+@media (max-width: 860px) { .mf-n, .mf-n:nth-child(2), .mf-n:nth-child(3) { gap: 12px; font-size: 10px; } }
