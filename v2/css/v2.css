@@ -1142,3 +1142,16 @@ input, textarea { -webkit-appearance: none; appearance: none; border-radius: 0; 
   .sg-vt { top: 0; left: 64px; right: 18px; }
 }
 @media (max-width: 860px) { .sg.is-open .sg-vt { left: 18px; } .sg-inner .sg-ic { width: 88px; } }
+
+/* Frentes, versión premium: símbolo bicolor (blanco + detalle en el verde de la marca) con halo, separador fino y marcas de esquina */
+.card-icon { filter: drop-shadow(0 0 12px rgba(215,242,74,0.16)); }
+.card-icon .ac { stroke: var(--lime); }
+.card-body::before { display: block; content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none; background: radial-gradient(60% 34% at 50% 26%, rgba(215,242,74,0.10), transparent 72%); }
+.card-rule { position: relative; display: block; flex: none; align-self: center; width: min(62%, 220px); height: 1px; margin: clamp(2px, 0.8vh, 10px) 0 clamp(6px, 1.2vh, 14px); background: linear-gradient(90deg, transparent, rgba(215,242,74,0.65) 50%, transparent); }
+.card-rule::after { content: ""; position: absolute; left: 50%; top: 50%; width: 7px; height: 7px; translate: -50% -50%; rotate: 45deg; background: #0b0b0b; border: 1px solid var(--lime); box-shadow: 0 0 10px rgba(215,242,74,0.5); }
+.card::before { content: ""; position: absolute; inset: 0; z-index: 2; pointer-events: none; opacity: 0.7;
+  background:
+    linear-gradient(var(--lime), var(--lime)) left 16px top 16px / 16px 1px no-repeat,
+    linear-gradient(var(--lime), var(--lime)) left 16px top 16px / 1px 16px no-repeat,
+    linear-gradient(var(--lime), var(--lime)) right 16px bottom 16px / 16px 1px no-repeat,
+    linear-gradient(var(--lime), var(--lime)) right 16px bottom 16px / 1px 16px no-repeat; }
