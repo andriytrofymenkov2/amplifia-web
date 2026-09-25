@@ -415,18 +415,18 @@
       gsap.set(mfNodes, { opacity: 0, y: 30, scale: 0.86 }); mfNet.style.setProperty("--bo", 0);
     }
     onceIn("#manifiesto", function () {
-      var tot = 0.07 * mw.length + 0.7, t0 = reduce ? 0 : 0.35, tn = t0 + tot * 0.5, tc = tn + 1.25;
+      var tot = 0.035 * mw.length + 0.45, t0 = reduce ? 0 : 0.12, tn = t0 + tot * 0.4, tc = tn + 0.55;
       if (!reduce) {
         var lw = { v: 0 };
-        gsap.to(mfLabel, { opacity: 1, y: 0, duration: 0.9, ease: "power3.out" });
-        gsap.to(lw, { v: 1, duration: 1.2, ease: "power3.inOut", onUpdate: function () { mfLabel.style.setProperty("--lw", lw.v.toFixed(3)); } });
+        gsap.to(mfLabel, { opacity: 1, y: 0, duration: 0.55, ease: "power3.out" });
+        gsap.to(lw, { v: 1, duration: 0.7, ease: "power3.inOut", onUpdate: function () { mfLabel.style.setProperty("--lw", lw.v.toFixed(3)); } });
         var bo = { v: 0 };
-        gsap.to(mfNodes, { opacity: 1, y: 0, scale: 1, duration: 1.0, stagger: 0.2, ease: "power3.out", delay: tn });
-        gsap.to(bo, { v: 1, duration: 1.2, ease: "power2.out", delay: tn + 0.2, onUpdate: function () { mfNet.style.setProperty("--bo", bo.v.toFixed(3)); } });
+        gsap.to(mfNodes, { opacity: 1, y: 0, scale: 1, duration: 0.6, stagger: 0.1, ease: "power3.out", delay: tn });
+        gsap.to(bo, { v: 1, duration: 0.7, ease: "power2.out", delay: tn + 0.1, onUpdate: function () { mfNet.style.setProperty("--bo", bo.v.toFixed(3)); } });
       }
-      gsap.to(mw, { opacity: 1, stagger: 0.07, duration: 0.7, ease: "power2.out", delay: t0 });
+      gsap.to(mw, { opacity: 1, stagger: 0.035, duration: 0.45, ease: "power2.out", delay: t0 });
       var pr = { p: 0 };
-      gsap.to(pr, { p: 1, duration: reduce ? 0.01 : 1.6, delay: reduce ? 0 : tc, ease: "power2.inOut",
+      gsap.to(pr, { p: 1, duration: reduce ? 0.01 : 0.9, delay: reduce ? 0 : tc, ease: "power2.inOut",
         onUpdate: function () { mfNet.style.setProperty("--p", pr.p.toFixed(3)); mfNodes.forEach(function (n, i) { n.classList.toggle("on", pr.p >= i * 0.5 - 0.001 && (i === 0 || pr.p > 0.02)); }); },
         onComplete: function () { mfText.classList.add("is-linked"); } });
     }, "top 55%");
@@ -436,7 +436,7 @@
     var sgStack = window.matchMedia("(max-width: 860px)");
     function sgShow(i) { if (i === sgCur && sgs[i].classList.contains("is-open")) return; sgCur = i; sgs.forEach(function (p, k) { p.classList.toggle("is-open", k === i); p.setAttribute("aria-expanded", k === i ? "true" : "false"); }); }
     function sgProg(i, on) { sgs.forEach(function (p, k) { var pg = $(".sg-prog", p); if (!pg) return; pg.classList.remove("run"); if (on && k === i) { void pg.offsetWidth; pg.classList.add("run"); } }); }
-    function sgSchedule() { clearTimeout(sgTimer); if (phone || sgStack.matches || lowTier || reduce) { sgProg(-1, false); return; } if (sgStarted && sgOn && !sgHeld) { sgTimer = setTimeout(function () { sgShow((sgCur + 1) % sgs.length); sgSchedule(); }, 3600); sgProg(sgCur, true); } else sgProg(-1, false); }
+    function sgSchedule() { clearTimeout(sgTimer); if (true) { sgProg(-1, false); return; } if (sgStarted && sgOn && !sgHeld) { sgTimer = setTimeout(function () { sgShow((sgCur + 1) % sgs.length); sgSchedule(); }, 3600); sgProg(sgCur, true); } else sgProg(-1, false); }
     function sgPick(i) { if (!sgStarted) return; sgHeld = true; clearTimeout(sgTimer); sgShow(i); }
     function sgRelease() { sgHeld = false; clearTimeout(sgTimer); sgTimer = setTimeout(sgSchedule, 2400); }
     sgs.forEach(function (p, i) {

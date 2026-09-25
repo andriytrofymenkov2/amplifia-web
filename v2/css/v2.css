@@ -1236,31 +1236,7 @@ input, textarea { -webkit-appearance: none; appearance: none; border-radius: 0; 
 /* Qué hacemos y Quiénes somos: los pulsos animaban sombras (se repintan en cada cuadro); ahora son estáticos y solo parpadea la opacidad */
 .cols-node { animation: none; box-shadow: 0 0 0 6px rgba(215,242,74,0.16), 0 0 18px rgba(215,242,74,0.35); }
 .hot-plus { animation: none; box-shadow: 0 0 0 6px rgba(215,242,74,0.14); }
-/* Símbolos del panel abierto: animaciones mínimas (solo transform / opacidad), solo mientras está abierto y en equipos con recursos */
-@keyframes sgJam { 0%, 100% { transform: translateY(0); } 40% { transform: translateY(3px); } 60% { transform: translateY(1px); } }
-@keyframes sgWob { 0% { transform: rotate(-9deg); } 100% { transform: rotate(9deg); } }
-@keyframes sgSpin { to { transform: rotate(360deg); } }
-@keyframes sgBlink { 0%, 100% { opacity: 1; } 50% { opacity: 0.25; } }
-@keyframes sgSwing { 0%, 100% { transform: rotate(-14deg); } 50% { transform: rotate(14deg); } }
-@keyframes sgDraw { 0% { stroke-dashoffset: 400; } 60%, 100% { stroke-dashoffset: 0; } }
-@media (prefers-reduced-motion: no-preference) {
-  html:not(.lowtier) .sg.is-open .sg-inner .sg-ic * { transform-box: view-box; transform-origin: 32px 32px; }
-  html:not(.lowtier) .sg:nth-child(1).is-open .sg-inner .sg-ic circle { animation: sgJam 2.2s ease-in-out infinite; transform-origin: 50% 50%; transform-box: fill-box; }
-  html:not(.lowtier) .sg:nth-child(1).is-open .sg-inner .sg-ic circle:nth-of-type(2n) { animation-delay: -0.9s; }
-  html:not(.lowtier) .sg:nth-child(1).is-open .sg-inner .sg-ic circle:nth-of-type(3n) { animation-delay: -1.5s; }
-  html:not(.lowtier) .sg:nth-child(2).is-open .sg-inner .sg-ic path { animation: sgWob 2.4s ease-in-out infinite alternate; }
-  html:not(.lowtier) .sg:nth-child(2).is-open .sg-inner .sg-ic path:nth-of-type(even) { animation-direction: alternate-reverse; animation-duration: 3s; }
-  html:not(.lowtier) .sg:nth-child(3).is-open .sg-inner .sg-ic path:nth-of-type(n+2) { animation: sgSpin 10s linear infinite; }
-  html:not(.lowtier) .sg:nth-child(4).is-open .sg-inner .sg-ic path:nth-of-type(2) { animation: sgSwing 2.2s ease-in-out infinite; }
-  html:not(.lowtier) .sg:nth-child(4).is-open .sg-inner .sg-ic path:nth-of-type(1) { animation: sgBlink 1.6s ease-in-out infinite; }
-  html:not(.lowtier) .sg:nth-child(5).is-open .sg-inner .sg-ic path:nth-of-type(2) { stroke-dasharray: 400; animation: sgDraw 3.2s ease-in-out infinite; }
-}
-/* Símbolos animados a ~12 cuadros por segundo y en su propia capa: mismo efecto, casi sin costo */
-.sg-inner .sg-ic { will-change: transform; contain: layout paint; }
-@media (prefers-reduced-motion: no-preference) {
-  html:not(.lowtier) .sg.is-open .sg-inner .sg-ic * { animation-timing-function: steps(26, end) !important; }
-  html:not(.lowtier) .sg:nth-child(2).is-open .sg-inner .sg-ic path { animation-timing-function: steps(30, end) !important; }
-  html:not(.lowtier) .sg:nth-child(3).is-open .sg-inner .sg-ic path { animation-timing-function: steps(120, end) !important; }
-  html:not(.lowtier) .sg:nth-child(4).is-open .sg-inner .sg-ic path:nth-of-type(1) { animation-timing-function: steps(2, end) !important; }
-  html:not(.lowtier) .sg:nth-child(5).is-open .sg-inner .sg-ic path { animation-timing-function: steps(38, end) !important; }
-}
+/* Cuándo necesitas Amplifia: sección fija (sin rotación, sin símbolos animados ni barra de avance); el panel cambia casi al instante */
+.sg-prog { display: none !important; }
+.sg-row .sg:nth-child(n) { transition: flex-grow 0.22s ease-out, border-color 0.2s ease; }
+.sg-row .sg::after { transition: opacity 0.2s ease; }
