@@ -1334,3 +1334,7 @@ input, textarea { -webkit-appearance: none; appearance: none; border-radius: 0; 
 .qs-ic { width: 120px; margin-top: 88px; }
 .qs-panel p { margin-top: 92px; }
 .qs-stage { min-height: 470px; }
+
+/* Rótulo de "Qué hacemos": más grande y en blanco, como el de "¿Cuándo necesitas Amplifia?" */
+.caps-in > .tiny { font-size: clamp(18px, 1.7vw, 27px); letter-spacing: 0.24em; color: #fff; opacity: 1; font-weight: 500; }
+.caps-in > .tiny::before, .caps-in > .tiny::after { content: ""; display: inline-block; width: clamp(24px, 3vw, 44px); height: 1px; background: var(--lime); vertical-align: middle; margin: 0 clamp(12px, 1.4vw, 20px) 0.2em; }
