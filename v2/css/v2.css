@@ -1405,3 +1405,13 @@ input, textarea { -webkit-appearance: none; appearance: none; border-radius: 0; 
 .hz-swipe .card-body h3 { min-height: 2.2em; display: flex; align-items: center; justify-content: center; }
 /* Celular: el rótulo de las señales va solo; "Cinco señales" se oculta para que no se apriete */
 @media (max-width: 860px) { .prob-head .tiny:last-child { display: none; } }
+
+/* Qué hacemos: franja con resultados que lleva a la página de casos */
+.qh-cases { width: min(100%, 1180px); display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 14px 30px; margin-top: clamp(22px, 4vh, 44px); padding: clamp(16px, 2.4vh, 22px) clamp(20px, 2.4vw, 34px); border: 1px solid rgba(215,242,74,0.45); border-radius: 999px; background: rgba(215,242,74,0.04); text-align: left; transition: background 0.25s ease, border-color 0.25s ease; }
+.qh-cases-m { font-size: clamp(13px, 1vw, 15px); color: rgba(239,236,229,0.78); }
+.qh-cases-m b { font-family: var(--serif); font-weight: 400; font-size: clamp(22px, 1.9vw, 30px); color: var(--lime); margin-right: 6px; }
+.qh-cases-go { display: inline-flex; align-items: center; gap: 12px; padding: 12px 22px; border-radius: 999px; background: var(--lime); color: #0a0a0a; font-size: 14px; font-weight: 600; }
+.qh-cases-go i { font-style: normal; transition: transform 0.25s ease; }
+.qh-cases:hover { background: rgba(215,242,74,0.09); border-color: var(--lime); }
+.qh-cases:hover .qh-cases-go i { transform: translateX(4px); }
+@media (max-width: 860px) { .qh-cases { border-radius: 22px; flex-direction: column; align-items: flex-start; } .qh-cases-go { width: 100%; justify-content: center; } }
