@@ -1318,3 +1318,19 @@ input, textarea { -webkit-appearance: none; appearance: none; border-radius: 0; 
   .qs-item::after { width: 34px; height: 34px; }
   .qs-item.is-on .qs-m { display: block; margin: 4px 52px 6px 0; font-size: 16px; line-height: 1.55; color: rgba(239,236,229,0.88); }
 }
+
+/* Qué hacemos v5: panel derecho tipo "dial" (anillos concéntricos), sin marco, esquinas ni rombo (ya no repite el diseño de Frentes) */
+.qs-panel { border: 0 !important; background: none !important; border-radius: 0; overflow: visible; justify-content: flex-start; padding: 0; }
+.qs-panel::after, .qs-halo, .qs-rule { display: none !important; }
+.qs-panel::before { content: ""; position: absolute; left: 50%; top: 0; width: min(100%, 360px); aspect-ratio: 1; translate: -50% 0; border-radius: 50%; border: 1px solid rgba(215,242,74,0.5); box-shadow: 0 0 0 clamp(18px, 2.2vw, 30px) rgba(215,242,74,0.05), 0 0 0 clamp(19px, 2.2vw, 31px) rgba(215,242,74,0.22), inset 0 0 60px rgba(215,242,74,0.1); background: radial-gradient(circle, rgba(215,242,74,0.14), transparent 68%); pointer-events: none; }
+.qs-ic { margin-top: clamp(64px, 8.6vw, 118px); width: clamp(120px, 12vw, 180px); }
+.qs-panel p { margin-top: clamp(64px, 9vh, 96px); padding-left: 18px; text-align: left; max-width: 34ch; border-left: 2px solid var(--lime); }
+.qs-stage { min-height: clamp(400px, 56vh, 520px); }
+.qs-panel::before { width: 300px; box-shadow: inset 0 0 60px rgba(215,242,74,0.1); outline: 1px solid rgba(215,242,74,0.22); outline-offset: 22px; top: 22px; }
+.qs-ic { width: 140px; margin-top: 102px; }
+.qs-panel p { margin-top: 116px; }
+.qs-stage { min-height: 560px; }
+.qs-panel::before { width: 260px; top: 18px; outline-offset: 18px; }
+.qs-ic { width: 120px; margin-top: 88px; }
+.qs-panel p { margin-top: 92px; }
+.qs-stage { min-height: 470px; }
