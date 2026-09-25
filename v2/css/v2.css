@@ -1222,3 +1222,8 @@ input, textarea { -webkit-appearance: none; appearance: none; border-radius: 0; 
 @media (max-width: 860px) { .mf-net { width: 100%; } .mf-n i { width: 46px; height: 46px; } .mf-n i svg { width: 22px; height: 22px; } .mf-net::before, .mf-net::after { top: 22px; } .mf-n { font-size: 10px; letter-spacing: 0.14em; gap: 12px; } }
 .mf-n b { display: block; line-height: 1.5; min-height: 1.5em; }
 @media (max-width: 860px) { .mf-n, .mf-n:nth-child(2), .mf-n:nth-child(3) { gap: 12px; font-size: 10px; } }
+
+/* Manifiesto: los filetes del rótulo crecen desde el centro y la línea punteada aparece con los nodos */
+.mf-label::before { transform: scaleX(var(--lw, 1)); transform-origin: right; }
+.mf-label::after { transform: scaleX(var(--lw, 1)); transform-origin: left; }
+.mf-net::before { opacity: var(--bo, 1); }

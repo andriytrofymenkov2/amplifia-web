@@ -408,12 +408,25 @@
 
     /* 02 · manifiesto: se enciende solo al llegar */
     var mw = words($("#manifText"), false);
-    var mfNet = $("#mfNet"), mfNodes = $$(".mf-n", mfNet), mfText = $("#manifText");
+    var mfNet = $("#mfNet"), mfNodes = $$(".mf-n", mfNet), mfText = $("#manifText"), mfLabel = $(".mf-label");
+    /* estado inicial: el rótulo, los nodos y la línea esperan; aparecen en secuencia al llegar a la pantalla */
+    if (!reduce) {
+      gsap.set(mfLabel, { opacity: 0, y: 12 }); mfLabel.style.setProperty("--lw", 0);
+      gsap.set(mfNodes, { opacity: 0, y: 30, scale: 0.86 }); mfNet.style.setProperty("--bo", 0);
+    }
     onceIn("#manifiesto", function () {
-      gsap.to(mw, { opacity: 1, stagger: 0.07, duration: 0.7, ease: "power2.out" });
-      var tot = 0.07 * mw.length + 0.7;
+      var tot = 0.07 * mw.length + 0.7, t0 = reduce ? 0 : 0.35, tn = t0 + tot * 0.5, tc = tn + 1.25;
+      if (!reduce) {
+        var lw = { v: 0 };
+        gsap.to(mfLabel, { opacity: 1, y: 0, duration: 0.9, ease: "power3.out" });
+        gsap.to(lw, { v: 1, duration: 1.2, ease: "power3.inOut", onUpdate: function () { mfLabel.style.setProperty("--lw", lw.v.toFixed(3)); } });
+        var bo = { v: 0 };
+        gsap.to(mfNodes, { opacity: 1, y: 0, scale: 1, duration: 1.0, stagger: 0.2, ease: "power3.out", delay: tn });
+        gsap.to(bo, { v: 1, duration: 1.2, ease: "power2.out", delay: tn + 0.2, onUpdate: function () { mfNet.style.setProperty("--bo", bo.v.toFixed(3)); } });
+      }
+      gsap.to(mw, { opacity: 1, stagger: 0.07, duration: 0.7, ease: "power2.out", delay: t0 });
       var pr = { p: 0 };
-      gsap.to(pr, { p: 1, duration: reduce ? 0.01 : 1.5, delay: reduce ? 0 : tot * 0.72, ease: "power2.inOut",
+      gsap.to(pr, { p: 1, duration: reduce ? 0.01 : 1.6, delay: reduce ? 0 : tc, ease: "power2.inOut",
         onUpdate: function () { mfNet.style.setProperty("--p", pr.p.toFixed(3)); mfNodes.forEach(function (n, i) { n.classList.toggle("on", pr.p >= i * 0.5 - 0.001 && (i === 0 || pr.p > 0.02)); }); },
         onComplete: function () { mfText.classList.add("is-linked"); } });
     }, "top 55%");
