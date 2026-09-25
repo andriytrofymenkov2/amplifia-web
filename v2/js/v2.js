@@ -443,7 +443,7 @@
       var vts = $$(".sg-vt", sgRow);
       if (sgStack.matches) { vts.forEach(function (v) { v.style.fontSize = ""; }); return; }
       var rowR = sgRow.getBoundingClientRect(), gap = parseFloat(getComputedStyle(sgRow).columnGap) || 10;
-      var collW = (rowR.width - gap * (sgs.length - 1)) / (sgs.length - 1 + 4.4), avail = rowR.height - 150, cap = collW * 0.5;
+      var collW = (rowR.width - gap * (sgs.length - 1)) / (sgs.length - 1 + 4.4), wmW = (vts[0].parentNode.querySelector(".sg-wm") || {}).getBoundingClientRect ? vts[0].parentNode.querySelector(".sg-wm").getBoundingClientRect().width : 76, avail = rowR.height - (wmW + 128), cap = collW * 0.5;
       var cs = getComputedStyle(vts[0]);
       sgCv.font = "500 100px " + cs.fontFamily;
       var size = cap;

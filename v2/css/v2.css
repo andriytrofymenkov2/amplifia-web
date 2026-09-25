@@ -1156,3 +1156,30 @@ input, textarea { -webkit-appearance: none; appearance: none; border-radius: 0; 
     linear-gradient(var(--lime), var(--lime)) right 16px bottom 16px / 16px 1px no-repeat,
     linear-gradient(var(--lime), var(--lime)) right 16px bottom 16px / 1px 16px no-repeat; }
 .hero-tag { text-wrap: balance; }
+
+/* Manifiesto: frase más larga, tamaño ajustado para que entre completa en la pantalla */
+.manif-text { font-size: clamp(30px, 4.9vw, 100px); line-height: 1.02; max-width: 19.5em; }
+@media (max-width: 860px) { .manif-text { font-size: clamp(30px, 8.4vw, 46px); max-width: none; } }
+
+/* Cuándo necesitas Amplifia: símbolos más grandes y texto de descripción más amplio */
+.sg-row { --wm: clamp(64px, 5.6vw, 88px); }
+.sg-wm { width: var(--wm); }
+.sg-halo { width: calc(var(--wm) * 2.3); }
+.sg-tick { top: calc(clamp(20px, 3.4vh, 32px) + var(--wm) + 12px); }
+.sg-vt { top: calc(50% + var(--wm) * 0.75); }
+.sg-inner .sg-ic { width: clamp(150px, 15vw, 220px); margin-bottom: clamp(16px, 3vh, 30px); }
+.sg-inner p { max-width: 44ch; font-size: clamp(16px, 1.45vw, 22px); }
+@media (max-width: 860px) {
+  .sg-wm { width: 50px; left: 16px; top: 12px; }
+  .sg-vt { left: 78px; }
+  .sg::before { height: 74px; }
+  .sg-vt { height: 74px; }
+  .sg-inner .sg-ic { width: 120px; }
+  .sg-inner p { max-width: 30ch; font-size: 16.5px; }
+}
+
+/* Cuándo necesitas Amplifia: título vertical anclado abajo, ocupa todo el espacio libre bajo el filete */
+.sg-row { height: min(72vh, 640px); max-height: 72vh; }
+.sg-vt { top: auto; bottom: clamp(20px, 3vh, 30px); translate: -50% 0; }
+@media (max-width: 860px) { .sg-row { height: auto; max-height: none; } .sg-vt { top: 0; bottom: auto; translate: none; } }
+.hero-kicker { text-wrap: balance; max-width: 92vw; text-align: center; margin-inline: auto; }
