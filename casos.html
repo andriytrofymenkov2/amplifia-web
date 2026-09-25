@@ -87,7 +87,7 @@
         <div><h3>El desafío</h3><p>La planta necesitaba ampliarse y el layout existente limitaba el flujo operativo y la productividad.</p></div>
         <div><h3>Qué hicimos</h3><p>Aplicamos la metodología de Planificación Sistemática de Layout para rediseñar y ampliar la planta, mejorando el recorrido de materiales y personas.</p></div>
       </div>
-      <div class="cs-imgs"><div class="cs-ph" role="img" aria-label="Espacio para imagen 1"><span>Imagen 1</span></div><figure class="cs-fig"><img src="Imagenes%20usadas/casos/layout_2.jpg" alt="Diagrama de relaciones entre áreas de la planta según su necesidad de cercanía" loading="lazy" width="1400" height="781"><button class="cs-zoom" type="button" aria-label="Ampliar imagen"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5 21 21M10.5 7.5v6M7.5 10.5h6"/></svg></button></figure></div>
+      <div class="cs-imgs"><div class="cs-ph" role="img" aria-label="Espacio para imagen 1"><span>Imagen 1</span></div><figure class="cs-fig"><img src="Imagenes%20usadas/casos/layout_2.jpg" data-full="Imagenes%20usadas/casos/layout_2_full.webp" alt="Diagrama de relaciones entre áreas de la planta según su necesidad de cercanía" loading="lazy" width="1400" height="781"><button class="cs-zoom" type="button" aria-label="Ampliar imagen"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5 21 21M10.5 7.5v6M7.5 10.5h6"/></svg></button></figure></div>
     </div>
   </article>
   <article class="cs" id="polietileno">
@@ -137,6 +137,9 @@
   function lbOpen(im) {
     if (lbBusy) return; lbBusy = true; lbSrc = im;
     lbImg.src = im.src; lbImg.alt = im.alt;
+    /* la versión en resolución completa (2752 px) se carga recién al ampliar y reemplaza a la miniatura apenas llega */
+    var full = im.getAttribute("data-full");
+    if (full) { var hi = new Image(); hi.decoding = "async"; hi.onload = function () { if (!lb.hidden && lbSrc === im) lbImg.src = full; }; hi.src = full; }
     lb.hidden = false; document.body.style.overflow = "hidden";
     var to = lbImg.getBoundingClientRect(), from = im.getBoundingClientRect();
     im.style.visibility = "hidden";
