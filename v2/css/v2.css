@@ -1382,3 +1382,6 @@ input, textarea { -webkit-appearance: none; appearance: none; border-radius: 0; 
 /* Líderes Aumentados: degradado blanco a verde lima que avanza (variable --gp, 0 a 1) */
 .pg-title { --gp: 1; padding-bottom: 0.12em; background-image: linear-gradient(90deg, #d7f24a 0%, #d7f24a 50%, #ffffff 50%, #ffffff 100%); background-size: 260% 100%; background-position: calc((1 - var(--gp)) * 100%) 0; background-repeat: no-repeat; -webkit-background-clip: text; background-clip: text; color: transparent; -webkit-text-fill-color: transparent; }
 .pg-title { background-image: linear-gradient(90deg, #d7f24a 0%, #d7f24a 42%, #ffffff 58%, #ffffff 100%); }
+
+/* Carrusel: el brillo de cada tarjeta se actualiza unas 8 veces por segundo, sin transición (las transiciones se calculaban cuadro a cuadro) */
+.c3d-card, .c3d-back { transition: border-color 0.5s ease; }

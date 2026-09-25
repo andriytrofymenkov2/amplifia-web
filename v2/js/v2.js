@@ -428,6 +428,8 @@
   function build() {
     buildHero();
 
+    var steps = [];
+    steps.push(function () {
     /* 02 · manifiesto: se enciende solo al llegar */
     var mw = words($("#manifText"), false);
     var mfNet = $("#mfNet"), mfNodes = $$(".mf-n", mfNet), mfText = $("#manifText"), mfLabel = $(".mf-label");
@@ -453,6 +455,8 @@
         onComplete: function () { mfText.classList.add("is-linked"); } });
     }, "top 55%");
 
+    });
+    steps.push(function () {
     /* 03 · el problema: cinco paneles verticales; uno se abre solo, en celular se abre con un toque */
     var sgs = $$("#sgRow .sg"), sgCur = 0, sgStarted = false, sgOn = false, sgHeld = false, sgTimer = null;
     var sgStack = window.matchMedia("(max-width: 860px)");
@@ -495,6 +499,8 @@
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(sgFit);
     window.addEventListener("resize", function () { sgFit(); });
 
+    });
+    steps.push(function () {
     /* 04 · qué hacemos: un solo bloque que se abre desde el centro; los tres módulos aparecen integrados */
     var capsCols = $("#capsCols"), capsIntro = $("#capsIntro");
     if (!reduce) { gsap.set([capsIntro, capsCols], { opacity: 0, y: 24 }); }
@@ -508,6 +514,8 @@
     });
     onceIn(capsCols, function () { gsap.to([capsIntro, capsCols], { opacity: 1, y: 0, duration: 0.7, stagger: 0.12, ease: "power3.out" }); }, "top 80%");
 
+    });
+    steps.push(function () {
     /* 05 · frentes: recorrido horizontal */
     var hz = $("#frentes"), hzTrack = $("#hzTrack");
     function hzDist() { return Math.max(0, hzTrack.offsetWidth - window.innerWidth); }
@@ -533,6 +541,8 @@
     });
     ScrollTrigger.create({ trigger: hz, start: "top 55%", once: true, onEnter: function () { hzCards.forEach(function (c, i) { if (c.getBoundingClientRect().left < window.innerWidth * 0.86) setTimeout(function () { hzSweep(c); }, 250 + i * 260); }); } });
 
+    });
+    steps.push(function () {
     /* 06 · roadmap: la línea se llena y cada etapa aparece cuando la línea la alcanza */
     var cols = $$("#metodo .rm-col");
     var rw = cols.map(function (c) { return words($(".cap-title", c)); });
@@ -549,24 +559,33 @@
       });
       tl.from(".rm-foot", { opacity: 0, y: 16, duration: 0.8 }, 2.4);
       /* la luz viaja con la línea, enciende cada nodo al pasar y después va y viene sin parar (energía por un cable) */
-      var spark = $(".rm-spark"), active = null;
+      var spark = $(".rm-spark"), active = null, rmOn = true, lineW = 0, colX = [];
       gsap.set(spark, { opacity: 1, left: "0%" });
+      /* posiciones medidas una sola vez (y al cambiar el tamaño): leerlas en cada cuadro obligaba a recalcular toda la página */
+      function measure() {
+        var line = spark.parentNode.getBoundingClientRect(); lineW = line.width;
+        colX = cols.map(function (col) { return col.getBoundingClientRect().left + 7.5 - line.left; });
+      }
+      measure(); window.addEventListener("resize", function () { measure(); });
       function hits() {
-        var sx = spark.getBoundingClientRect().left + 10;
-        cols.forEach(function (col) {
-          var nx = col.getBoundingClientRect().left + 7.5;
-          if (Math.abs(sx - nx) < 16 && !col._hit) {
+        var sx = (parseFloat(spark.style.left) || 0) / 100 * lineW + 10;
+        cols.forEach(function (col, i) {
+          if (Math.abs(sx - colX[i]) < 16 && !col._hit) {
             col._hit = true; col.classList.add("hit");
             setTimeout(function () { col.classList.remove("hit"); col._hit = false; }, 520);
           }
         });
       }
+      function sync() { if (active) { if (rmOn) active.resume(); else active.pause(); } }
       active = gsap.to(spark, { left: "100%", duration: 2.6, ease: "power1.inOut", onUpdate: hits, onComplete: function () {
-        active = gsap.to(spark, { left: "0%", duration: 3.4, ease: "sine.inOut", repeat: -1, yoyo: true, onUpdate: hits });
+        active = gsap.to(spark, { left: "0%", duration: 3.4, ease: "sine.inOut", repeat: -1, yoyo: true, onUpdate: hits }); sync();
       } });
-      ScrollTrigger.create({ trigger: "#metodo", start: "top bottom", end: "bottom top", onToggle: function (s) { if (active) { if (s.isActive) active.resume(); else active.pause(); } } });
+      var rmSt = ScrollTrigger.create({ trigger: "#metodo", start: "top bottom", end: "bottom top", onToggle: function (s) { rmOn = s.isActive; sync(); } });
+      rmOn = rmSt.isActive; sync();
     }, "top 75%");
 
+    });
+    steps.push(function () {
     /* 07 · nosotros: dos contenedores negros con "+" (mismo mecanismo que la página anterior) */
     (function who() {
       var PEOPLE = [
@@ -634,6 +653,8 @@
       gsap.from(w, { yPercent: 40, opacity: 0, duration: 1.25, stagger: 0.07, ease: "power4.out", scrollTrigger: { trigger: el, start: "top 88%", once: true } });
     });
 
+    });
+    steps.push(function () {
     ring3d();
     feed($("#clientes"), [$("#clientes video")]);
 
@@ -641,6 +662,15 @@
     gsap.fromTo("#ctInner", { yPercent: -14 }, { yPercent: 0, ease: "none", scrollTrigger: { trigger: "#contacto", start: "top bottom", end: "top top", scrub: true } });
     gsap.fromTo("#contacto .ct-bg", { scale: 1.25 }, { scale: 1, ease: "none", scrollTrigger: { trigger: "#contacto", start: "top bottom", end: "bottom bottom", scrub: true } });
     feed($("#contacto"), [$("#contacto video")]);
+    });
+    /* cada sección se arma en su propio paso, cuando el navegador está libre: antes era un solo bloque de ~60 ms
+       (240 ms en equipos lentos) que frenaba el video del inicio */
+    (function run(i) {
+      if (i >= steps.length) { ScrollTrigger.refresh(); return; }
+      try { steps[i](); } catch (e) { if (window.console) console.error(e); }
+      var next = function () { run(i + 1); };
+      if (window.requestIdleCallback) requestIdleCallback(next, { timeout: 400 }); else setTimeout(next, 30);
+    })(0);
   }
 
 
@@ -663,32 +693,58 @@
         c.style.transform = "rotateY(" + (i * STEP) + "deg) translateZ(" + R.toFixed(1) + "px)";
         backs[i].style.transform = "rotateY(" + (i * STEP) + "deg) translateZ(" + (R - 1).toFixed(1) + "px) rotateY(180deg)";
       });
+      buildAnim();
       apply(true);
     }
+    /* El giro de crucero lo hace una animación del navegador (corre en la tarjeta gráfica, sin trabajo por cuadro en el código).
+       El código solo toma el control mientras se arrastra, durante la inercia o al centrar una tarjeta. */
+    var DUR = 360 / CRUISE * 1000, anim = null, cruising = false;
+    function tf(deg) { return "rotateX(-9deg) translateZ(" + (-R).toFixed(1) + "px) rotateY(" + deg + "deg)"; }
+    function buildAnim() {
+      var ct = anim ? anim.currentTime : 0, wasOn = cruising;
+      if (anim) anim.cancel();
+      anim = ring.animate([{ transform: tf(0) }, { transform: tf(360) }], { duration: DUR, iterations: Infinity, easing: "linear" });
+      anim.pause(); anim.currentTime = ct || 0;
+      if (wasOn && running) anim.play();
+    }
+    function rotNow() { return cruising && anim ? (anim.currentTime / DUR) * 360 : rot; }
+    function toCruise() {
+      if (!anim) return;
+      rot = ((rot % 360) + 360) % 360; anim.currentTime = rot / 360 * DUR; cruising = true; vel = CRUISE;
+      if (running) anim.play();
+    }
+    function toManual() { if (!anim) return; if (cruising) { rot = rotNow(); cruising = false; } anim.pause(); }
     var last = 9999;
-    function apply(force) {
-      ring.style.transform = "rotateX(-9deg) translateZ(" + (-R).toFixed(1) + "px) rotateY(" + rot.toFixed(3) + "deg)";
-      if (!force && Math.abs(rot - last) < 1) return;
-      last = rot;
+    function dim(r) {
       for (var i = 0; i < N; i++) {
-        var a = ((i * STEP + rot) % 360 + 540) % 360 - 180, c = Math.cos(a * Math.PI / 180);
+        var a = ((i * STEP + r) % 360 + 540) % 360 - 180, c = Math.cos(a * Math.PI / 180);
         var o = (0.36 + 0.64 * Math.pow((c + 1) / 2, 1.15)).toFixed(3);
         cards[i].style.opacity = o; backs[i].style.opacity = o;
         cards[i].classList.toggle("is-front", c > 0.985);
       }
     }
-    var acc = 0;
+    function apply(force) {
+      if (anim && !cruising) anim.currentTime = ((((rot % 360) + 360) % 360) / 360) * DUR;
+      if (!force && Math.abs(rot - last) < 1) return;
+      last = rot; dim(rot);
+    }
+    var acc = 0, dimT = 0;
     gsap.ticker.add(function (time, deltaMs) {
       if (!running || tweening) return;
+      if (cruising) {
+        /* en crucero solo se actualiza el brillo de las tarjetas unas 8 veces por segundo */
+        dimT += deltaMs || 16; if (dimT < 120) return; dimT = 0; dim(rotNow()); return;
+      }
       if (dragging) { apply(true); return; }
       acc += deltaMs || 16;
-      if (phone && (gsap.ticker.frame & 1)) return;
       var dt = Math.min(0.1, acc / 1000); acc = 0;
       vel += (CRUISE - vel) * (1 - Math.exp(-dt * 1.7)); rot += vel * dt;
       apply();
+      if (Math.abs(vel - CRUISE) < 0.6) toCruise();
     });
     stage.addEventListener("pointerdown", function (e) {
       if (tweening) return;
+      toManual();
       dragging = true; moved = 0; lastX = e.clientX; lastT = performance.now(); dragVel = 0;
       stage.classList.add("is-dragging");
       try { stage.setPointerCapture(e.pointerId); } catch (err) {}
@@ -706,12 +762,13 @@
     cards.forEach(function (card, i) {
       card.addEventListener("click", function () {
         if (moved > 6) return;
+        toManual();
         var delta = ((-i * STEP - rot) % 360 + 540) % 360 - 180, o = { r: rot };
         tweening = true; vel = 0;
         gsap.to(o, { r: rot + delta, duration: 1.1, ease: "power3.inOut", onUpdate: function () { rot = o.r; apply(true); }, onComplete: function () { tweening = false; } });
       });
     });
-    ScrollTrigger.create({ trigger: sec, start: "top 90%", end: "bottom 10%", onToggle: function (s) { running = s.isActive; stage.classList.toggle("is-off", !s.isActive); } });
+    ScrollTrigger.create({ trigger: sec, start: "top 90%", end: "bottom 10%", onToggle: function (s) { running = s.isActive; stage.classList.toggle("is-off", !s.isActive); if (anim) { if (running && cruising) anim.play(); else anim.pause(); } } });
     var rw0 = window.innerWidth;
     window.addEventListener("resize", function () { if (phone && window.innerWidth === rw0) return; rw0 = window.innerWidth; layout(); });
     layout();
