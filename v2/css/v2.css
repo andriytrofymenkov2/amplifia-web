@@ -1591,3 +1591,9 @@ input, textarea { -webkit-appearance: none; appearance: none; border-radius: 0; 
   .wy h3 { font-size: 22px; align-self: center; }
   .wy p { grid-column: 2; }
 }
+
+/* Rótulos de sección unificados: mismo tamaño, blanco y con un filete verde delante (el hero y el manifiesto mantienen su estilo) */
+section:not(#hero):not(#manifiesto) :is(.prob-head .tiny:first-child, .caps-in > .tiny, .ks-head .tiny, .hz-intro > .tiny, .rm-head .tiny, .svs-head .tiny, .cta > .tiny, .us-head .tiny, .pj-head .tiny, .trust-head .tiny, .faq-side .tiny, .ct-left .tiny) {
+  font-size: clamp(15px, 1.35vw, 19px) !important; color: #fff !important; opacity: 1 !important; letter-spacing: 0.22em; }
+section:not(#hero):not(#manifiesto):not(#que-hacemos) :is(.prob-head .tiny:first-child, .ks-head .tiny, .hz-intro > .tiny, .rm-head .tiny, .svs-head .tiny, .cta > .tiny, .us-head .tiny, .pj-head .tiny, .trust-head .tiny, .faq-side .tiny, .ct-left .tiny) { display: inline-flex; align-items: center; gap: 14px; }
+section:not(#hero):not(#manifiesto):not(#que-hacemos) :is(.prob-head .tiny:first-child, .ks-head .tiny, .hz-intro > .tiny, .rm-head .tiny, .svs-head .tiny, .cta > .tiny, .us-head .tiny, .pj-head .tiny, .trust-head .tiny, .faq-side .tiny, .ct-left .tiny)::before { content: ""; width: 30px; height: 1px; background: var(--lime); flex: none; }
