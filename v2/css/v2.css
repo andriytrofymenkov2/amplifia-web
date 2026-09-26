@@ -1468,3 +1468,30 @@ input, textarea { -webkit-appearance: none; appearance: none; border-radius: 0; 
 .quick .pre { display: flex !important; transition: opacity 0.4s ease; }
 .quick .pre > * { display: none !important; }
 .quick.quick-done .pre { opacity: 0; pointer-events: none; }
+
+/* Casos en el inicio, versión simple: un número y una frase por caso, y un acceso claro a la página de casos */
+.ks-simple { padding-top: clamp(80px, 12vh, 120px); padding-bottom: clamp(60px, 10vh, 100px); gap: clamp(22px, 3.6vh, 36px); }
+.ks-simple .ks-head h2 em { color: var(--lime); }
+.ks-row { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); border-top: 1px solid rgba(215,242,74,0.28); border-bottom: 1px solid rgba(215,242,74,0.28); }
+.ks-it { display: grid; gap: 8px; align-content: start; padding: clamp(20px, 3.4vh, 34px) clamp(16px, 2vw, 32px); transition: background-color 0.25s ease; }
+.ks-it + .ks-it { border-left: 1px solid rgba(239,236,229,0.12); }
+.ks-it:first-child { padding-left: 0; }
+.ks-it b { font-family: var(--serif); font-weight: 400; white-space: nowrap; font-size: clamp(44px, 4.6vw, 80px); line-height: 1; color: var(--lime); }
+.ks-it span { max-width: 22ch; font-size: clamp(14px, 1.15vw, 17px); line-height: 1.45; color: rgba(239,236,229,0.85); }
+.ks-it:hover { background-color: rgba(215,242,74,0.04); }
+.ks-more { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 14px 28px; }
+.ks-more span { font-size: clamp(14px, 1.1vw, 17px); color: rgba(239,236,229,0.75); }
+.ks-more .btn { font-style: normal; display: inline-flex; gap: 12px; }
+.ks-more .btn em { font-style: normal; color: inherit; transition: transform 0.25s ease; }
+.ks-more:hover .btn em { transform: translateX(4px); }
+@media (max-width: 760px) {
+  .ks-row { grid-template-columns: 1fr; }
+  .ks-it, .ks-it:first-child { padding: 18px 0; }
+  .ks-it + .ks-it { border-left: 0; border-top: 1px solid rgba(239,236,229,0.12); }
+  .ks-more .btn { width: 100%; justify-content: center; }
+}
+@media (max-width: 760px) {
+  .ks-it, .ks-it:first-child { grid-template-columns: auto 1fr; align-items: center; gap: 14px; padding: 14px 0; }
+  .ks-it b { font-size: clamp(30px, 9vw, 40px); min-width: 0; }
+  .ks-it span { font-size: 14.5px; }
+}
