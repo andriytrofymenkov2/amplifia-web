@@ -1534,3 +1534,60 @@ input, textarea { -webkit-appearance: none; appearance: none; border-radius: 0; 
 .tw:hover .tw-go { background: var(--lime); border-color: var(--lime); color: #0a0a0a; }
 .tw:hover .tw-go i { color: #0a0a0a; }
 @media (prefers-reduced-motion: reduce) { .tw:hover { transform: none; } }
+
+/* ===== Servicios: qué se puede contratar y qué se recibe ===== */
+.svs { position: relative; z-index: 4; background: var(--bgsub); }
+.svs-in { padding: clamp(96px, 14vh, 140px) var(--pad) clamp(70px, 11vh, 120px); display: grid; gap: clamp(28px, 4.6vh, 48px); }
+.svs-head { display: grid; gap: 14px; max-width: 900px; }
+.svs-head .tiny { color: #fff; font-size: clamp(15px, 1.35vw, 21px); }
+.svs-head h2 em { color: var(--lime); }
+.svs-sub { font-size: clamp(15px, 1.3vw, 20px); line-height: 1.55; color: rgba(239,236,229,0.8); max-width: 44em; }
+.sv-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(14px, 1.6vw, 26px); align-items: stretch; }
+.sv { position: relative; display: flex; flex-direction: column; gap: 18px; padding: clamp(26px, 2.4vw, 38px); border: 1px solid rgba(239,236,229,0.14); border-radius: 24px;
+  background: radial-gradient(110% 45% at 50% 0%, rgba(215,242,74,0.07), transparent 65%), linear-gradient(180deg, #111 0%, #080808 100%); box-shadow: inset 0 1px 0 rgba(255,255,255,0.05); transition: border-color 0.3s ease, transform 0.35s var(--ease); }
+.sv:hover { border-color: rgba(215,242,74,0.6); transform: translateY(-4px); }
+.sv.is-feat { border-color: rgba(215,242,74,0.75); background: radial-gradient(110% 50% at 50% 0%, rgba(215,242,74,0.16), transparent 65%), linear-gradient(180deg, #13160b 0%, #080808 100%); box-shadow: 0 0 0 1px rgba(215,242,74,0.15), 0 24px 60px rgba(0,0,0,0.5), 0 0 50px rgba(215,242,74,0.08); }
+.sv-badge { position: absolute; top: -13px; left: clamp(26px, 2.4vw, 38px); padding: 6px 14px; border-radius: 999px; background: var(--lime); color: #0a0a0a; font-size: 11px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; }
+.sv-top { display: flex; align-items: center; gap: 14px; }
+.sv-ic { flex: none; width: 52px; height: 52px; border-radius: 16px; display: grid; place-items: center; border: 1px solid rgba(215,242,74,0.5); background: rgba(215,242,74,0.06); color: var(--lime); }
+.sv-ic svg { width: 26px; height: 26px; }
+.sv-t { font-family: var(--serif); font-weight: 400; font-size: clamp(28px, 2.4vw, 40px); line-height: 1.05; color: #fff; }
+.sv-lead { font-size: clamp(15px, 1.15vw, 18px); line-height: 1.5; color: rgba(239,236,229,0.92); }
+.sv-for, .sv-get { display: grid; gap: 8px; }
+.sv-for span, .sv-get > span { font-size: 10.5px; font-weight: 500; letter-spacing: 0.22em; text-transform: uppercase; color: var(--lime); }
+.sv-for p { font-size: clamp(13.5px, 1vw, 15.5px); line-height: 1.5; color: rgba(239,236,229,0.7); }
+.sv-get { padding-top: 16px; border-top: 1px solid rgba(215,242,74,0.22); }
+.sv-get ul { list-style: none; margin: 4px 0 0; padding: 0; display: grid; gap: 11px; }
+.sv-get li { display: grid; grid-template-columns: 20px 1fr; gap: 10px; align-items: start; font-size: clamp(13.5px, 1.02vw, 15.5px); line-height: 1.45; color: rgba(239,236,229,0.9); }
+.sv-ck { width: 18px; height: 18px; margin-top: 1px; padding: 3px; box-sizing: border-box; border-radius: 50%; background: rgba(215,242,74,0.16); fill: none; stroke: var(--lime); stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+.sv-cta { margin-top: auto; display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 14px 20px; border-radius: 999px; border: 1px solid rgba(239,236,229,0.3); font-size: 14px; font-weight: 500; color: #fff; transition: background 0.25s ease, color 0.25s ease, border-color 0.25s ease; }
+.sv-cta i { font-style: normal; transition: transform 0.25s ease; }
+.sv-cta:hover, .sv.is-feat .sv-cta { background: var(--lime); border-color: var(--lime); color: #0a0a0a; }
+.sv.is-feat .sv-cta:hover { background: #e4f76b; }
+.sv-cta:hover i { transform: translateX(4px); }
+@media (max-width: 1100px) and (min-width: 861px) { .sv { padding: 24px 20px; gap: 14px; } .sv-ic { width: 44px; height: 44px; } .sv-t { font-size: 26px; } }
+@media (max-width: 860px) { .sv-grid { grid-template-columns: 1fr; gap: 28px; } }
+@media (prefers-reduced-motion: reduce) { .sv:hover { transform: none; } }
+
+/* ===== Por qué elegirnos (dentro de Quiénes somos) ===== */
+.why { margin-top: clamp(40px, 7vh, 80px); display: grid; gap: clamp(20px, 3vh, 30px); }
+.why-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 8px 24px; padding-bottom: 16px; border-bottom: 1px solid rgba(215,242,74,0.3); }
+.why-head .tiny { color: #fff; font-size: clamp(15px, 1.35vw, 21px); }
+.why-head p { font-size: clamp(14px, 1.1vw, 17px); color: rgba(239,236,229,0.7); }
+.why-grid { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: clamp(16px, 2vw, 34px); }
+.wy { display: grid; gap: 12px; align-content: start; }
+.wy-ic { width: 48px; height: 48px; border-radius: 50%; display: grid; place-items: center; border: 1px solid rgba(215,242,74,0.5); color: var(--lime); background: radial-gradient(circle, rgba(215,242,74,0.12), transparent 70%); }
+.wy-ic svg { width: 24px; height: 24px; }
+.wy h3 { font-family: var(--serif); font-weight: 400; font-size: clamp(22px, 1.8vw, 30px); line-height: 1.1; color: #fff; }
+.wy p { font-size: clamp(13.5px, 1.02vw, 15.5px); line-height: 1.55; color: rgba(239,236,229,0.75); }
+.wy p a { color: var(--lime); border-bottom: 1px solid rgba(215,242,74,0.5); }
+@media (max-width: 1100px) { .why-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 560px) { .why-grid { grid-template-columns: 1fr; } }
+@media (min-width: 861px) { .sv-top { min-height: calc(2 * 1.05 * clamp(26px, 2.4vw, 40px)); } }
+@media (max-width: 560px) {
+  .why-grid { gap: 22px; }
+  .wy { grid-template-columns: 44px 1fr; column-gap: 14px; row-gap: 6px; }
+  .wy-ic { width: 44px; height: 44px; grid-row: span 2; }
+  .wy h3 { font-size: 22px; align-self: center; }
+  .wy p { grid-column: 2; }
+}
