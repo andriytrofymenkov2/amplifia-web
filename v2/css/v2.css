@@ -1597,3 +1597,7 @@ section:not(#hero):not(#manifiesto) :is(.prob-head .tiny:first-child, .caps-in >
   font-size: clamp(15px, 1.35vw, 19px) !important; color: #fff !important; opacity: 1 !important; letter-spacing: 0.22em; }
 section:not(#hero):not(#manifiesto):not(#que-hacemos) :is(.prob-head .tiny:first-child, .ks-head .tiny, .hz-intro > .tiny, .rm-head .tiny, .svs-head .tiny, .cta > .tiny, .us-head .tiny, .pj-head .tiny, .trust-head .tiny, .faq-side .tiny, .ct-left .tiny) { display: inline-flex; align-items: center; gap: 14px; }
 section:not(#hero):not(#manifiesto):not(#que-hacemos) :is(.prob-head .tiny:first-child, .ks-head .tiny, .hz-intro > .tiny, .rm-head .tiny, .svs-head .tiny, .cta > .tiny, .us-head .tiny, .pj-head .tiny, .trust-head .tiny, .faq-side .tiny, .ct-left .tiny)::before { content: ""; width: 30px; height: 1px; background: var(--lime); flex: none; }
+/* Celular: en ¿Cuándo necesitas Amplifia? los títulos de cada señal van en verde lima, como en la versión de computadora */
+@media (max-width: 860px) {
+  .sg-row .sg .sg-vt, .sg-row .sg.is-open .sg-vt { color: var(--lime) !important; font-family: var(--serif); font-size: 22px; letter-spacing: -0.01em; font-weight: 400; }
+}
