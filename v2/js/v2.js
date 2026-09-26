@@ -526,7 +526,34 @@
       hz.classList.add("hz-swipe");
       var intro = $(".hz-intro", hzTrack); if (intro) hzTrack.parentNode.insertBefore(intro, hzTrack);
       var bar = $("#hzBar"), bq = false;
-      hzTrack.addEventListener("scroll", function () { if (bq) return; bq = true; requestAnimationFrame(function () { bq = false; var m = hzTrack.scrollWidth - hzTrack.clientWidth; bar.style.transform = "scaleX(" + (m > 0 ? hzTrack.scrollLeft / m : 0).toFixed(3) + ")"; }); }, { passive: true });
+      var swCards = $$(".card", hzTrack), dots = document.createElement("div"), nextB = document.createElement("button");
+      dots.className = "hz-dots"; dots.setAttribute("aria-hidden", "true");
+      dots.innerHTML = swCards.map(function () { return "<i></i>"; }).join("");
+      nextB.className = "hz-next"; nextB.type = "button"; nextB.setAttribute("aria-label", "Ver el siguiente frente"); nextB.innerHTML = "<span>&rarr;</span>";
+      bar.parentNode.parentNode.insertBefore(dots, bar.parentNode);
+      hzTrack.parentNode.insertBefore(nextB, hzTrack.nextSibling);
+      var dotEls = $$("i", dots), step = function () { return swCards[1] ? swCards[1].offsetLeft - swCards[0].offsetLeft : hzTrack.clientWidth; };
+      function sync() {
+        var m = hzTrack.scrollWidth - hzTrack.clientWidth, p = m > 0 ? hzTrack.scrollLeft / m : 0;
+        bar.style.transform = "scaleX(" + p.toFixed(3) + ")";
+        var k = Math.round(hzTrack.scrollLeft / step()); dotEls.forEach(function (d, i) { d.classList.toggle("on", i === k); });
+        nextB.classList.toggle("is-end", p > 0.97);
+        if (hzTrack.scrollLeft > 20) hz.classList.add("hz-swiped");
+      }
+      hzTrack.addEventListener("scroll", function () { if (bq) return; bq = true; requestAnimationFrame(function () { bq = false; sync(); }); }, { passive: true });
+      nextB.addEventListener("click", function () { hzTrack.scrollBy({ left: step(), behavior: "smooth" }); });
+      sync();
+      /* al llegar, las tarjetas "asoman" un poco hacia la izquierda y vuelven: así se entiende que se puede deslizar */
+      if (!reduce && "IntersectionObserver" in window) {
+        var io = new IntersectionObserver(function (es) {
+          if (!es[0].isIntersecting) return; io.disconnect();
+          setTimeout(function () {
+            if (hz.classList.contains("hz-swiped")) return;
+            hzTrack.animate([{ transform: "translateX(0)" }, { transform: "translateX(-64px)" }, { transform: "translateX(0)" }], { duration: 1100, easing: "cubic-bezier(0.45, 0, 0.25, 1)", delay: 0, iterations: 2 });
+          }, 500);
+        }, { threshold: 0.5 });
+        io.observe(hzTrack);
+      }
       return;
     }
     function hzDist() { return Math.max(0, hzTrack.offsetWidth - window.innerWidth); }

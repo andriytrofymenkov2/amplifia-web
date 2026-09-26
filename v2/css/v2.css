@@ -1601,3 +1601,17 @@ section:not(#hero):not(#manifiesto):not(#que-hacemos) :is(.prob-head .tiny:first
 @media (max-width: 860px) {
   .sg-row .sg .sg-vt, .sg-row .sg.is-open .sg-vt { color: var(--lime) !important; font-family: var(--serif); font-size: 22px; letter-spacing: -0.01em; font-weight: 400; }
 }
+
+/* Frentes en celular: indicadores de que se puede deslizar (puntos, botón de flecha y aviso animado) */
+.hz-swipe .stage { position: relative; }
+.hz-dots { display: flex; justify-content: center; gap: 8px; margin-top: 18px; }
+.hz-dots i { width: 7px; height: 7px; border-radius: 999px; background: rgba(239,236,229,0.28); transition: width 0.3s ease, background 0.3s ease; }
+.hz-dots i.on { width: 22px; background: var(--lime); }
+.hz-next { position: absolute; right: 14px; top: calc(50% + 40px); z-index: 5; width: 46px; height: 46px; border-radius: 50%; display: grid; place-items: center; background: var(--lime); color: #0a0a0a; font-size: 20px; box-shadow: 0 0 0 6px rgba(215,242,74,0.18), 0 8px 22px rgba(0,0,0,0.6); transition: opacity 0.3s ease, transform 0.3s ease; }
+.hz-next span { display: block; animation: hzNudge 1.6s ease-in-out infinite; }
+@keyframes hzNudge { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(4px); } }
+.hz-next.is-end { opacity: 0; pointer-events: none; transform: scale(0.8); }
+.hz-swiped .hz-next span { animation: none; }
+.hz-swipe .hz-intro::after { content: "Deslizá hacia la derecha para ver los seis frentes  →"; color: var(--lime); }
+.hz-swipe .hz-bar { display: none; }
+@media (prefers-reduced-motion: reduce) { .hz-next span { animation: none; } }
