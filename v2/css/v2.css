@@ -1621,3 +1621,23 @@ section:not(#hero):not(#manifiesto):not(#que-hacemos) :is(.prob-head .tiny:first
 .sv-lead { font-size: clamp(15px, 1.1vw, 17px); color: rgba(239,236,229,0.78); }
 .sv-get ul { gap: 12px; }
 .sv-get li { font-size: clamp(14.5px, 1.08vw, 16.5px); }
+
+/* Preguntas v2: dos filas con tres preguntas distintas cada una (ninguna se ve repetida en pantalla) y número "01 / 06" */
+.fq-card { width: var(--fqw, clamp(260px, 19vw, 340px)); }
+.fq-n em { font-style: normal; color: rgba(239,236,229,0.45); }
+.fq-card h3 { font-size: clamp(16px, 1.25vw, 21px); }
+.fq-card p { font-size: clamp(12.5px, 0.88vw, 14px); }
+@media (min-width: 861px) and (max-height: 840px) { .fq-card { width: var(--fqw, clamp(240px, 17vw, 300px)); } }
+/* celular: carrusel nativo, una pregunta por vez, con puntos de avance */
+.fq-swipe::before, .fq-swipe::after { display: none; }
+.fq-swipe .fq-row { contain: none; overflow-x: auto; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; scrollbar-width: none; overscroll-behavior-x: contain;
+  margin: 0 calc(var(--pad) * -1); padding: 5px var(--pad); scroll-padding: 0 var(--pad); }
+.fq-swipe .fq-row::-webkit-scrollbar { display: none; }
+.fq-swipe .fq-set { gap: 12px; padding-right: var(--pad); }
+.fq-swipe .fq-card { width: 82vw; scroll-snap-align: start; padding: 20px 20px 22px; gap: 10px; cursor: default; }
+.fq-swipe .fq-card h3 { font-size: 22px; }
+.fq-swipe .fq-card p { font-size: 15px; line-height: 1.5; opacity: 0.82; }
+.fq-dots { margin-top: 14px; }
+/* Preguntas: los bordes se desvanecen con una máscara sobre el contenedor (quieto), sin bloques oscuros encima del fondo */
+.fq-rows::before, .fq-rows::after { display: none; }
+.fq-rows:not(.fq-swipe) { -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 7%, #000 93%, transparent 100%); mask-image: linear-gradient(90deg, transparent 0, #000 7%, #000 93%, transparent 100%); }

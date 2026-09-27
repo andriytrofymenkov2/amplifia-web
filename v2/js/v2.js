@@ -815,8 +815,24 @@
 
 
   /* ---------- preguntas frecuentes: cada fila se repite 3 veces (bucle sin huecos) y se desplaza en píxeles exactos ---------- */
-  var fqTracks = [];
-  $$(".fq-row").forEach(function (row) {
+  var fqTracks = [], fqRowsEl = $("#fqRows"), fqPhone = window.matchMedia("(max-width: 860px)").matches;
+  /* celular: sin cinta en movimiento. Las seis preguntas, una sola vez y en orden, en un carrusel que se desliza con el dedo */
+  if (fqPhone && fqRowsEl) {
+    var fqFirst = $(".fq-set", fqRowsEl);
+    $$(".fq-row", fqRowsEl).forEach(function (row, i) { if (i) { $$(".fq-card", row).forEach(function (c) { fqFirst.appendChild(c); }); row.remove(); } });
+    fqRowsEl.classList.add("fq-swipe");
+    var fqRow = $(".fq-row", fqRowsEl), fqCards = $$(".fq-card", fqRowsEl), fqDots = document.createElement("div");
+    fqDots.className = "hz-dots fq-dots"; fqDots.setAttribute("aria-hidden", "true");
+    fqCards.forEach(function () { fqDots.appendChild(document.createElement("i")); });
+    fqRowsEl.appendChild(fqDots);
+    var fqSync = function () {
+      var step = fqCards.length > 1 ? fqCards[1].offsetLeft - fqCards[0].offsetLeft : 1;
+      var idx = Math.max(0, Math.min(fqCards.length - 1, Math.round(fqRow.scrollLeft / step)));
+      $$("i", fqDots).forEach(function (d, i) { d.classList.toggle("on", i === idx); });
+    };
+    fqRow.addEventListener("scroll", fqSync, { passive: true }); fqSync();
+  }
+  if (!fqPhone) $$(".fq-row").forEach(function (row) {
     var set = $(".fq-set", row), track = document.createElement("div");
     track.className = "fq-track"; track.style.setProperty("--dur", row.getAttribute("data-speed") || "60s");
     row.appendChild(track); track.appendChild(set);
@@ -824,6 +840,9 @@
     fqTracks.push({ track: track, set: set });
   });
   function fqMeasure() {
+    /* cada fila tiene tres preguntas distintas: las tarjetas se ensanchan lo justo para que una misma pregunta
+       nunca aparezca dos veces a la vez en pantalla */
+    if (fqRowsEl && !fqPhone) fqRowsEl.style.setProperty("--fqw", Math.max(240, Math.ceil((fqRowsEl.clientWidth + 40) / 3) - 14) + "px");
     fqTracks.forEach(function (t) { t.track.style.setProperty("--shift", "-" + t.set.offsetWidth + "px"); });
   }
   fqMeasure();
@@ -835,7 +854,7 @@
      Mouse o lápiz: al pasar. Táctil: con un toque. No depende de media queries de hover (notebooks táctiles, Safari, etc.) */
   (function fqLupa() {
     var zoom = $("#fqZoom"), rows = $("#fqRows"), cur = null, hideT = null, lastType = "mouse";
-    if (!zoom || !rows) return;
+    if (!zoom || !rows || fqPhone) return;
     function place(card) {
       var r = card.getBoundingClientRect();
       zoom.innerHTML = card.innerHTML;
