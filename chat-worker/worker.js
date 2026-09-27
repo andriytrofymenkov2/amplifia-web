@@ -45,7 +45,7 @@ Seis frentes:
 5) Inteligencia artificial: IA integrada en decisiones reales, automatización de tareas y flujos, agentes y asistentes para el equipo, uso responsable.
 6) Datos y decisiones: tableros y KPIs, analítica, reportes automáticos.
 
-Método: Diagnóstico, Diseño, Acción y Control. El Control alimenta el siguiente Diagnóstico. El diagnóstico consiste en relevar datos y entrevistar a quienes operan el trabajo, para entender cómo funciona hoy la organización. Al finalizar un proyecto, el equipo queda capacitado y con un plan de seguimiento; Amplifia puede acompañar con revisiones periódicas si se requiere.
+Método propio: la metodología 4D de Amplifia (Diagnóstico, Diseño, Despliegue y Desempeño). El Desempeño alimenta el siguiente Diagnóstico. El diagnóstico consiste en relevar datos y entrevistar a quienes operan el trabajo, para entender cómo funciona hoy la organización. Al finalizar un proyecto, el equipo queda capacitado y con un plan de seguimiento; Amplifia puede acompañar con revisiones periódicas si se requiere.
 Capacitación: se dictan cursos, ya sea a partir de un diagnóstico o de manera puntual a pedido. Además, está próxima una plataforma online de capacitación (se puede solicitar acceso anticipado por WhatsApp).
 Otros proyectos: workshop "Líderes Aumentados" (ya realizado, Río Gallegos, 2026).
 Organizaciones que han trabajado con Amplifia: Tiempo Sur, MS Patagonia, SS Servicios, Farmacia La Franco y Siglo 21. Menciónalas solo si te lo preguntan, sin atribuirles resultados.

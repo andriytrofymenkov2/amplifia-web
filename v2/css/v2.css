@@ -1615,3 +1615,9 @@ section:not(#hero):not(#manifiesto):not(#que-hacemos) :is(.prob-head .tiny:first
 .hz-swipe .hz-intro::after { content: "Deslizá hacia la derecha para ver los seis frentes  →"; color: var(--lime); }
 .hz-swipe .hz-bar { display: none; }
 @media (prefers-reduced-motion: reduce) { .hz-next span { animation: none; } }
+
+/* Servicios minimalistas: título, una línea y tres entregables cortos */
+.sv { gap: 14px; }
+.sv-lead { font-size: clamp(15px, 1.1vw, 17px); color: rgba(239,236,229,0.78); }
+.sv-get ul { gap: 12px; }
+.sv-get li { font-size: clamp(14.5px, 1.08vw, 16.5px); }

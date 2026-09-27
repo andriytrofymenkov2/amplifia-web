@@ -157,7 +157,7 @@
     "que-hacemos": "Procesos, IA y personas en un solo equipo: por eso las mejoras <b>se sostienen</b>.",
     casos: "Trabajos reales: tocá uno para ver <b>qué hicimos</b> y qué cambió.",
     frentes: "Seis frentes, desde Lean y Kaizen hasta IA y tableros en vivo. Elegí por dónde <b>empezar</b>.",
-    metodo: "Cuatro pasos a tu medida, empezando por un <b>diagnóstico</b> con procesos y personas.",
+    metodo: "Nuestra <b>metodología 4D</b>: diagnóstico, diseño, despliegue y desempeño.",
     servicios: "Diagnóstico, implementación o capacitación: cada uno con <b>entregables concretos</b>.",
     consultora: "Andriy lidera los procesos y Christian, las personas. Tocá el <b>+</b> para conocer sus proyectos.",
     proyectos: "<b>Líderes Aumentados</b> ya se hizo en Río Gallegos y lo podemos llevar a tu empresa.",
