@@ -602,6 +602,7 @@
     onceIn("#metodo .rm-wrap", function () {
       var tl = gsap.timeline();
       tl.to("#rmLine", { scaleX: 1, duration: 2.6, ease: "power1.inOut" }, 0);
+      tl.from(".rm-band", { opacity: 0, duration: 0.9, stagger: 0.2, ease: "power2.out" }, 0.3);
       cols.forEach(function (col, i) {
         var t = 0.15 + i * 0.6;
         tl.call(function () { col.classList.add("on"); }, null, t)

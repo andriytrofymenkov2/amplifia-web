@@ -1653,3 +1653,21 @@ section:not(#hero):not(#manifiesto):not(#que-hacemos) :is(.prob-head .tiny:first
 .sg-row .sg::after { will-change: auto; }
 .sg.is-open::before { opacity: 0; }
 @media (min-width: 861px) { .sg.is-open::before { animation: sgFlash 0.6s ease-out 1 backwards !important; } }
+
+/* Metodología 4D: "Procesos" y "Personas" se nombran una sola vez, como franjas que cruzan las cuatro etapas.
+   Las columnas comparten filas (subgrid) para que los textos de cada franja queden alineados. En celular, como antes. */
+@media (min-width: 861px) {
+  .rm-cols { grid-template-rows: repeat(6, auto); row-gap: 14px; }
+  .rm-col { grid-row: 1 / span 6; grid-template-rows: subgrid; gap: 0; row-gap: 14px; }
+  .rm-col > .rm-num { grid-row: 1; }
+  .rm-col > .cap-title { grid-row: 2; }
+  .rm-col > p:nth-of-type(1) { grid-row: 4; }
+  .rm-col > p:nth-of-type(2) { grid-row: 6; }
+  .rm-col p { border-top: 0; padding-top: 0; }
+  .rm-col b { display: none; }
+  .rm-band { grid-column: 1 / -1; display: flex; align-items: center; padding-top: 12px; border-top: 1px solid rgba(239,236,229,0.2); }
+  .rb1 { grid-row: 3; } .rb2 { grid-row: 5; margin-top: 10px; }
+  .rm-band span { font-weight: 500; font-size: 15px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--lime); }
+}
+@media (max-width: 860px) { .rm-band { display: none; } }
+@media (min-width: 861px) { .rm-col:nth-child(1) { grid-column: 1; } .rm-col:nth-child(2) { grid-column: 2; } .rm-col:nth-child(3) { grid-column: 3; } .rm-col:nth-child(4) { grid-column: 4; } .rm-band { position: relative; z-index: 1; pointer-events: none; } }
