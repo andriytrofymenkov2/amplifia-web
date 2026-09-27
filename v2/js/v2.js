@@ -181,6 +181,16 @@
     return { top0: Math.min(vh - 24 - boxH, lineBottom + 6), bot: vh - 24 - boxH, tipBelow: true };
   }
   var ampli = $("#ampli"), ampliBubble = $("#ampliBubble"), ampliBtn = $("#ampliBtn"), ampliId = null, ampliT = null, ampliShown = null, ampliX = 0, ampliSide = null;
+  /* sombra de Ampli: una copia quieta y desenfocada detrás del logo, en lugar de un drop-shadow sobre el botón.
+     El filtro sobre el botón se recalculaba en cada cuadro mientras las barras del logo se mueven (al "hablar"),
+     justo al entrar en "¿Cuándo necesitas Amplifia?". La copia se dibuja una sola vez: mismo aspecto, sin costo. */
+  (function () {
+    var sv = ampliBtn && $("svg", ampliBtn); if (!sv) return;
+    var sh = sv.cloneNode(true); sh.setAttribute("class", "ampli-shadow"); sh.setAttribute("aria-hidden", "true");
+    $$("[id]", sh).forEach(function (e) { e.removeAttribute("id"); });
+    $$(".a-pupil", sh).forEach(function (e) { e.classList.remove("a-pupil"); });
+    ampliBtn.insertBefore(sh, sv); ampliBtn.classList.add("has-shadow");
+  })();
   /* Ampli mide dónde hay texto en pantalla y elige un lugar LIBRE, siempre distinto al anterior: nunca se para encima de una palabra */
   var ampliY = 0, TEXT_SEL = "h1,h2,h3,h4,p,li,label,input,textarea,button:not(.ampli-btn):not(.menu-btn),.tiny,.btn,.nav-cta,.rm-num,.cap-title,.pr-t,.c3d-name,b";
   var LINE_SEL = ".rm-line, .hz-bar";
@@ -462,13 +472,16 @@
     /* 03 · el problema: cinco paneles verticales; uno se abre solo, en celular se abre con un toque */
     var sgs = $$("#sgRow .sg"), sgCur = 0, sgStarted = false, sgOn = false, sgHeld = false, sgTimer = null;
     var sgStack = window.matchMedia("(max-width: 860px)");
+    /* mientras se scrollea, los paneles que pasan debajo del mouse quieto no se abren (evita rehacer el diseño de la fila en pleno desplazamiento) */
+    var sgScrollAt = 0; function sgMark() { sgScrollAt = Date.now(); }
+    window.addEventListener("wheel", sgMark, { passive: true }); window.addEventListener("scroll", sgMark, { passive: true });
     function sgShow(i) { if (i === sgCur && sgs[i].classList.contains("is-open")) return; sgCur = i; sgs.forEach(function (p, k) { p.classList.toggle("is-open", k === i); p.setAttribute("aria-expanded", k === i ? "true" : "false"); }); }
     function sgProg(i, on) { sgs.forEach(function (p, k) { var pg = $(".sg-prog", p); if (!pg) return; pg.classList.remove("run"); if (on && k === i) { void pg.offsetWidth; pg.classList.add("run"); } }); }
     function sgSchedule() { clearTimeout(sgTimer); if (true) { sgProg(-1, false); return; } if (sgStarted && sgOn && !sgHeld) { sgTimer = setTimeout(function () { sgShow((sgCur + 1) % sgs.length); sgSchedule(); }, 3600); sgProg(sgCur, true); } else sgProg(-1, false); }
     function sgPick(i) { if (!sgStarted) return; sgHeld = true; clearTimeout(sgTimer); sgShow(i); }
     function sgRelease() { sgHeld = false; clearTimeout(sgTimer); sgTimer = setTimeout(sgSchedule, 2400); }
     sgs.forEach(function (p, i) {
-      p.addEventListener("mouseenter", function () { if (!sgStack.matches) sgPick(i); });
+      p.addEventListener("mouseenter", function () { if (!sgStack.matches && Date.now() - sgScrollAt > 160) sgPick(i); });
       p.addEventListener("focus", function () { sgPick(i); });
       p.addEventListener("click", function () { sgPick(i); });
       p.addEventListener("keydown", function (e) { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); sgPick(i); } });

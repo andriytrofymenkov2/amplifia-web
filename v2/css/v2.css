@@ -1641,3 +1641,15 @@ section:not(#hero):not(#manifiesto):not(#que-hacemos) :is(.prob-head .tiny:first
 /* Preguntas: los bordes se desvanecen con una máscara sobre el contenedor (quieto), sin bloques oscuros encima del fondo */
 .fq-rows::before, .fq-rows::after { display: none; }
 .fq-rows:not(.fq-swipe) { -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 7%, #000 93%, transparent 100%); mask-image: linear-gradient(90deg, transparent 0, #000 7%, #000 93%, transparent 100%); }
+
+/* ===== Fluidez al entrar en "¿Cuándo necesitas Amplifia?" (sin cambios visuales) =====
+   - la sombra de Ampli es una copia fija y desenfocada (antes: filtro recalculado en cada cuadro mientras habla)
+   - el brillo de cada panel ya no pide capa propia (no se anima): la placa de video no arma una capa recortada por panel
+   - el destello del panel abierto, al terminar, deja de ser una animación activa (antes quedaba como capa permanente) */
+.ampli-btn.has-shadow { filter: none !important; }
+.ampli-btn svg.ampli-shadow { position: absolute; left: 0; top: 0; width: 100%; height: auto; transform: translateY(6px) !important; filter: brightness(0) blur(6px); opacity: 0.6; pointer-events: none; animation: none !important; }
+.ampli-shadow * { animation: none !important; transition: none !important; }
+.ampli-btn.has-shadow > svg:not(.ampli-shadow) { position: relative; }
+.sg-row .sg::after { will-change: auto; }
+.sg.is-open::before { opacity: 0; }
+@media (min-width: 861px) { .sg.is-open::before { animation: sgFlash 0.6s ease-out 1 backwards !important; } }
