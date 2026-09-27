@@ -616,7 +616,7 @@
       /* posiciones medidas una sola vez (y al cambiar el tamaño): leerlas en cada cuadro obligaba a recalcular toda la página */
       function measure() {
         var line = spark.parentNode.getBoundingClientRect(); lineW = line.width;
-        colX = cols.map(function (col) { return col.getBoundingClientRect().left + 7.5 - line.left; });
+        colX = cols.map(function (col) { var cs = getComputedStyle(col, "::before"); return col.getBoundingClientRect().left + (parseFloat(cs.left) || 0) + (parseFloat(cs.marginLeft) || 0) + 7.5 - line.left; });
       }
       measure(); window.addEventListener("resize", function () { measure(); });
       function hits() {

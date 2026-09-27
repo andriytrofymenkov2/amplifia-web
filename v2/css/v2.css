@@ -1703,3 +1703,14 @@ section:not(#hero):not(#manifiesto):not(#que-hacemos) :is(.prob-head .tiny:first
   .rm-col > p { padding: clamp(12px, 1.9vh, 18px) 20px clamp(12px, 2vh, 20px); font-size: min(clamp(15px, 1.2vw, 19px), 2.3vh); }
   .rm-foot { font-size: min(clamp(16px, 1.3vw, 20px), 2.4vh); }
 }
+
+/* Metodología 4D centrada: cada etapa (nodo, número, título y tarjetas) alineada sobre su propio eje, cierre centrado
+   y el bloque equilibrado en el alto de la pantalla (no pegado a la barra superior) */
+@media (min-width: 861px) {
+  .rm-in { justify-content: center; gap: clamp(22px, 4.5vh, 52px); padding-top: clamp(104px, 13vh, 140px); }
+  .rm-col { text-align: center; justify-items: center; }
+  .rm-col::before { left: 50%; margin-left: -7.5px; }
+  .rm-col > p { justify-self: stretch; }
+  .rm-foot { align-self: center; text-align: center; max-width: none; }
+}
+@media (min-width: 861px) and (max-height: 820px) { .rm-in { gap: clamp(14px, 2.6vh, 24px); padding-top: 96px; } }
