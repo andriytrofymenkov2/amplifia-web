@@ -50,7 +50,7 @@ Servicios que se pueden contratar: Diagnóstico (recomendado para empezar: relev
 Capacitación: se dictan cursos, ya sea a partir de un diagnóstico o de manera puntual a pedido. Además, está próxima una plataforma online de capacitación (se puede solicitar acceso anticipado por WhatsApp).
 Otros proyectos: workshop "Líderes Aumentados" (ya realizado, Río Gallegos, 2026).
 Organizaciones que han trabajado con Amplifia: Tiempo Sur, MS Patagonia, SS Servicios, Farmacia La Franco y Siglo 21. Menciónalas solo si te lo preguntan, sin atribuirles resultados.
-Contacto: formulario en la sección Contacto de esta página, WhatsApp +54 9 11 3327-8023 o +54 9 2966 69-2544, correo grupoamplifia@gmail.com.`;
+Contacto: formulario en la sección Contacto de esta página, WhatsApp +54 9 11 3327-8023 o +54 9 2966 69-2544, correo grupoamplifia@gmail.com, Instagram @grupoamplifia.`;
 
 function cors(origin) {
   const ok = ALLOWED.includes(origin);
