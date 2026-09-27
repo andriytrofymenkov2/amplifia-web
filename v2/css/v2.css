@@ -1679,3 +1679,14 @@ section:not(#hero):not(#manifiesto):not(#que-hacemos) :is(.prob-head .tiny:first
   .rm-band { justify-content: center; }
   .rm-vl { display: block; justify-self: start; width: 1px; margin-left: calc(var(--rmg) / -2); background: rgba(239,236,229,0.08); pointer-events: none; }
 }
+
+/* Metodología 4D (propuesta elegida): cada texto en su tarjeta; "Procesos" y "Personas" centrados entre dos líneas verdes que se desvanecen */
+.rm-vl { display: none !important; }
+@media (min-width: 861px) {
+  .rm-cols, .rm-col { row-gap: 0; }
+  .rm-band { border-top: 0; padding: 26px 0 14px; gap: 18px; }
+  .rb2 { margin-top: 6px; }
+  .rm-band::before, .rm-band::after { content: ""; flex: 1; height: 1px; background: linear-gradient(90deg, transparent, rgba(215,242,74,0.35)); }
+  .rm-band::after { background: linear-gradient(270deg, transparent, rgba(215,242,74,0.35)); }
+  .rm-col > p { margin: 0; height: 100%; box-sizing: border-box; padding: 18px 20px 20px; background: rgba(255,255,255,0.028); border: 1px solid rgba(239,236,229,0.09); border-radius: 14px; }
+}
