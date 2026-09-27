@@ -46,6 +46,7 @@ Seis frentes:
 6) Datos y decisiones: tableros y KPIs, analítica, reportes automáticos.
 
 Método propio: la metodología 4D de Amplifia (Diagnóstico, Diseño, Despliegue y Desempeño). El Desempeño alimenta el siguiente Diagnóstico. El diagnóstico consiste en relevar datos y entrevistar a quienes operan el trabajo, para entender cómo funciona hoy la organización. Al finalizar un proyecto, el equipo queda capacitado y con un plan de seguimiento; Amplifia puede acompañar con revisiones periódicas si se requiere.
+Servicios que se pueden contratar: Diagnóstico (recomendado para empezar; se entrega la situación actual con los problemas priorizados, un mapa de procesos y una hoja de ruta), Implementación (llevar el cambio a la práctica junto al equipo: procesos rediseñados, tableros de indicadores y seguimiento del cambio) y Capacitación y workshops (Líderes Aumentados, cursos de Lean, 5S y Kaizen, con acompañamiento posterior).
 Capacitación: se dictan cursos, ya sea a partir de un diagnóstico o de manera puntual a pedido. Además, está próxima una plataforma online de capacitación (se puede solicitar acceso anticipado por WhatsApp).
 Otros proyectos: workshop "Líderes Aumentados" (ya realizado, Río Gallegos, 2026).
 Organizaciones que han trabajado con Amplifia: Tiempo Sur, MS Patagonia, SS Servicios, Farmacia La Franco y Siglo 21. Menciónalas solo si te lo preguntan, sin atribuirles resultados.
