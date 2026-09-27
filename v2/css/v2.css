@@ -1671,3 +1671,11 @@ section:not(#hero):not(#manifiesto):not(#que-hacemos) :is(.prob-head .tiny:first
 }
 @media (max-width: 860px) { .rm-band { display: none; } }
 @media (min-width: 861px) { .rm-col:nth-child(1) { grid-column: 1; } .rm-col:nth-child(2) { grid-column: 2; } .rm-col:nth-child(3) { grid-column: 3; } .rm-col:nth-child(4) { grid-column: 4; } .rm-band { position: relative; z-index: 1; pointer-events: none; } }
+
+/* Metodología 4D como matriz: etiquetas de las franjas centradas y divisiones verticales apenas visibles entre etapas */
+.rm-cols { --rmg: clamp(16px, 2vw, 36px); column-gap: var(--rmg); }
+.rm-vl { display: none; }
+@media (min-width: 861px) {
+  .rm-band { justify-content: center; }
+  .rm-vl { display: block; justify-self: start; width: 1px; margin-left: calc(var(--rmg) / -2); background: rgba(239,236,229,0.08); pointer-events: none; }
+}
