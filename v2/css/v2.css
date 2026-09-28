@@ -1734,3 +1734,10 @@ section:not(#hero):not(#manifiesto):not(#que-hacemos) :is(.prob-head .tiny:first
 .hero-word::after { content: ""; }
 .hero-word .hero-grupo { margin: 0; justify-self: end; }
 @media (max-width: 600px) { .hero-word { grid-template-columns: auto auto; column-gap: 0.14em; } .hero-word::after { display: none; } }
+
+/* Hero: "Grupo" arriba a la izquierda, con la G sobre la A de AMPLIFIA; "G" mayúscula y "rupo" minúscula,
+   al doble del tamaño de la frase de abajo. Mismo título, letra y brillo (misma capa y misma animación) */
+.hero-word { display: block; }
+.hero-word::after { content: none; }
+.hero-word .hero-grupo { display: block; justify-self: start; text-align: left; text-transform: none; font-size: calc(clamp(20px, 2.3vw, 40px) * 2); line-height: 1; letter-spacing: 0; margin: 0 0 0.02em; }
+@media (max-width: 600px) { .hero-word { display: block; } }
