@@ -1787,3 +1787,4 @@ section:not(#hero):not(#manifiesto):not(#que-hacemos) :is(.prob-head .tiny:first
 
 /* Inicio: la frase en el verde lima de la página */
 .hero-tag { color: var(--lime); opacity: 1; }
+.hero-tag { text-shadow: 0 0 6px rgba(215,242,74,0.45), 0 0 18px rgba(215,242,74,0.22); }
