@@ -1747,10 +1747,10 @@ section:not(#hero):not(#manifiesto):not(#que-hacemos) :is(.prob-head .tiny:first
 .sg-row .sg-wm { stroke-width: 2.3px; filter: drop-shadow(0 0 3px rgba(255,255,255,0.55)) drop-shadow(0 0 9px rgba(255,255,255,0.18)); }
 .sg-row .sg-inner .sg-ic { stroke-width: 2.6px; filter: drop-shadow(0 0 4px rgba(255,255,255,0.5)) drop-shadow(0 0 12px rgba(255,255,255,0.16)); }
 
-/* Botón de WhatsApp como píldora "Conectá +" (logo + texto), en lugar del círculo */
-.wa { width: auto; height: 50px; padding: 0 20px 0 15px; border-radius: 999px; display: inline-flex; align-items: center; gap: 9px; color: #fff; text-decoration: none; }
-.wa svg { width: 25px; height: 25px; flex: none; }
-.wa-t { font-family: var(--sans, Inter, system-ui, sans-serif); font-size: 16px; font-weight: 600; letter-spacing: 0.01em; white-space: nowrap; color: #fff; }
-.wa-t b { font-weight: 700; margin-left: 1px; }
-.wa:hover { box-shadow: 0 8px 22px rgba(0,0,0,0.4), 0 0 0 3px rgba(37,211,102,0.25); }
-@media (max-width: 860px) { .wa { width: auto; height: 46px; padding: 0 16px 0 13px; gap: 8px; } .wa svg { width: 23px; height: 23px; } .wa-t { font-size: 15px; } }
+
+/* ¿Cuándo necesitas Amplifia?: el símbolo grande del contenedor abierto también con destello (proporcional a su tamaño) */
+.sg-row .sg-inner .sg-ic { stroke-width: 3px; filter: drop-shadow(0 0 5px rgba(255,255,255,0.6)) drop-shadow(0 0 16px rgba(255,255,255,0.22)); }
+/* Contacto: botón del formulario con el logo de WhatsApp y "Conectá +" (mismo verde lima) */
+.cf-wa { display: inline-flex; align-items: center; gap: 10px; }
+.cf-wa svg { width: 22px; height: 22px; fill: currentColor; flex: none; }
+.cf-wa b { font-weight: inherit; margin-left: 1px; }
