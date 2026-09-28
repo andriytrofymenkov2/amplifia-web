@@ -1836,3 +1836,12 @@ section:not(#hero):not(#manifiesto):not(#que-hacemos) :is(.prob-head .tiny:first
     #0b0b0b;
   border-color: color-mix(in srgb, var(--fbg) 45%, transparent); }
 #hzTrack .card .card-rule::after { background: #0b0b0b; }
+
+/* Metodología Amplifia: cada número con su color; el punto de arriba sigue lima y, cuando la luz de la línea
+   pasa por él, se enciende fuerte en el color de su número */
+#metodo .rm-col:nth-child(1) { --n: #ffb400; }   /* ámbar */
+#metodo .rm-col:nth-child(2) { --n: #3aa8ff; }   /* celeste eléctrico */
+#metodo .rm-col:nth-child(3) { --n: #ff4fd8; }   /* fucsia neón */
+#metodo .rm-col:nth-child(4) { --n: #ff5a4e; }   /* rojo coral */
+#metodo .rm-num, #metodo .rm-col.on .rm-num { -webkit-text-stroke-color: var(--n); }
+#metodo .rm-col.hit::before { transform: scale(1.8); background: var(--n); box-shadow: 0 0 0 4px color-mix(in srgb, var(--n) 35%, transparent), 0 0 18px 6px color-mix(in srgb, var(--n) 75%, transparent); }
