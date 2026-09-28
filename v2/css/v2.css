@@ -1784,3 +1784,6 @@ section:not(#hero):not(#manifiesto):not(#que-hacemos) :is(.prob-head .tiny:first
 @media (max-width: 860px) { .sg-row .sg .sg-vt, .sg-row .sg.is-open .sg-vt { color: var(--c) !important; } }
 /* Inicio: sin botón; "Grupo", AMPLIFIA y la frase quedan centrados en el alto de la pantalla */
 .hero-copy { justify-content: center; }
+
+/* Inicio: la frase en el verde lima de la página */
+.hero-tag { color: var(--lime); opacity: 1; }
