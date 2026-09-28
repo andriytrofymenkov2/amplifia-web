@@ -1,6 +1,6 @@
 // Cloudflare Worker: intermediario entre el chat de Ampli y la API de OpenAI.
 // La clave vive como secreto (OPENAI_API_KEY), nunca en la web.
-const ALLOWED = ["https://andriytrofymenkov2.github.io", "http://localhost:8123", "http://localhost:8000"];
+const ALLOWED = ["https://www.grupoamplifia.com", "https://grupoamplifia.com", "https://andriytrofymenkov2.github.io", "http://localhost:8123", "http://localhost:8000"];
 const MODEL = "gpt-4o-mini";
 const MAX_MSGS = 12, MAX_CHARS = 600;
 
