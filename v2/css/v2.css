@@ -1919,3 +1919,11 @@ section:not(#hero):not(#manifiesto):not(#que-hacemos) :is(.prob-head .tiny:first
 @keyframes rmPulseW { 0% { box-shadow: 0 0 0 0 rgba(255,255,255,0.55); } 100% { box-shadow: 0 0 0 22px rgba(255,255,255,0); } }
 #metodo .rm-col.hit::before { background: var(--n); }
 @media (min-width: 861px) { #servicios .svs-in { padding-bottom: calc(var(--r, 28px) + 4vh); } }
+
+/* Metodología (prueba 3): números en contorno blanco y títulos blancos llenos; cuando la luz pasa por el nodo,
+   el nodo, el número y el título se encienden en verde lima y vuelven al blanco */
+#metodo .rm-col:nth-child(n) { --n: var(--lime); }
+#metodo .rm-num, #metodo .rm-col.on .rm-num { -webkit-text-stroke-color: rgba(255,255,255,0.9); transition: -webkit-text-stroke-color 0.35s ease, filter 0.35s ease; }
+#metodo .rm-col .cap-title { color: #fff; -webkit-text-stroke: 0; transition: color 0.35s ease, text-shadow 0.35s ease; }
+#metodo .rm-col.hit .rm-num { -webkit-text-stroke-color: var(--lime); filter: drop-shadow(0 0 8px rgba(215,242,74,0.6)); transition-duration: 0.12s; }
+#metodo .rm-col.hit .cap-title { color: var(--lime); text-shadow: 0 0 14px rgba(215,242,74,0.55); transition-duration: 0.12s; }
