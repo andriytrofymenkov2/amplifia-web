@@ -1754,3 +1754,8 @@ section:not(#hero):not(#manifiesto):not(#que-hacemos) :is(.prob-head .tiny:first
 .cf-wa { display: inline-flex; align-items: center; gap: 10px; }
 .cf-wa svg { width: 22px; height: 22px; fill: currentColor; flex: none; }
 .cf-wa b { font-weight: inherit; margin-left: 1px; }
+
+/* Botón "Conectá +" del formulario: verde de WhatsApp (el mismo del botón flotante), logo y texto en blanco */
+.btn.cf-wa { background: #25d366; border-color: #25d366; color: #fff; }
+.btn.cf-wa:hover { background: #1fbe5b; border-color: #1fbe5b; color: #fff; }
+.btn.cf-wa svg { fill: #fff; }
