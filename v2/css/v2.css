@@ -1759,3 +1759,18 @@ section:not(#hero):not(#manifiesto):not(#que-hacemos) :is(.prob-head .tiny:first
 .btn.cf-wa { background: #25d366; border-color: #25d366; color: #fff; }
 .btn.cf-wa:hover { background: #1fbe5b; border-color: #1fbe5b; color: #fff; }
 .btn.cf-wa svg { fill: #fff; }
+
+/* ¿Cuándo necesitas Amplifia?: una paleta propia solo para el recuadro de cada señal (rompe el blanco/negro/lima).
+   Cerrado: el borde en su color, tenue. Abierto: el borde se enciende con un resplandor del mismo color (fijo). */
+.sg-row .sg:nth-child(1) { --c: #a45cff; }   /* violeta eléctrico */
+.sg-row .sg:nth-child(2) { --c: #ff3d9a; }   /* magenta */
+.sg-row .sg:nth-child(3) { --c: #ff8a1f; }   /* naranja */
+.sg-row .sg:nth-child(4) { --c: #1fd6f0; }   /* cian */
+.sg-row .sg:nth-child(5) { --c: #2ef29a; }   /* verde menta */
+.sg-row .sg:nth-child(n) { border-color: color-mix(in srgb, var(--c) 42%, transparent); }
+.sg-row .sg:not(.is-open):hover { border-color: color-mix(in srgb, var(--c) 80%, transparent); }
+.sg-row .sg.is-open:nth-child(n) { border-color: var(--c); box-shadow: 0 0 0 1px color-mix(in srgb, var(--c) 35%, transparent), 0 0 30px color-mix(in srgb, var(--c) 34%, transparent), inset 0 0 36px color-mix(in srgb, var(--c) 9%, transparent); }
+.sg-row .sg.is-open::before { box-shadow: inset 0 0 70px color-mix(in srgb, var(--c) 30%, transparent), inset 0 0 14px color-mix(in srgb, var(--c) 45%, transparent); }
+.sg-row .sg:focus-visible { border-color: var(--c); }
+/* símbolo grande del contenedor abierto: destello blanco bien visible, como en los cerrados */
+.sg-row .sg-inner .sg-ic { filter: drop-shadow(0 0 3px rgba(255,255,255,0.85)) drop-shadow(0 0 10px rgba(255,255,255,0.45)) drop-shadow(0 0 26px rgba(255,255,255,0.18)); }
