@@ -1969,3 +1969,8 @@ section:not(#hero):not(#manifiesto):not(#que-hacemos) :is(.prob-head .tiny:first
 }
 .sva { border-radius: 50% 50% 1.6vw 1.6vw / 13vw 13vw 1.6vw 1.6vw; }
 @media (max-width: 860px) { .sva { border-radius: 50% 50% 22px 22px / 160px 160px 22px 22px; } }
+
+/* Metodología: las etapas por las que ya pasó la luz quedan encendidas en lima hasta que la luz sale del 04 */
+#metodo .rm-col.lit::before { background: var(--lime); box-shadow: 0 0 0 3px rgba(215,242,74,0.25), 0 0 12px 3px rgba(215,242,74,0.55); }
+#metodo .rm-col.lit .rm-num { -webkit-text-stroke-color: var(--lime); filter: drop-shadow(0 0 8px rgba(215,242,74,0.5)); }
+#metodo .rm-col.lit .cap-title { color: var(--lime); text-shadow: 0 0 14px rgba(215,242,74,0.45); }

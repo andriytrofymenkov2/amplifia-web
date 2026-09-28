@@ -623,14 +623,15 @@
         var sx = (parseFloat(spark.style.left) || 0) / 100 * lineW + 10;
         cols.forEach(function (col, i) {
           if (Math.abs(sx - colX[i]) < 16 && !col._hit) {
-            col._hit = true; col.classList.add("hit");
+            col._hit = true; col.classList.add("hit", "lit");
             setTimeout(function () { col.classList.remove("hit"); col._hit = false; }, 520);
           }
         });
       }
       function sync() { if (active) { if (rmOn) active.resume(); else active.pause(); } }
       active = gsap.to(spark, { left: "100%", duration: 2.6, ease: "power1.inOut", onUpdate: hits, onComplete: function () {
-        active = gsap.fromTo(spark, { left: "0%" }, { left: "100%", duration: 3.2, ease: "none", repeat: -1, repeatDelay: 0.5, onUpdate: hits }); sync();
+        cols.forEach(function (c) { c.classList.remove("lit"); });
+        active = gsap.fromTo(spark, { left: "0%" }, { left: "100%", duration: 3.2, ease: "none", repeat: -1, repeatDelay: 0.5, onUpdate: hits, onRepeat: function () { cols.forEach(function (c) { c.classList.remove("lit"); }); } }); sync();
       } });
       var rmSt = ScrollTrigger.create({ trigger: "#metodo", start: "top bottom", end: "bottom top", onToggle: function (s) { rmOn = s.isActive; sync(); } });
       rmOn = rmSt.isActive; sync();
