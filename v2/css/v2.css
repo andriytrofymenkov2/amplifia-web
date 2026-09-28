@@ -1992,3 +1992,8 @@ section:not(#hero):not(#manifiesto):not(#que-hacemos) :is(.prob-head .tiny:first
 
 /* Servicios: nombres de los servicios en verde lima */
 .sva-t { color: var(--lime); }
+
+/* Servicios: símbolos en blanco brillante (mismo tamaño) */
+.sva-ic { color: #fff; }
+@media (min-width: 861px) { .sva-ic svg { filter: drop-shadow(0 0 3px rgba(255,255,255,0.85)) drop-shadow(0 0 10px rgba(255,255,255,0.4)); } }
+@media (max-width: 860px) { .sva-ic svg { filter: drop-shadow(0 0 3px rgba(255,255,255,0.85)) drop-shadow(0 0 10px rgba(255,255,255,0.4)); } }
