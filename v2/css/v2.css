@@ -1727,3 +1727,10 @@ section:not(#hero):not(#manifiesto):not(#que-hacemos) :is(.prob-head .tiny:first
 /* Hero: "GRUPO" arriba de AMPLIFIA, dentro del mismo título (misma letra, mayúsculas y brillo, y la misma capa:
    entra con la misma animación sin sumar trabajo), centrado, un poco más grande que "Consultora" */
 .hero-word .hero-grupo { display: block; font-size: max(20px, 0.1em); line-height: 1.1; letter-spacing: 0.06em; margin: 0 auto 0.5em; }
+
+/* Hero (prueba): sin "Consultora"; "GRUPO" chico a la izquierda de AMPLIFIA. AMPLIFIA sigue centrado en la pantalla:
+   la tercera columna, vacía, equilibra el ancho de "GRUPO" */
+.hero-word { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; column-gap: 0.1em; }
+.hero-word::after { content: ""; }
+.hero-word .hero-grupo { margin: 0; justify-self: end; }
+@media (max-width: 600px) { .hero-word { grid-template-columns: auto auto; column-gap: 0.14em; } .hero-word::after { display: none; } }
