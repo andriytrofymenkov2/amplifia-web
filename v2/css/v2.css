@@ -1927,3 +1927,45 @@ section:not(#hero):not(#manifiesto):not(#que-hacemos) :is(.prob-head .tiny:first
 #metodo .rm-col .cap-title { color: #fff; -webkit-text-stroke: 0; transition: color 0.35s ease, text-shadow 0.35s ease; }
 #metodo .rm-col.hit .rm-num { -webkit-text-stroke-color: var(--lime); filter: drop-shadow(0 0 8px rgba(215,242,74,0.6)); transition-duration: 0.12s; }
 #metodo .rm-col.hit .cap-title { color: var(--lime); text-shadow: 0 0 14px rgba(215,242,74,0.55); transition-duration: 0.12s; }
+
+/* ===== Servicios (propuesta 2): tres arcos (ventana de arco) con todo el contenido adentro =====
+   Símbolo y nombre en la parte curva, descripción, lo que se recibe con puntos lima y el botón al pie.
+   Medidas en vw: misma composición en cualquier monitor. */
+.sva-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 2.4vw; align-items: stretch; padding: 0 2vw; }
+.sva { position: relative; display: flex; flex-direction: column; align-items: center; text-align: center; box-sizing: border-box;
+  padding: 3.4vw 2.4vw 2vw; border-radius: 999vw 999vw 1.6vw 1.6vw; border: 1px solid rgba(239,236,229,0.18);
+  background: radial-gradient(70% 34% at 50% 0%, rgba(215,242,74,0.10), transparent 70%), linear-gradient(180deg, #121212, #080808 70%);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease; }
+.sva::before { content: ""; position: absolute; inset: 0.6vw; border-radius: inherit; border: 1px solid rgba(239,236,229,0.06); pointer-events: none; }
+.sva:hover { border-color: rgba(215,242,74,0.6); box-shadow: 0 0 30px rgba(215,242,74,0.12); }
+.sva.is-feat { border: 1.5px solid var(--lime); box-shadow: 0 0 36px rgba(215,242,74,0.2), inset 0 0 40px rgba(215,242,74,0.06);
+  background: radial-gradient(75% 38% at 50% 0%, rgba(215,242,74,0.2), transparent 70%), linear-gradient(180deg, #151a0b, #080808 70%); }
+.sva.is-feat::before { border-color: rgba(215,242,74,0.22); }
+.sva-badge { position: absolute; top: -0.9vw; left: 50%; translate: -50% 0; white-space: nowrap; padding: 0.45vw 1vw; border-radius: 999px; background: var(--lime); color: #0a0a0a; font-size: max(10px, 0.72vw); font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; }
+.sva-ic { display: grid; place-items: center; color: var(--lime); margin-top: 1.2vw; }
+.sva-ic svg { width: 2.9vw; height: 2.9vw; filter: drop-shadow(0 0 6px rgba(215,242,74,0.45)); }
+.sva-t { margin-top: 0.9vw; font-family: var(--serif); font-weight: 400; font-size: max(22px, 2vw); line-height: 1.05; color: #fff; min-height: 2.1em; display: flex; align-items: center; }
+.sva-lead { margin-top: 0.3vw; font-size: max(12.5px, 0.95vw); line-height: 1.45; color: rgba(239,236,229,0.72); }
+.sva-list { list-style: none; margin: 1.3vw 0 0; padding: 1.1vw 0 0; border-top: 1px solid rgba(215,242,74,0.22); width: 100%; display: grid; gap: 0.62vw; text-align: left; }
+.sva-list li { position: relative; padding-left: 1.2vw; font-size: max(12px, 0.9vw); line-height: 1.35; color: rgba(239,236,229,0.9); }
+.sva-list li::before { content: ""; position: absolute; left: 0; top: 0.5em; width: 0.42vw; height: 0.42vw; min-width: 5px; min-height: 5px; border-radius: 50%; background: var(--lime); box-shadow: 0 0 6px rgba(215,242,74,0.6); }
+.sva-cta { margin-top: auto; align-self: stretch; display: flex; justify-content: center; align-items: center; gap: 0.7vw; padding: 0.8vw 1.6vw; border-radius: 999px; border: 1px solid rgba(239,236,229,0.35); font-size: max(13px, 0.97vw); font-weight: 500; color: #fff; transition: background 0.25s ease, color 0.25s ease, border-color 0.25s ease; }
+.sva-list + .sva-cta { margin-top: max(auto, 1.4vw); }
+.sva .sva-list { margin-bottom: 1.4vw; }
+.sva-cta i { font-style: normal; transition: transform 0.25s ease; }
+.sva-cta:hover, .sva.is-feat .sva-cta { background: var(--lime); border-color: var(--lime); color: #0a0a0a; }
+.sva-cta:hover i { transform: translateX(4px); }
+@media (max-width: 860px) {
+  .sva-grid { grid-template-columns: 1fr; gap: 40px; padding: 0; }
+  .sva { padding: 46px 24px 24px; border-radius: 999px 999px 22px 22px; }
+  .sva::before { inset: 7px; }
+  .sva-badge { top: -13px; padding: 6px 14px; font-size: 10.5px; }
+  .sva-ic { margin-top: 10px; } .sva-ic svg { width: 40px; height: 40px; }
+  .sva-t { margin-top: 10px; font-size: 30px; min-height: 0; }
+  .sva-lead { font-size: 14.5px; }
+  .sva-list { margin-top: 18px; padding-top: 16px; gap: 10px; } .sva-list li { padding-left: 18px; font-size: 14.5px; } .sva-list li::before { width: 6px; height: 6px; }
+  .sva .sva-list { margin-bottom: 20px; }
+  .sva-cta { gap: 10px; padding: 13px 24px; font-size: 14px; }
+}
+.sva { border-radius: 50% 50% 1.6vw 1.6vw / 13vw 13vw 1.6vw 1.6vw; }
+@media (max-width: 860px) { .sva { border-radius: 50% 50% 22px 22px / 160px 160px 22px 22px; } }
