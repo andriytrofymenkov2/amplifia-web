@@ -630,7 +630,7 @@
       }
       function sync() { if (active) { if (rmOn) active.resume(); else active.pause(); } }
       active = gsap.to(spark, { left: "100%", duration: 2.6, ease: "power1.inOut", onUpdate: hits, onComplete: function () {
-        active = gsap.to(spark, { left: "0%", duration: 3.4, ease: "sine.inOut", repeat: -1, yoyo: true, onUpdate: hits }); sync();
+        active = gsap.fromTo(spark, { left: "0%" }, { left: "100%", duration: 3.2, ease: "none", repeat: -1, repeatDelay: 0.5, onUpdate: hits }); sync();
       } });
       var rmSt = ScrollTrigger.create({ trigger: "#metodo", start: "top bottom", end: "bottom top", onToggle: function (s) { rmOn = s.isActive; sync(); } });
       rmOn = rmSt.isActive; sync();
