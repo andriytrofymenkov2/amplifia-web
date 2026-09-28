@@ -1853,3 +1853,69 @@ section:not(#hero):not(#manifiesto):not(#que-hacemos) :is(.prob-head .tiny:first
 #metodo .rm-spark { background: #fff; box-shadow: 0 0 10px 3px rgba(255,255,255,0.95), 0 0 30px 8px rgba(255,255,255,0.45); }
 #metodo .rm-spark::before { background: linear-gradient(90deg, rgba(255,255,255,0), rgba(255,255,255,0.95)); }
 #metodo .rm-spark::after { background: linear-gradient(90deg, rgba(255,255,255,0.95), rgba(255,255,255,0)); }
+
+/* ===== Servicios (rediseño): tres órbitas en lugar de tarjetas rectangulares =====
+   Cada servicio es un círculo (símbolo, nombre y una línea); debajo, lo que se recibe como pastillas redondeadas
+   y un botón. Todo en vw para que la composición sea la misma en cualquier monitor. Sin animaciones continuas. */
+.svo-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 3vw; align-items: start; }
+.svo { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 1.6vw; }
+.svo-orb { position: relative; width: 19vw; aspect-ratio: 1; border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.7vw; padding: 2.4vw;
+  box-sizing: border-box; border: 1px solid rgba(239,236,229,0.2);
+  background: radial-gradient(60% 45% at 50% 108%, rgba(215,242,74,0.16), transparent 70%), radial-gradient(circle at 50% 30%, #151515, #080808 70%);
+  box-shadow: inset 0 0 40px rgba(0,0,0,0.6); transition: border-color 0.3s ease, box-shadow 0.3s ease; }
+.svo-orb::after { content: ""; position: absolute; inset: -0.7vw; border-radius: 50%; border: 1px dashed rgba(239,236,229,0.12); pointer-events: none; }
+.svo:hover .svo-orb { border-color: rgba(215,242,74,0.7); box-shadow: inset 0 0 40px rgba(0,0,0,0.6), 0 0 32px rgba(215,242,74,0.18); }
+.svo.is-feat .svo-orb { border: 1.5px solid var(--lime); box-shadow: inset 0 0 44px rgba(215,242,74,0.12), 0 0 0 6px rgba(215,242,74,0.06), 0 0 40px rgba(215,242,74,0.22);
+  background: radial-gradient(70% 50% at 50% 110%, rgba(215,242,74,0.26), transparent 70%), radial-gradient(circle at 50% 30%, #171a0d, #080808 72%); }
+.svo.is-feat .svo-orb::after { border-color: rgba(215,242,74,0.35); }
+.svo-badge { position: absolute; top: -0.9vw; left: 50%; translate: -50% 0; white-space: nowrap; padding: 0.45vw 1vw; border-radius: 999px; background: var(--lime); color: #0a0a0a; font-size: max(10px, 0.72vw); font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; }
+.svo-ic { display: grid; place-items: center; color: var(--lime); }
+.svo-ic svg { width: 3.1vw; height: 3.1vw; filter: drop-shadow(0 0 6px rgba(215,242,74,0.45)); }
+.svo-t { font-family: var(--serif); font-weight: 400; font-size: max(24px, 2.1vw); line-height: 1.05; color: #fff; }
+.svo-lead { font-size: max(12.5px, 0.95vw); line-height: 1.45; color: rgba(239,236,229,0.75); max-width: 13.5vw; }
+.svo-chips { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; justify-content: center; gap: 0.55vw; }
+.svo-chips li { padding: 0.5vw 1vw; border-radius: 999px; border: 1px solid rgba(215,242,74,0.3); background: rgba(215,242,74,0.05); font-size: max(12px, 0.9vw); line-height: 1.3; color: rgba(239,236,229,0.9); }
+.svo-cta { display: inline-flex; align-items: center; gap: 0.7vw; padding: 0.85vw 1.9vw; border-radius: 999px; border: 1px solid rgba(239,236,229,0.35); font-size: max(13px, 0.97vw); font-weight: 500; color: #fff; transition: background 0.25s ease, color 0.25s ease, border-color 0.25s ease; }
+.svo-cta i { font-style: normal; transition: transform 0.25s ease; }
+.svo-cta:hover, .svo.is-feat .svo-cta { background: var(--lime); border-color: var(--lime); color: #0a0a0a; }
+.svo-cta:hover i { transform: translateX(4px); }
+@media (max-width: 860px) {
+  .svo-grid { grid-template-columns: 1fr; gap: 56px; }
+  .svo { gap: 18px; }
+  .svo-orb { width: min(72vw, 300px); gap: 8px; padding: 30px; }
+  .svo-orb::after { inset: -9px; }
+  .svo-badge { top: -13px; padding: 6px 14px; font-size: 10.5px; }
+  .svo-ic svg { width: 40px; height: 40px; }
+  .svo-t { font-size: 30px; }
+  .svo-lead { font-size: 14px; max-width: 200px; }
+  .svo-chips { gap: 8px; } .svo-chips li { padding: 7px 13px; font-size: 13.5px; }
+  .svo-cta { gap: 10px; padding: 13px 26px; font-size: 14px; }
+}
+@media (min-width: 861px) {
+  #servicios .svs-in { padding-top: max(96px, 11vh); padding-bottom: 4vh; gap: 2.6vw; }
+  .svo-orb { width: 17vw; padding: 2.1vw; gap: 0.55vw; }
+  .svo-ic svg { width: 2.7vw; height: 2.7vw; }
+  .svo-t { font-size: max(22px, 1.95vw); }
+  .svo-lead { font-size: max(12px, 0.88vw); max-width: 12vw; }
+  .svo { gap: 1.3vw; }
+  .svo-chips { gap: 0.42vw; }
+  .svo-chips li { padding: 0.36vw 0.9vw; font-size: max(11.5px, 0.84vw); }
+  .svo-cta { padding: 0.7vw 1.7vw; }
+}
+@media (min-width: 861px) {
+  .svo-orb { width: 15.5vw; padding: 1.9vw; }
+  .svo-t { font-size: max(21px, 1.8vw); }
+  .svo-chips li { padding: 0.3vw 0.85vw; }
+  .svo { gap: 1.1vw; }
+  #servicios .svs-in { gap: 2.2vw; }
+  #servicios .svs-head { gap: 0.6vw; }
+}
+
+/* Metodología (ajuste): títulos solo con contorno, en el color de su número (como los números);
+   los puntos de la línea en blanco — solo se encienden en su color cuando pasa la luz */
+#metodo .rm-col .cap-title { color: transparent; -webkit-text-stroke: 1.2px var(--n); }
+#metodo .rm-col::before { background: #fff; }
+#metodo .rm-col.on::before { animation-name: rmPulseW; }
+@keyframes rmPulseW { 0% { box-shadow: 0 0 0 0 rgba(255,255,255,0.55); } 100% { box-shadow: 0 0 0 22px rgba(255,255,255,0); } }
+#metodo .rm-col.hit::before { background: var(--n); }
+@media (min-width: 861px) { #servicios .svs-in { padding-bottom: calc(var(--r, 28px) + 4vh); } }
