@@ -1720,3 +1720,6 @@ section:not(#hero):not(#manifiesto):not(#que-hacemos) :is(.prob-head .tiny:first
 .ct-wa i { font-style: normal; opacity: 0.5; }
 .ct-direct .ct-wa a { font-size: inherit; }
 .mf-wa a { border-bottom: 1px solid rgba(239,236,229,0.25); }
+
+/* Rótulo "Metodología Amplifia": la marca en verde */
+.rm-head .tiny .rm-brand { color: var(--lime); font-weight: inherit; }
