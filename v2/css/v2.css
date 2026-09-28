@@ -1723,3 +1723,7 @@ section:not(#hero):not(#manifiesto):not(#que-hacemos) :is(.prob-head .tiny:first
 
 /* Rótulo "Metodología Amplifia": la marca en verde */
 .rm-head .tiny .rm-brand { color: var(--lime); font-weight: inherit; }
+
+/* Hero: "GRUPO" arriba de AMPLIFIA, dentro del mismo título (misma letra, mayúsculas y brillo, y la misma capa:
+   entra con la misma animación sin sumar trabajo), centrado, un poco más grande que "Consultora" */
+.hero-word .hero-grupo { display: block; font-size: max(20px, 0.1em); line-height: 1.1; letter-spacing: 0.06em; margin: 0 auto 0.5em; }
