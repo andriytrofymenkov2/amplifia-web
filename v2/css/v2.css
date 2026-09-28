@@ -1788,3 +1788,14 @@ section:not(#hero):not(#manifiesto):not(#que-hacemos) :is(.prob-head .tiny:first
 /* Inicio: la frase en el verde lima de la página */
 .hero-tag { color: var(--lime); opacity: 1; }
 .hero-tag { text-shadow: 0 0 6px rgba(215,242,74,0.45), 0 0 18px rgba(215,242,74,0.22); }
+
+/* Seis frentes: cada contenedor con su propio fondo de color (en lugar del negro de la página).
+   Solo cambia el color de base; el brillo lima, los bordes, títulos y la animación siguen iguales */
+#hzTrack .card:nth-of-type(1) { --fbg: #1b2fc2; }   /* azul cobalto */
+#hzTrack .card:nth-of-type(2) { --fbg: #9e1038; }   /* carmesí */
+#hzTrack .card:nth-of-type(3) { --fbg: #0a5563; }   /* petróleo */
+#hzTrack .card:nth-of-type(4) { --fbg: #54124c; }   /* ciruela */
+#hzTrack .card:nth-of-type(5) { --fbg: #93330f; }   /* terracota */
+#hzTrack .card:nth-of-type(6) { --fbg: #0b5a3e; }   /* esmeralda */
+#hzTrack .card { background: radial-gradient(120% 70% at 85% 0%, rgba(215,242,74,0.07), transparent 60%), var(--fbg, #0b0b0b); }
+#hzTrack .card .card-rule::after { background: var(--fbg, #0b0b0b); }
