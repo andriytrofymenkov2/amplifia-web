@@ -1774,3 +1774,13 @@ section:not(#hero):not(#manifiesto):not(#que-hacemos) :is(.prob-head .tiny:first
 .sg-row .sg:focus-visible { border-color: var(--c); }
 /* símbolo grande del contenedor abierto: destello blanco bien visible, como en los cerrados */
 .sg-row .sg-inner .sg-ic { filter: drop-shadow(0 0 3px rgba(255,255,255,0.85)) drop-shadow(0 0 10px rgba(255,255,255,0.45)) drop-shadow(0 0 26px rgba(255,255,255,0.18)); }
+
+/* ¿Cuándo necesitas Amplifia?: todo el contenedor acompaña el color de su recuadro — la luz de abajo, el título
+   del panel abierto (y los títulos en celular), el halo y el filete del símbolo */
+.sg-row .sg::after { background: radial-gradient(70% 90% at 50% 100%, color-mix(in srgb, var(--c) 26%, transparent), transparent 72%); }
+.sg-row .sg-inner h3 { color: var(--c); }
+.sg-row .sg-halo { background: radial-gradient(circle, color-mix(in srgb, var(--c) 26%, transparent), transparent 66%); }
+.sg-row .sg-tick { background: linear-gradient(color-mix(in srgb, var(--c) 90%, transparent), transparent); }
+@media (max-width: 860px) { .sg-row .sg .sg-vt, .sg-row .sg.is-open .sg-vt { color: var(--c) !important; } }
+/* Inicio: sin botón; "Grupo", AMPLIFIA y la frase quedan centrados en el alto de la pantalla */
+.hero-copy { justify-content: center; }
