@@ -155,7 +155,7 @@
     manifiesto: "Más herramientas no alcanzan. Las integramos con tus procesos y tu gente para que den <b>resultados</b>.",
     problema: "<b>Hola, soy Ampli.</b> Si te suena alguna de estas señales, un diagnóstico es el primer paso.",
     "que-hacemos": "Procesos, IA y personas en un solo equipo: por eso las mejoras <b>se sostienen</b>.",
-    casos: "Trabajos reales: tocá uno para ver <b>qué hicimos</b> y qué cambió.",
+    casos: "Trabajos reales: el medidor muestra el <b>antes y el después</b> de cada uno.",
     frentes: "Seis frentes, desde Lean y Kaizen hasta IA y tableros en vivo. Elegí por dónde <b>empezar</b>.",
     metodo: "Nuestra <b>metodología 4D</b>: diagnóstico, diseño, despliegue y desempeño.",
     servicios: "Diagnóstico, implementación o capacitación: cada uno con <b>entregables concretos</b>.",
@@ -193,7 +193,7 @@
   })();
   /* Ampli mide dónde hay texto en pantalla y elige un lugar LIBRE, siempre distinto al anterior: nunca se para encima de una palabra */
   var ampliY = 0, TEXT_SEL = "h1,h2,h3,h4,p,li,label,input,textarea,button:not(.ampli-btn):not(.menu-btn),.tiny,.btn,.nav-cta,.rm-num,.cap-title,.pr-t,.c3d-name,b";
-  var LINE_SEL = ".rm-line, .hz-bar";
+  var LINE_SEL = ".rm-line, .hz-bar, .gx-dial";
   function avoidRects() {
     var out = textRects(), vw = window.innerWidth, vh = window.innerHeight;
     $$(LINE_SEL).forEach(function (el) {
@@ -1128,4 +1128,66 @@
   });
   setTimeout(function () { if (!finished) { body.classList.remove("is-loading"); if (pre.parentNode) pre.remove(); if (lenis) lenis.start(); } }, 9000);
   window.addEventListener("load", function () { setTimeout(function () { ScrollTrigger.refresh(); }, 600); });
+})();
+
+/* Trabajos realizados: medidor de vidrio. Cada trabajo mueve la aguja de "antes" a "después" y cuenta el número;
+   rota solo mientras la sección está en pantalla (fuera de pantalla no hay ni un cuadro de trabajo).
+   Aguja: transform por transición CSS (compositor). Arco: stroke-dashoffset con transición. */
+(function () {
+  var gx = document.querySelector(".gx");
+  if (!gx) return;
+  var its = [].slice.call(gx.querySelectorAll(".gx-it"));
+  var nd = gx.querySelector(".gx-needle"), arcs = gx.querySelectorAll(".gx-arc, .gx-arcg");
+  var v = gx.querySelector(".gx-v"), u = gx.querySelector(".gx-u"), ba = gx.querySelector(".gx-ba");
+  var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var C = 348.7, DUR = 1700, STEP = 5200, cur = 0, timer = 0, raf = 0, live = false, hold = false, started = false;
+  gx.style.setProperty("--gx-t", STEP + "ms");
+  var fmt = function (x) { return Math.round(x).toLocaleString("es-AR"); };
+  var pose = function (f) {
+    nd.style.transform = "rotate(" + (-135 + f * 270).toFixed(2) + "deg)";
+    for (var k = 0; k < arcs.length; k++) arcs[k].style.strokeDashoffset = (C * (1 - f)).toFixed(1);
+  };
+  var restartBar = function () {
+    var bar = its[cur].querySelector(".gx-bar");
+    bar.style.animation = "none"; void bar.offsetWidth; bar.style.animation = "";
+  };
+  var show = function (i) {
+    cur = i;
+    var d = its[i].dataset, a = +d.from, b = +d.to, m = +d.max;
+    its.forEach(function (it, j) { it.classList.toggle("is-on", j === i); });
+    restartBar();
+    u.textContent = d.u; ba.innerHTML = d.ba;
+    cancelAnimationFrame(raf);
+    if (reduce) { pose(b / m); v.textContent = d.pre + fmt(b) + d.suf; return; }
+    gx.classList.add("gx-snap"); pose(a / m); void nd.offsetWidth; gx.classList.remove("gx-snap");
+    requestAnimationFrame(function () { pose(b / m); });
+    var t0 = performance.now();
+    (function tick(t) {
+      var p = Math.min(1, Math.max(0, (t - t0) / DUR)); p = 1 - Math.pow(1 - p, 3);
+      v.textContent = d.pre + fmt(a + (b - a) * p) + d.suf;
+      if (p < 1) raf = requestAnimationFrame(tick);
+    })(t0);
+  };
+  var arm = function () {
+    clearInterval(timer);
+    if (live && !hold) timer = setInterval(function () { show((cur + 1) % its.length); }, STEP);
+  };
+  its.forEach(function (it, j) {
+    var btn = it.querySelector(".gx-li");
+    btn.addEventListener("click", function () { if (j !== cur) show(j); arm(); });
+    /* PC: pasar el mouse por un trabajo lo mide; mientras el mouse está en la lista, la rotación espera */
+    btn.addEventListener("pointerenter", function (e) { if (e.pointerType === "mouse" && j !== cur) show(j); });
+  });
+  var list = gx.querySelector(".gx-list");
+  list.addEventListener("pointerenter", function (e) { if (e.pointerType !== "mouse") return; hold = true; gx.classList.add("is-hold"); arm(); });
+  list.addEventListener("pointerleave", function (e) { if (e.pointerType !== "mouse") return; hold = false; gx.classList.remove("is-hold"); restartBar(); arm(); });
+  if (!("IntersectionObserver" in window)) { live = true; show(0); arm(); return; }
+  new IntersectionObserver(function (es) {
+    var on = es[0].isIntersecting;
+    if (on === live) return;
+    live = on;
+    gx.classList.toggle("is-live", on);
+    if (on) { if (!started) { started = true; show(0); } else restartBar(); }
+    arm();
+  }, { threshold: 0.35 }).observe(gx);
 })();
