@@ -559,6 +559,29 @@
       hzTrack.addEventListener("scroll", function () { if (bq) return; bq = true; requestAnimationFrame(function () { bq = false; sync(); }); }, { passive: true });
       nextB.addEventListener("click", function () { hzTrack.scrollBy({ left: step(), behavior: "smooth" }); });
       sync();
+      /* borde con luz (igual que en computadora): cuando un frente queda a la vista, un barrido de luz le da la vuelta al borde.
+         Liviano: usa la API de animaciones (transform/opacity en la GPU, sin JS por cuadro) y la capa del barrido
+         solo existe mientras dura (display:none el resto del tiempo) */
+      if (!reduce && "IntersectionObserver" in window && Element.prototype.animate) {
+        var swRatio = new Map(), swLast = new Map(), swVis = false;
+        swCards.forEach(function (c) { c.insertAdjacentHTML("beforeend", '<i class="ring" aria-hidden="true"><b></b></i>'); });
+        var swSweep = function (c) {
+          var now = performance.now(); if (now - (swLast.get(c) || -9999) < 2300) return; swLast.set(c, now);
+          var ring = c.querySelector(".ring"), b = ring && ring.firstElementChild; if (!b) return;
+          ring.style.display = "block";
+          var a = ring.animate([{ opacity: 0 }, { opacity: 1, offset: 0.14 }, { opacity: 1, offset: 0.55 }, { opacity: 0 }], { duration: 1800, easing: "ease-out" });
+          b.animate([{ transform: "rotate(-140deg)" }, { transform: "rotate(220deg)" }], { duration: 1600, easing: "cubic-bezier(0.45, 0, 0.25, 1)" });
+          a.onfinish = a.oncancel = function () { ring.style.display = ""; };
+        };
+        var cardIO = new IntersectionObserver(function (es) {
+          es.forEach(function (e) { swRatio.set(e.target, e.intersectionRatio); if (swVis && e.intersectionRatio >= 0.6) swSweep(e.target); });
+        }, { root: hzTrack, threshold: [0, 0.6] });
+        swCards.forEach(function (c) { cardIO.observe(c); });
+        new IntersectionObserver(function (es) {
+          swVis = es[0].isIntersecting;
+          if (swVis) swCards.forEach(function (c, i) { if ((swRatio.get(c) || 0) >= 0.6) setTimeout(function () { swSweep(c); }, 250 + i * 220); });
+        }, { threshold: 0.5 }).observe(hzTrack);
+      }
       /* al llegar, las tarjetas "asoman" un poco hacia la izquierda y vuelven: así se entiende que se puede deslizar */
       if (!reduce && "IntersectionObserver" in window) {
         var io = new IntersectionObserver(function (es) {
@@ -602,7 +625,42 @@
     var rw = cols.map(function (c) { return words($(".cap-title", c)); });
     gsap.set(cols, { opacity: 0, y: 50 });
     rw.forEach(function (w) { gsap.set(w, { yPercent: 40, opacity: 0 }); });
-    onceIn("#metodo .rm-wrap", function () {
+    /* CELULAR: la sección es más alta que la pantalla, así que la luz no puede recorrerla sola. Va por una línea vertical fina
+       y avanza con el dedo: al bajar se enciende el 01, después el 02, 03 y 04; al subir se apagan. Liviano: la posición se calcula
+       una sola vez (y al reacomodar), y en cada scroll solo se escriben dos transform y, si cambia la etapa, unas clases. */
+    var rmMobile = window.matchMedia("(max-width: 860px)").matches;
+    if (rmMobile) {
+      var rmSec = $("#metodo"), rmWrap = $("#metodo .rm-wrap"), rmFill = $("#rmLine"), rmSpark = $(".rm-spark");
+      rmSec.classList.add("rm-v");
+      cols.forEach(function (col, i) {
+        onceIn(col, function () {
+          col.classList.add("on");
+          gsap.to(col, { opacity: 1, y: 0, duration: 0.7, ease: "power3.out" });
+          gsap.to(rw[i], { yPercent: 0, opacity: 1, duration: 0.7, ease: "power4.out", delay: 0.08 });
+        }, "top 90%");
+      });
+      var rmH = 0, rmY = [], rmN = -1, rmOn = false;
+      var rmMeasure = function () {
+        rmH = rmWrap.offsetHeight;
+        rmY = cols.map(function (c) { return c.offsetTop + (parseFloat(getComputedStyle(c, "::before").top) || 0) + 6; });
+      };
+      var rmApply = function (p) {
+        var y = p * rmH;
+        rmSpark.style.transform = "translate3d(0," + y.toFixed(1) + "px,0)";
+        rmFill.style.transform = "scaleY(" + p.toFixed(4) + ")";
+        var on = p > 0.002 && p < 0.998; if (on !== rmOn) { rmOn = on; rmSpark.classList.toggle("is-on", on); }
+        var n = 0; for (var i = 0; i < rmY.length; i++) if (y >= rmY[i]) n++;
+        if (n === rmN) return;
+        var up = n > rmN; rmN = n;
+        cols.forEach(function (c, i) { c.classList.toggle("lit", i < n); });
+        if (up && n > 0) { var cc = cols[n - 1]; cc.classList.add("hit"); setTimeout(function () { cc.classList.remove("hit"); }, 520); }
+      };
+      rmMeasure();
+      ScrollTrigger.create({ trigger: rmWrap, start: "top 62%", end: "bottom 62%",
+        onUpdate: function (s) { rmApply(s.progress); },
+        onRefresh: function (s) { rmMeasure(); rmApply(s.progress); } });
+    }
+    if (!rmMobile) onceIn("#metodo .rm-wrap", function () {
       var tl = gsap.timeline();
       tl.to("#rmLine", { scaleX: 1, duration: 2.6, ease: "power1.inOut" }, 0);
       tl.from(".rm-band", { opacity: 0, duration: 0.9, stagger: 0.2, ease: "power2.out" }, 0.3);
