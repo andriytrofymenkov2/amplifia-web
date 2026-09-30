@@ -160,7 +160,7 @@
     metodo: "Nuestra <b>metodología 4D</b>: diagnóstico, diseño, despliegue y desempeño.",
     servicios: "Diagnóstico, implementación o capacitación: cada uno con <b>entregables concretos</b>.",
     consultora: "Andriy lidera los procesos y Christian, las personas. Tocá el <b>+</b> para conocer sus proyectos.",
-    proyectos: "<b>Líderes Aumentados</b>: lo adaptamos a tu empresa y a tus líderes.",
+    proyectos: "<b>Líderes Aumentados</b>: lo adaptamos a tu organización y a tus desafíos.",
     clientes: "Tiempo Sur, MS Patagonia, SS Servicios, Farmacia La Franco y Siglo 21 ya confían en nosotros.",
     faq: "¿Dudas sobre alcance, tiempos o costos? Poné el mouse sobre una pregunta: la respuesta está <b>acá</b>.",
     contacto: "Contanos tu desafío: conversamos y te proponemos un camino <b>a la medida</b> de tu empresa."
