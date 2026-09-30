@@ -2060,3 +2060,10 @@ section:not(#hero):not(#manifiesto):not(#que-hacemos) :is(.prob-head .tiny:first
   .ampli.speaking .l-b, .ampli.speaking .l-stripe-glow, .ampli:has(.ampli-bubble.is-on) .l-b { animation: none; }
 }
 @media (max-width: 860px) { .foot { padding-left: 62px; } }
+
+/* Celular: menú con viñeta verde en lugar de números; frase de la portada un poco más abajo (sin mover "Grupo AMPLIFIA") */
+@media (max-width: 860px) {
+  .menu-links a { gap: 18px; }
+  .menu-links a span { flex: none; min-width: 0; width: 8px; height: 8px; margin-left: 4px; border-radius: 50%; background: var(--lime); box-shadow: 0 0 8px rgba(215,242,74,0.55); overflow: hidden; color: transparent; font-size: 0; letter-spacing: 0; opacity: 1; }
+  .hero-tag { position: relative; top: clamp(12px, 2.6vh, 28px); }
+}
