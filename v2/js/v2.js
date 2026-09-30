@@ -495,7 +495,14 @@
     var sgs = $$("#sgRow .sg"), sgCur = 0, sgStarted = false, sgOn = false, sgHeld = false, sgTimer = null;
     var sgStack = window.matchMedia("(max-width: 860px)");
     /* mientras se scrollea, los paneles que pasan debajo del mouse quieto no se abren (evita rehacer el diseño de la fila en pleno desplazamiento) */
-    var sgScrollAt = 0; function sgMark() { sgScrollAt = Date.now(); }
+    /* …pero apenas el scroll se detiene (el desplazamiento suave sigue un rato después de soltar la rueda), se abre el panel que quedó
+       debajo del mouse, aunque el mouse no se haya movido: antes ese panel se "perdía" y había que salir y volver a entrar */
+    var sgScrollAt = 0, sgEndT = null;
+    function sgHoverCheck() {
+      if (sgStack.matches) return;
+      for (var k = 0; k < sgs.length; k++) if (sgs[k].matches(":hover")) { if (k !== sgCur || !sgs[k].classList.contains("is-open")) sgPick(k); return; }
+    }
+    function sgMark() { sgScrollAt = Date.now(); clearTimeout(sgEndT); sgEndT = setTimeout(sgHoverCheck, 180); }
     window.addEventListener("wheel", sgMark, { passive: true }); window.addEventListener("scroll", sgMark, { passive: true });
     function sgShow(i) { if (i === sgCur && sgs[i].classList.contains("is-open")) return; sgCur = i; sgs.forEach(function (p, k) { p.classList.toggle("is-open", k === i); p.setAttribute("aria-expanded", k === i ? "true" : "false"); }); }
     function sgProg(i, on) { sgs.forEach(function (p, k) { var pg = $(".sg-prog", p); if (!pg) return; pg.classList.remove("run"); if (on && k === i) { void pg.offsetWidth; pg.classList.add("run"); } }); }
@@ -504,6 +511,8 @@
     function sgRelease() { sgHeld = false; clearTimeout(sgTimer); sgTimer = setTimeout(sgSchedule, 2400); }
     sgs.forEach(function (p, i) {
       p.addEventListener("mouseenter", function () { if (!sgStack.matches && Date.now() - sgScrollAt > 160) sgPick(i); });
+      /* si entró durante el scroll, el primer movimiento del mouse ya lo abre */
+      p.addEventListener("mousemove", function () { if (i !== sgCur && !sgStack.matches && Date.now() - sgScrollAt > 160) sgPick(i); });
       p.addEventListener("focus", function () { sgPick(i); });
       p.addEventListener("click", function () { sgPick(i); });
       p.addEventListener("keydown", function (e) { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); sgPick(i); } });
@@ -517,6 +526,8 @@
     sgRow.addEventListener("mouseleave", sgRelease);
     sgRow.addEventListener("focusout", function (e) { if (!sgRow.contains(e.relatedTarget)) sgRelease(); });
     sgStarted = true;
+    /* si el mouse ya estaba sobre un panel cuando esta parte terminó de armarse (primera visita, scroll rápido), se abre ese */
+    sgHoverCheck();
     ScrollTrigger.create({ trigger: "#problema", start: "top 85%", end: "bottom 15%", onToggle: function (s) { sgOn = s.isActive; sgSchedule(); } });
     /* los cinco títulos verticales comparten el mismo tamaño: el mayor que deja entrar el más largo en una sola línea */
     var sgCv = document.createElement("canvas").getContext("2d");
