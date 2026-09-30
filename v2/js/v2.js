@@ -409,7 +409,10 @@
   var ampliIdle = null;
   window.addEventListener("resize", function () { clearTimeout(ampliIdle); ampliIdle = setTimeout(function () { if (!phone && ampliSide !== null) ampliDock(); }, 300); });
   gsap.to("#prog", { scaleX: 1, ease: "none", scrollTrigger: { start: 0, end: "max", scrub: 0.2 } });
-  ScrollTrigger.create({ trigger: "#hero", start: "bottom 60%", end: "max", onToggle: function (s) { $("#wa").classList.toggle("is-on", s.isActive); $("#social").classList.toggle("is-on", s.isActive); } });
+  /* el botón de WhatsApp y las redes aparecen al pasar el inicio y quedan hasta el final (antes se apagaban en el último píxel de la página) */
+  ScrollTrigger.create({ trigger: "#hero", start: "bottom 60%",
+    onEnter: function () { $("#wa").classList.add("is-on"); $("#social").classList.add("is-on"); },
+    onLeaveBack: function () { $("#wa").classList.remove("is-on"); $("#social").classList.remove("is-on"); } });
 
   function onceIn(t, fn, start) { ScrollTrigger.create({ trigger: t, start: start || "top 70%", once: true, onEnter: fn }); }
 
@@ -718,11 +721,22 @@
     });
     /* cada sección se arma en su propio paso, cuando el navegador está libre: antes era un solo bloque de ~60 ms
        (240 ms en equipos lentos) que frenaba el video del inicio */
+    /* si la persona ya está scrolleando (en celular es lo primero que hace), el paso espera a que haga una pausa:
+       armar una sección en pleno gesto son 50-120 ms de tirón. Espera como mucho ~1,4 s por paso. */
+    var scrollingNow = false, scrollEndT = null;
+    window.addEventListener("scroll", function () { scrollingNow = true; clearTimeout(scrollEndT); scrollEndT = setTimeout(function () { scrollingNow = false; }, 160); }, { passive: true });
+    function whenCalm(fn) {
+      if (backTo || !scrollingNow) return fn();
+      var tries = 0;
+      (function wait() { if (!scrollingNow || ++tries > 12) fn(); else setTimeout(wait, 120); })();
+    }
     (function run(i) {
-      if (i >= steps.length) { ScrollTrigger.refresh(); if (backTo) goBackTo(); return; }
-      try { steps[i](); } catch (e) { if (window.console) console.error(e); }
-      var next = function () { run(i + 1); };
-      if (backTo) next(); else if (window.requestIdleCallback) requestIdleCallback(next, { timeout: 400 }); else setTimeout(next, 30);
+      if (i >= steps.length) { whenCalm(function () { ScrollTrigger.refresh(); if (backTo) goBackTo(); }); return; }
+      whenCalm(function () {
+        try { steps[i](); } catch (e) { if (window.console) console.error(e); }
+        var next = function () { run(i + 1); };
+        if (backTo) next(); else if (window.requestIdleCallback) requestIdleCallback(next, { timeout: 400 }); else setTimeout(next, 30);
+      });
     })(0);
   }
 
