@@ -325,6 +325,9 @@
     if (ampliHintKick) ampliHintKick();
     ampliBubble.classList.remove("is-on");
     ampliWalk(id, null);
+    /* en pantallas de celular el globo no se muestra (display:none): no se arma ni se mide. Antes, en cada sección, Ampli leía la posición
+       de decenas de textos para acomodarlo: ~40 ms de trabajo perdido justo al cambiar de sección. */
+    if (window.matchMedia("(max-width: 860px)").matches) return;
     ampliT = setTimeout(function () {
       if (ampliId !== id) return;
       ampliTips(ampli._target); ampliBubble.innerHTML = AMPLI_LINES[id]; ampliBubble.classList.add("is-on"); ampli.classList.add("speaking"); ampliFitNow(ampliBubble);
@@ -442,12 +445,27 @@
      cortina en movimiento, para que ese trabajo pesado no le robe cuadros justo al efecto de entrada */
   function build() {
     buildHero();
+    if (phone) ampliWalk("hero", null);   /* celular: deja a Ampli ubicado y armado desde ahora (invisible), no en pleno scroll */
 
     var steps = [];
     steps.push(function () {
     /* 02 · manifiesto: se enciende solo al llegar */
     var mw = words($("#manifText"), false);
     var mfNet = $("#mfNet"), mfNodes = $$(".mf-n", mfNet), mfText = $("#manifText"), mfLabel = $(".mf-label");
+    /* CELULAR: la entrada del manifiesto corre con transiciones CSS (opacity/transform en la GPU, un solo cambio de clase),
+       en lugar de decenas de animaciones de JS y variables que se reescriben en cada cuadro: era el mayor tirón al llegar a "Nuestra mirada".
+       Mismos tiempos y mismo aspecto que en computadora. */
+    if (phone && !reduce) {
+      var mfSec = $("#manifiesto"), tot = 0.035 * mw.length + 0.45, t0 = 0.12, tn = t0 + tot * 0.4, tc = tn + 0.55;
+      mw.forEach(function (w, i) { w.style.setProperty("--i", i); });
+      mfSec.style.setProperty("--t0", t0.toFixed(2) + "s"); mfSec.style.setProperty("--tn", tn.toFixed(2) + "s"); mfSec.style.setProperty("--tc", tc.toFixed(2) + "s");
+      mfSec.classList.add("mf-pre");
+      onceIn("#manifiesto", function () {
+        mfSec.classList.add("mf-go");
+        mfNodes.forEach(function (n, i) { setTimeout(function () { n.classList.add("on"); }, (tc + i * 0.45) * 1000); });
+        setTimeout(function () { mfText.classList.add("is-linked"); }, (tc + 0.9) * 1000);
+      }, "top 55%");
+    } else {
     /* estado inicial: el rótulo, los nodos y la línea esperan; aparecen en secuencia al llegar a la pantalla */
     if (!reduce) {
       gsap.set(mfLabel, { opacity: 0, y: 12 }); mfLabel.style.setProperty("--lw", 0);
@@ -469,6 +487,7 @@
         onUpdate: function () { mfNet.style.setProperty("--p", pr.p.toFixed(3)); mfNodes.forEach(function (n, i) { n.classList.toggle("on", pr.p >= i * 0.5 - 0.001 && (i === 0 || pr.p > 0.02)); }); },
         onComplete: function () { mfText.classList.add("is-linked"); } });
     }, "top 55%");
+    }
 
     });
     steps.push(function () {
@@ -563,10 +582,10 @@
          Liviano: usa la API de animaciones (transform/opacity en la GPU, sin JS por cuadro) y la capa del barrido
          solo existe mientras dura (display:none el resto del tiempo) */
       if (!reduce && "IntersectionObserver" in window && Element.prototype.animate) {
-        var swRatio = new Map(), swLast = new Map(), swVis = false;
+        var swRatio = new Map(), swLast = new Map(), swVis = false, swTimer = new Map();
         swCards.forEach(function (c) { c.insertAdjacentHTML("beforeend", '<i class="ring" aria-hidden="true"><b></b></i>'); });
         var swSweep = function (c) {
-          var now = performance.now(); if (now - (swLast.get(c) || -9999) < 2300) return; swLast.set(c, now);
+          if (swLast.has(c) || document.hidden) return; swLast.set(c, 1);   /* una sola vez por tarjeta: no se repite al volver */
           var ring = c.querySelector(".ring"), b = ring && ring.firstElementChild; if (!b) return;
           ring.style.display = "block";
           var a = ring.animate([{ opacity: 0 }, { opacity: 1, offset: 0.14 }, { opacity: 1, offset: 0.55 }, { opacity: 0 }], { duration: 1800, easing: "ease-out" });
@@ -574,7 +593,12 @@
           a.onfinish = a.oncancel = function () { ring.style.display = ""; };
         };
         var cardIO = new IntersectionObserver(function (es) {
-          es.forEach(function (e) { swRatio.set(e.target, e.intersectionRatio); if (swVis && e.intersectionRatio >= 0.6) swSweep(e.target); });
+          es.forEach(function (e) {
+            var c = e.target; swRatio.set(c, e.intersectionRatio);
+            clearTimeout(swTimer.get(c));
+            /* espera a que el deslizamiento se asiente (no anima en pleno gesto) y confirma que sigue a la vista */
+            if (swVis && e.intersectionRatio >= 0.6 && !swLast.has(c)) swTimer.set(c, setTimeout(function () { if ((swRatio.get(c) || 0) >= 0.6) swSweep(c); }, 320));
+          });
         }, { root: hzTrack, threshold: [0, 0.6] });
         swCards.forEach(function (c) { cardIO.observe(c); });
         new IntersectionObserver(function (es) {
@@ -1087,14 +1111,20 @@
   var minTime = new Promise(function (res) { setTimeout(res, backTo ? 0 : 2000); });
   /* el hero se prepara en cuanto la tipografía está lista, mientras la barra de carga todavía sube:
      así llega ya armado (letras separadas, en su lugar) al momento de la cortina, sin nada que calcular */
-  fontsReady.then(function () { try { buildHero(); } catch (e) { if (window.console) console.error(e); } });
+  var buildStarted = false;
+  var runBuild = function () { if (buildStarted) return; buildStarted = true; try { build(); } catch (e) { if (window.console) console.error(e); } };
+  fontsReady.then(function () {
+    try { buildHero(); } catch (e) { if (window.console) console.error(e); }
+    /* CELULAR: el resto de la página se arma ahora, detrás de la pantalla de carga (todavía no se puede scrollear ni hay animación de entrada
+       que cuidar). Antes se armaba justo después de levantar la cortina, cuando ya estás deslizando el dedo: eran los tirones del principio. */
+    if (phone && !backTo) setTimeout(function () { if (window.requestIdleCallback) requestIdleCallback(runBuild, { timeout: 700 }); else runBuild(); }, 250);
+  });
   Promise.race([Promise.all([fontsReady, loaded, minTime]), new Promise(function (res) { setTimeout(res, 5500); })]).then(function () {
     try { buildHero(); } catch (e) { if (window.console) console.error(e); }
     finish();
     /* el resto de la página (más pesado: frentes, roadmap, preguntas, anillo 3D…) se arma después de que
        el navegador ya pintó el primer cuadro de la cortina, para no competirle cuadros al efecto de entrada */
-    var runBuild = function () { try { build(); } catch (e) { if (window.console) console.error(e); } };
-    if (backTo) runBuild(); else setTimeout(function () { if (window.requestIdleCallback) requestIdleCallback(runBuild, { timeout: 1500 }); else runBuild(); }, 1900);
+    if (backTo) runBuild(); else if (!buildStarted) setTimeout(function () { if (window.requestIdleCallback) requestIdleCallback(runBuild, { timeout: 1500 }); else runBuild(); }, 1900);
   });
   setTimeout(function () { if (!finished) { body.classList.remove("is-loading"); if (pre.parentNode) pre.remove(); if (lenis) lenis.start(); } }, 9000);
   window.addEventListener("load", function () { setTimeout(function () { ScrollTrigger.refresh(); }, 600); });

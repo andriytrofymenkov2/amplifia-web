@@ -2057,7 +2057,6 @@ section:not(#hero):not(#manifiesto):not(#que-hacemos) :is(.prob-head .tiny:first
    (su globo no se muestra en celular, así que esa animación no se ve) */
 @media (max-width: 860px) {
   .card-icon, .qh-ic, .qs-ic, .svo-ic svg, .sva-ic svg, #metodo .rm-col.hit .rm-num, #metodo .rm-col.lit .rm-num { filter: none; }
-  .ampli.speaking .l-b, .ampli.speaking .l-stripe-glow, .ampli:has(.ampli-bubble.is-on) .l-b { animation: none; }
 }
 @media (max-width: 860px) { .foot { padding-left: 62px; } }
 
@@ -2099,3 +2098,23 @@ section:not(#hero):not(#manifiesto):not(#que-hacemos) :is(.prob-head .tiny:first
   .has-panel #consultora { z-index: 400; }
   .has-panel .hdr { visibility: hidden; pointer-events: none; }
 }
+.hz-swipe .card .ring b { width: 205%; }
+
+/* ===== Manifiesto en celular: entrada por transiciones CSS (la clase mf-pre / mf-go la pone el JS solo en celular) ===== */
+.mf-go .manif-text .w { opacity: 1; transition: opacity 0.45s cubic-bezier(0.215, 0.61, 0.355, 1) calc(var(--t0) + var(--i) * 35ms); }
+.mf-pre .mf-label { opacity: 0; transform: translateY(12px); }
+.mf-pre .mf-label::before, .mf-pre .mf-label::after { transform: scaleX(0); }
+.mf-go .mf-label { opacity: 1; transform: none; transition: opacity 0.55s cubic-bezier(0.215, 0.61, 0.355, 1), transform 0.55s cubic-bezier(0.215, 0.61, 0.355, 1); }
+.mf-go .mf-label::before, .mf-go .mf-label::after { transform: scaleX(1); transition: transform 0.7s cubic-bezier(0.645, 0.045, 0.355, 1); }
+.mf-pre .mf-n { opacity: 0; transform: translateY(30px) scale(0.86); }
+.mf-go .mf-n { opacity: 1; transform: none; transition: opacity 0.6s cubic-bezier(0.215, 0.61, 0.355, 1), transform 0.6s cubic-bezier(0.215, 0.61, 0.355, 1), color 0.6s ease; transition-delay: var(--tn), var(--tn), 0s; }
+.mf-go .mf-n:nth-child(2) { transition-delay: calc(var(--tn) + 0.1s), calc(var(--tn) + 0.1s), 0s; }
+.mf-go .mf-n:nth-child(3) { transition-delay: calc(var(--tn) + 0.2s), calc(var(--tn) + 0.2s), 0s; }
+.mf-pre .mf-net::before { opacity: 0; }
+.mf-go .mf-net::before { opacity: 1; transition: opacity 0.7s ease-out calc(var(--tn) + 0.1s); }
+.mf-pre .mf-net::after { transform: scaleX(0); }
+.mf-go .mf-net::after { transform: scaleX(1); transition: transform 0.9s cubic-bezier(0.455, 0.03, 0.515, 0.955) var(--tc); }
+
+/* Celular: Ampli queda ya construido (invisible) desde la carga, en vez de aparecer de golpe al pasar la portada:
+   así el navegador no tiene que armarlo ni medirlo en pleno scroll */
+@media (max-width: 860px) { .ampli.is-hidden { display: flex !important; opacity: 0; visibility: hidden; pointer-events: none; } }
