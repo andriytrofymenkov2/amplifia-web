@@ -452,16 +452,16 @@ html[data-hdr="light"] .rail { color: var(--ink); }
 .who-detail[hidden] { display: none; }
 .wd-photo { position: relative; border-radius: 14px; overflow: hidden; min-height: 0; }
 .wd-photo img { position: absolute; inset: 0; width: 100%; height: 100%; max-width: none; object-fit: cover; object-position: 50% 12%; }
-.wd-body { display: flex; flex-direction: column; justify-content: center; min-height: 0; padding-right: 48px; }
+.wd-body { display: flex; flex-direction: column; justify-content: safe center; min-height: 0; padding-right: 48px; overflow-y: auto; scrollbar-width: thin; }
 .wd-tag, .wd-block em { font-size: 11px; font-style: normal; font-weight: 500; letter-spacing: 0.2em; text-transform: uppercase; color: var(--lime); }
-.wd-body h3 { margin: 1vh 0 0; font-family: var(--serif); font-weight: 400; font-size: clamp(32px, 4vw, 60px); line-height: 1.02; }
+.wd-body h3 { margin: 0.8vh 0 0; font-family: var(--serif); font-weight: 400; font-size: clamp(30px, 3.4vw, 54px); line-height: 1.02; }
 .wd-role { margin: 1vh 0 0; font-size: clamp(14px, 1.2vw, 17px); font-weight: 500; opacity: 0.86; }
-.wd-intro { margin: 2vh 0 0; max-width: 40em; font-size: clamp(13.5px, 1.1vw, 16px); line-height: 1.55; opacity: 0.82; }
-.wd-block { margin-top: 2.4vh; }
+.wd-intro { margin: 1.6vh 0 0; max-width: 40em; font-size: clamp(13.5px, 1.1vw, 16px); line-height: 1.55; opacity: 0.82; }
+.wd-block { margin-top: 2vh; }
 .wd-block[hidden] { display: none; }
 .wd-block em { display: block; margin-bottom: 1vh; }
-.wd-block ul { display: flex; flex-wrap: wrap; gap: 8px; }
-.wd-block li { padding: 7px 14px; border-radius: 999px; border: 1px solid rgba(255,255,255,0.18); font-size: clamp(12.5px, 0.95vw, 14.5px); opacity: 0.92; }
+.wd-block ul { display: flex; flex-wrap: wrap; gap: 6px; }
+.wd-block li { padding: 5px 12px; border-radius: 999px; border: 1px solid rgba(255,255,255,0.18); font-size: clamp(12.5px, 0.95vw, 14.5px); opacity: 0.92; }
 .wd-block p { font-size: clamp(13.5px, 1.05vw, 16px); line-height: 1.5; opacity: 0.86; }
 .who-x { position: absolute; top: clamp(14px, 2.4vh, 24px); right: clamp(14px, 2vw, 26px); width: 40px; height: 40px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.3); background: rgba(8,8,8,0.8); cursor: pointer; z-index: 2; transition: border-color 0.3s ease, background 0.3s ease; }
 .who-x:hover { border-color: var(--lime); background: var(--lime); }
@@ -1395,7 +1395,7 @@ input, textarea { -webkit-appearance: none; appearance: none; border-radius: 0; 
 .hz-swipe .card { width: 80vw; max-width: 380px; scroll-snap-align: start; }
 .hz-swipe .hz-end { width: 1px; }
 .hz-swipe .hz-bar { position: relative; left: auto; right: auto; bottom: auto; margin: 22px var(--pad) 0; }
-.hz-swipe .hz-intro::after { content: "Deslizá para ver los seis frentes  →"; font-size: 12px; letter-spacing: 0.18em; text-transform: uppercase; color: rgba(239,236,229,0.6); }
+.hz-swipe .hz-intro::after { content: "Deslizá para ver las seis capacidades  →"; font-size: 12px; letter-spacing: 0.18em; text-transform: uppercase; color: rgba(239,236,229,0.6); }
 
 /* Celular: tarjetas de Frentes con alto según su contenido (así la lista nunca queda cortada) */
 .hz-swipe .hz-track { height: auto; align-items: stretch; }
@@ -1654,7 +1654,7 @@ section:not(#hero):not(#manifiesto):not(#que-hacemos) :is(.prob-head .tiny:first
 @keyframes hzNudge { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(4px); } }
 .hz-next.is-end { opacity: 0; pointer-events: none; transform: scale(0.8); }
 .hz-swiped .hz-next span { animation: none; }
-.hz-swipe .hz-intro::after { content: "Deslizá hacia la derecha para ver los seis frentes  →"; color: var(--lime); }
+.hz-swipe .hz-intro::after { content: "Deslizá hacia la derecha para ver las seis capacidades  →"; color: var(--lime); }
 .hz-swipe .hz-bar { display: none; }
 @media (prefers-reduced-motion: reduce) { .hz-next span { animation: none; } }
 
@@ -2022,7 +2022,7 @@ section:not(#hero):not(#manifiesto):not(#que-hacemos) :is(.prob-head .tiny:first
   .sva { padding: 2.6vw 2vw 1.8vw; }
   .sva-ic { margin-top: 1.4vw; }
   .sva-ic svg { width: 5.8vw; height: 5.8vw; filter: drop-shadow(0 0 8px rgba(215,242,74,0.45)); }
-  .sva-t { margin-top: 0.8vw; font-size: 2.45vw; min-height: 0; white-space: nowrap; }
+  .sva-t { margin-top: 0.8vw; font-size: 2.45vw; min-height: 2.1em; justify-content: center; text-align: center; line-height: 1.02; }
   .sva-lead { font-size: 1.12vw; }
   .sva-list { margin-top: 1vw; padding-top: 0.9vw; gap: 0.5vw; }
   .sva-list li { font-size: 1.08vw; padding-left: 1.1vw; }

@@ -156,9 +156,9 @@
     problema: "<b>Hola, soy Ampli.</b> Si te suena alguna de estas señales, un diagnóstico es el primer paso.",
     "que-hacemos": "Procesos, IA y personas en un solo equipo: por eso las mejoras <b>se sostienen</b>.",
     casos: "Trabajos reales: el medidor muestra el <b>antes y el después</b> de cada uno.",
-    frentes: "Seis frentes, desde Lean y Kaizen hasta IA y tableros en vivo. Elegí por dónde <b>empezar</b>.",
+    frentes: "Seis capacidades, desde Lean y Kaizen hasta IA y datos para decidir. Elegí por dónde <b>empezar</b>.",
     metodo: "Nuestra <b>metodología 4D</b>: diagnóstico, diseño, despliegue y desempeño.",
-    servicios: "Diagnóstico, implementación o capacitación: cada uno con <b>entregables concretos</b>.",
+    servicios: "Diagnóstico, training o implementación: cada uno con <b>entregables concretos</b>.",
     consultora: "Andriy lidera los procesos y Christian, las personas. Tocá el <b>+</b> para conocer sus proyectos.",
     proyectos: "<b>Líderes Aumentados</b>: lo adaptamos a tu organización y a tus desafíos.",
     clientes: "Tiempo Sur, MS Patagonia, SS Servicios, Farmacia La Franco y Siglo 21 ya confían en nosotros.",
@@ -356,8 +356,8 @@
       [/cuest|precio|valor|costo|tarifa|presupuesto|inversi/, "El alcance y la inversión los define el equipo de Amplifia en una conversación posterior; no puedo adelantarlos. Si quieres, puedes escribirnos por WhatsApp al +54 9 11 3327-8023 o al +54 9 2966 69-2544."],
       [/empie|empez|primer|diagn|dura|plazo|tiempo|trabaj|metod/, "Recomendamos comenzar por un diagnóstico: relevamos datos y conversamos con líderes y equipos para entender cómo funciona hoy tu organización. Los detalles y plazos los define el equipo en una primera conversación."],
       [/contact|whats|mail|agend|reuni|hablar/, "Puedes escribirnos por WhatsApp al +54 9 11 3327-8023 o al +54 9 2966 69-2544, al correo grupoamplifia@gmail.com, o completar el formulario de la sección Contacto."],
-      [/ia\b|inteligencia|artificial|automat|dato/, "La inteligencia artificial es uno de nuestros seis frentes: la integramos en decisiones reales, automatizamos tareas y armamos tableros con datos. Primero comprendemos tu organización y luego incorporamos tecnología donde aporta valor."],
-      [/qu[eé] hac|servicio|frente|ofrec|hacen/, "Trabajamos tres áreas: procesos (Lean, Kaizen, indicadores), personas (liderazgo, coaching, equipos comerciales) e inteligencia artificial y datos. Son seis frentes que operan como un solo sistema."]
+      [/ia\b|inteligencia|artificial|automat|dato/, "La inteligencia artificial es una de nuestras seis capacidades: la integramos en decisiones reales, automatizamos tareas y armamos tableros con datos. Primero comprendemos tu organización y luego incorporamos tecnología donde aporta valor."],
+      [/qu[eé] hac|servicio|frente|ofrec|hacen/, "Trabajamos tres áreas: procesos (Lean, Kaizen, indicadores), personas (liderazgo, coaching, equipos comerciales) e inteligencia artificial y datos. Son seis capacidades que operan como un solo sistema."]
     ];
     function add(cls, txt) { var d = document.createElement("div"); d.className = "ac-m " + cls; d.textContent = txt; log.appendChild(d); log.scrollTop = log.scrollHeight; return d; }
     function fallback(q) { q = q.toLowerCase(); for (var i = 0; i < FB.length; i++) if (FB[i][0].test(q)) return FB[i][1]; return "Para responderte con precisión, lo más conveniente es conversarlo con nuestro equipo: puedes escribirnos por WhatsApp al +54 9 11 3327-8023 o al +54 9 2966 69-2544 o solicitar un diagnóstico."; }
@@ -742,10 +742,10 @@
           intro: "Especializado en la gestión estratégica de proyectos y la excelencia operativa. Combina rigurosidad técnica y visión integral para transformar procesos, reducir costos y maximizar la productividad, con formación en Industria 4.0.",
           labelA: "Proyectos", listA: ["Capacitación corporativa", "Planta de polietileno", "Reestructuración de layout", "Optimización clínica", "Herramientas de gestión"],
           labelB: "Trabajó con", textB: "Medisur · SS Servicios · MS Patagonia · Aeropuertos Argentina" },
-        { tag: "Personas", name: "Christian Pollavini", role: "Coach empresarial · Desarrollo organizacional y comercial",
-          intro: "Coach empresarial especializado en desarrollo organizacional y comercial. Trabaja con líderes y equipos para que los cambios de proceso se sostengan en las personas que los llevan adelante.",
-          labelA: "Áreas de trabajo", listA: ["Coaching organizacional", "Liderazgo", "Cohesión de equipos", "Entrenamiento de equipos comerciales", "Estrategia de venta", "Manejo de objeciones y cierre"],
-          labelB: "", textB: "" }
+        { tag: "Personas", name: "Christian Pollavini", role: "Consultor organizacional · Coach ejecutivo de líderes y equipos",
+          intro: "Especialista en liderazgo, equipos y performance comercial. Acompaña a organizaciones en el desarrollo de capacidades que fortalecen la toma de decisiones, la comunicación y la ejecución, conectando el desempeño de las personas con los resultados del negocio.",
+          labelA: "Áreas de especialización", listA: ["Liderazgo adaptativo y toma de decisiones", "Coaching ejecutivo y de equipos", "PNL, patrones mentales y lingüísticos", "Comunicación, acuerdos y feedback", "Cultura y cohesión organizacional", "Performance comercial, venta consultiva y neuroventas", "Customer centricity y experiencia del cliente"],
+          labelB: "Formación y credenciales", textB: "Consultor organizacional certificado · Master Coach en Programación Neurolingüística · Coach ejecutivo y de equipos" }
       ];
       var sec = $("#consultora"), whoCards = $$(".who-card", sec), hots = $$(".who-hot", sec), detail = $("#whoDetail"), xBtn = $("#whoX");
       gsap.set(whoCards, { opacity: 0, y: 50 });
