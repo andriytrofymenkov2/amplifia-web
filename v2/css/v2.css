@@ -2164,3 +2164,16 @@ section:not(#hero):not(#manifiesto):not(#que-hacemos) :is(.prob-head .tiny:first
 .wd-tag, .wd-block em { color: rgba(239,236,229,0.62); }
 .wd-body h3 { color: var(--lime); }
 .wd-block p { white-space: pre-line; }
+/* Panel de trayectoria (PC): todo el perfil entra sin scrollear. Columna de texto más ancha, bloques más compactos */
+@media (min-width: 861px) {
+  .who-detail { grid-template-columns: 4fr 9fr; gap: 2.4vw; }
+  .wd-body { padding-right: 56px; }
+  .wd-body h3 { margin-top: 0.4vh; }
+  .wd-role { margin-top: 0.6vh; }
+  .wd-intro { margin-top: 1.2vh; max-width: none; line-height: 1.5; }
+  .wd-block { margin-top: 1.4vh; }
+  .wd-block em { margin-bottom: 0.8vh; }
+  .wd-block ul { gap: 5px; }
+  .wd-block li { padding: 4px 11px; font-size: clamp(12px, 0.9vw, 14px); }
+  .wd-block p { line-height: 1.45; font-size: clamp(12.5px, 0.95vw, 15px); }
+}
