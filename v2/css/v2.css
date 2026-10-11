@@ -2177,3 +2177,32 @@ section:not(#hero):not(#manifiesto):not(#que-hacemos) :is(.prob-head .tiny:first
   .wd-block li { padding: 4px 11px; font-size: clamp(12px, 0.9vw, 14px); }
   .wd-block p { line-height: 1.45; font-size: clamp(12.5px, 0.95vw, 15px); }
 }
+
+/* Trabajos realizados v3: seis trabajos (procesos + personas y ventas). Sin números: un punto que se enciende.
+   En los trabajos sin cifra la lectura del medidor es una palabra (el "después") y aparece con un fundido. */
+.gx-n { display: block; width: 0.42vw; height: 0.42vw; border-radius: 50%; background: rgba(239,236,229,0.28); transition: background 0.4s ease, box-shadow 0.4s ease; font-size: 0; }
+.gx-it.is-on .gx-n { background: var(--lime); box-shadow: 0 0 0 0.3vw rgba(215,242,74,0.16); }
+.gx-li { grid-template-columns: 2.2vw minmax(0, 1fr) auto; padding: 1.15vw 0; }
+.gx-t { font-size: 2.45vw; }
+.gx-more > div { padding-left: 2.2vw; }
+.gx-more p { max-width: 36vw; }
+.gx-p { margin: 0 0 0.45vw !important; }
+.gx-p b { display: block; margin-bottom: 0.15vw; font-size: 0.66vw; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase; color: var(--lime); }
+.gx-more p + a { margin-top: 0.7vw; }
+.gx-v.is-txt { font-size: 3.6vw; font-style: italic; }
+.gx-v.gx-in { animation: gxIn 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) both; }
+@keyframes gxIn { from { opacity: 0; transform: translate3d(0, 0.6vw, 0); } to { opacity: 1; transform: none; } }
+@media (max-width: 860px) {
+  .gx-n { width: 7px; height: 7px; }
+  .gx-it.is-on .gx-n { box-shadow: 0 0 0 4px rgba(215,242,74,0.16); }
+  .gx-li { grid-template-columns: 22px minmax(0, 1fr); padding: 14px 0; }
+  .gx-t { font-size: 6.6vw; }
+  .gx-more > div { padding-left: 22px; }
+  .gx-more p { max-width: none; }
+  .gx-p { margin-bottom: 8px !important; }
+  .gx-p b { font-size: 10px; margin-bottom: 3px; }
+  .gx-more p + a { margin-top: 6px; }
+  .gx-v.is-txt { font-size: 10vw; }
+  @keyframes gxIn { from { opacity: 0; transform: translate3d(0, 6px, 0); } to { opacity: 1; transform: none; } }
+}
+@media (prefers-reduced-motion: reduce) { .gx-v.gx-in { animation: none; } }

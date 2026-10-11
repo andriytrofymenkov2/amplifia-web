@@ -1151,8 +1151,10 @@
   var nd = gx.querySelector(".gx-needle"), arcs = gx.querySelectorAll(".gx-arc, .gx-arcg");
   var v = gx.querySelector(".gx-v"), u = gx.querySelector(".gx-u"), ba = gx.querySelector(".gx-ba");
   var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  var C = 348.7, DUR = 1700, STEP = 5200, cur = 0, timer = 0, raf = 0, live = false, hold = false, started = false;
-  gx.style.setProperty("--gx-t", STEP + "ms");
+  var C = 348.7, DUR = 1700, STEP = 5600, cur = 0, timer = 0, raf = 0, live = false, hold = false, started = false;
+  /* cada trabajo tiene su propio tiempo en pantalla (los de texto más largo, más tiempo); la línea verde lo marca */
+  var stepOf = function (i) { return +its[i].dataset.ms || STEP; };
+  its.forEach(function (it, i) { it.style.setProperty("--gx-t", stepOf(i) + "ms"); });
   var fmt = function (x) { return Math.round(x).toLocaleString("es-AR"); };
   var pose = function (f) {
     nd.style.transform = "rotate(" + (-135 + f * 270).toFixed(2) + "deg)";
@@ -1164,14 +1166,23 @@
   };
   var show = function (i) {
     cur = i;
-    var d = its[i].dataset, a = +d.from, b = +d.to, m = +d.max;
+    var d = its[i].dataset, txt = d.mode === "txt";
+    /* trabajos con número: la aguja va de "antes" a "después" y el número se cuenta.
+       trabajos de personas y ventas: la aguja hace el mismo recorrido y la lectura muestra el cambio en una palabra */
+    var a = txt ? +d.a : +d.from, b = txt ? +d.b : +d.to, m = txt ? 1 : +d.max;
     its.forEach(function (it, j) { it.classList.toggle("is-on", j === i); });
     restartBar();
     u.textContent = d.u; ba.innerHTML = d.ba;
+    v.classList.toggle("is-txt", txt);
     cancelAnimationFrame(raf);
-    if (reduce) { pose(b / m); v.textContent = d.pre + fmt(b) + d.suf; return; }
+    if (txt) {
+      v.textContent = d.v;
+      if (!reduce) { v.classList.remove("gx-in"); void v.offsetWidth; v.classList.add("gx-in"); }
+    }
+    if (reduce) { pose(b / m); if (!txt) v.textContent = d.pre + fmt(b) + d.suf; return; }
     gx.classList.add("gx-snap"); pose(a / m); void nd.offsetWidth; gx.classList.remove("gx-snap");
     requestAnimationFrame(function () { pose(b / m); });
+    if (txt) return;
     var t0 = performance.now();
     (function tick(t) {
       var p = Math.min(1, Math.max(0, (t - t0) / DUR)); p = 1 - Math.pow(1 - p, 3);
@@ -1180,8 +1191,8 @@
     })(t0);
   };
   var arm = function () {
-    clearInterval(timer);
-    if (live && !hold) timer = setInterval(function () { show((cur + 1) % its.length); }, STEP);
+    clearTimeout(timer);
+    if (live && !hold) timer = setTimeout(function () { show((cur + 1) % its.length); arm(); }, stepOf(cur));
   };
   its.forEach(function (it, j) {
     var btn = it.querySelector(".gx-li");
