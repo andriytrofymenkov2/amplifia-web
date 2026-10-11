@@ -159,7 +159,7 @@
     frentes: "Seis capacidades, desde Lean y Kaizen hasta IA y datos para decidir. Elegí por dónde <b>empezar</b>.",
     metodo: "Nuestra <b>metodología 4D</b>: diagnóstico, diseño, despliegue y desempeño.",
     servicios: "Diagnóstico, training o implementación: cada uno con <b>entregables concretos</b>.",
-    consultora: "Andriy lidera los procesos y Christian, las personas. Tocá el <b>+</b> para conocer sus proyectos.",
+    consultora: "Andriy lidera los procesos y Christian, las personas. Tocá el <b>+</b> para conocer su trayectoria.",
     proyectos: "<b>Líderes Aumentados</b>: lo adaptamos a tu organización y a tus desafíos.",
     clientes: "Tiempo Sur, MS Patagonia, SS Servicios, Farmacia La Franco y Siglo 21 ya confían en nosotros.",
     faq: "¿Dudas sobre alcance, tiempos o costos? Poné el mouse sobre una pregunta: la respuesta está <b>acá</b>.",
@@ -738,10 +738,10 @@
     /* 07 · nosotros: dos contenedores negros con "+" (mismo mecanismo que la página anterior) */
     (function who() {
       var PEOPLE = [
-        { tag: "Procesos", name: "Andriy Trofymenko", role: "Ingeniero industrial · Optimización de procesos · Mejora continua",
-          intro: "Especializado en la gestión estratégica de proyectos y la excelencia operativa. Combina rigurosidad técnica y visión integral para transformar procesos, reducir costos y maximizar la productividad, con formación en Industria 4.0.",
-          labelA: "Proyectos", listA: ["Capacitación corporativa", "Planta de polietileno", "Reestructuración de layout", "Optimización clínica", "Herramientas de gestión"],
-          labelB: "Trabajó con", textB: "Medisur · SS Servicios · MS Patagonia · Aeropuertos Argentina" },
+        { tag: "Procesos", name: "Andriy Trofymenko", role: "Ingeniero industrial (UBA) · Procesos, proyectos e inteligencia artificial",
+          intro: "Especialista en optimización de procesos y gestión de proyectos, con formación en Industria 4.0, donde la inteligencia artificial es uno de sus pilares. Hace más de cuatro años integra IA en el trabajo de las organizaciones. Combina análisis, gestión y liderazgo de equipos para ordenar operaciones, convertir los datos en decisiones y lograr resultados que se sostienen.",
+          labelA: "Áreas de especialización", listA: ["Optimización y estandarización de procesos", "Lean, Kaizen y mejora continua", "Gestión de proyectos y control de gestión", "Layout y diseño de plantas", "Inteligencia artificial y automatización aplicadas", "Tableros e indicadores (Power BI, Tableau)", "Simulación de procesos (FlexSim, Arena)"],
+          labelB: "Formación y credenciales", textB: "Ingeniero industrial · Universidad de Buenos Aires (UBA) · Especialización en Industria 4.0 y tecnologías habilitadoras · UNSAM · Formación en Kaizen, gestión por procesos y metodologías ágiles · INTI" },
         { tag: "Personas", name: "Christian Pollavini", role: "Consultor organizacional · Coach ejecutivo de líderes y equipos",
           intro: "Especialista en liderazgo, equipos y performance comercial. Acompaña a organizaciones en el desarrollo de capacidades que fortalecen la toma de decisiones, la comunicación y la ejecución, conectando el desempeño de las personas con los resultados del negocio.",
           labelA: "Áreas de especialización", listA: ["Liderazgo adaptativo y toma de decisiones", "Coaching ejecutivo y de equipos", "PNL, patrones mentales y lingüísticos", "Comunicación, acuerdos y feedback", "Cultura y cohesión organizacional", "Performance comercial, venta consultiva y neuroventas", "Customer centricity y experiencia del cliente"],
