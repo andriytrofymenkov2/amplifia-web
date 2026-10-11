@@ -73,3 +73,5 @@
 .cs-lb { background: rgba(4,5,3,0.78); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); padding: 0; cursor: zoom-out; }
 .cs-lb img { width: min(1100px, 86vw); height: auto; max-height: 80vh; max-width: none; object-fit: contain; border-radius: 14px; border: 1px solid rgba(215,242,74,0.55); box-shadow: 0 30px 90px rgba(0,0,0,0.75), 0 0 40px rgba(215,242,74,0.12); background: #000; transform-origin: 0 0; cursor: zoom-out; will-change: transform; }
 .cs-lb-x { top: 18px; right: 22px; width: 44px; height: 44px; border-radius: 50%; border: 1px solid rgba(215,242,74,0.6); background: rgba(10,10,10,0.8); font-size: 26px; display: grid; place-items: center; }
+/* trabajos con tres bloques: el resultado ocupa todo el ancho, debajo del desafío y de lo que hicimos */
+.cs-text .cs-res { grid-column: 1 / -1; }
