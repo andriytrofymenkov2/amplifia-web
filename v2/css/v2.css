@@ -2160,3 +2160,6 @@ section:not(#hero):not(#manifiesto):not(#que-hacemos) :is(.prob-head .tiny:first
 /* Celular: Ampli queda ya construido (invisible) desde la carga, en vez de aparecer de golpe al pasar la portada:
    así el navegador no tiene que armarlo ni medirlo en pleno scroll */
 @media (max-width: 860px) { .ampli.is-hidden { display: flex !important; opacity: 0; visibility: hidden; pointer-events: none; } }
+/* Panel de trayectoria: el nombre es lo que sobresale (verde); el rótulo y los títulos de bloque en blanco suave */
+.wd-tag, .wd-block em { color: rgba(239,236,229,0.62); }
+.wd-body h3 { color: var(--lime); }
