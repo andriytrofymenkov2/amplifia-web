@@ -2163,3 +2163,4 @@ section:not(#hero):not(#manifiesto):not(#que-hacemos) :is(.prob-head .tiny:first
 /* Panel de trayectoria: el nombre es lo que sobresale (verde); el rótulo y los títulos de bloque en blanco suave */
 .wd-tag, .wd-block em { color: rgba(239,236,229,0.62); }
 .wd-body h3 { color: var(--lime); }
+.wd-block p { white-space: pre-line; }
