@@ -738,7 +738,7 @@
     /* 07 · nosotros: dos contenedores negros con "+" (mismo mecanismo que la página anterior) */
     (function who() {
       var PEOPLE = [
-        { tag: "Procesos", name: "Andriy Trofymenko", role: "Ingeniero industrial (UBA) · Procesos, proyectos e inteligencia artificial",
+        { tag: "Procesos", name: "Andriy Trofymenko", role: "Ingeniero industrial · Procesos, proyectos e inteligencia artificial",
           intro: "Especialista en optimización de procesos y gestión de proyectos, con formación en Industria 4.0, donde la inteligencia artificial es uno de sus pilares. Hace más de cuatro años integra IA en el trabajo de las organizaciones. Combina análisis, gestión y liderazgo de equipos para ordenar operaciones, convertir los datos en decisiones y lograr resultados que se sostienen.",
           labelA: "Áreas de especialización", listA: ["Optimización y estandarización de procesos", "Lean, Kaizen y mejora continua", "Gestión de proyectos y control de gestión", "Layout y diseño de plantas", "Inteligencia artificial y automatización aplicadas", "Tableros e indicadores (Power BI, Tableau)", "Simulación de procesos (FlexSim, Arena)"],
           labelB: "Formación y credenciales", textB: "Ingeniero industrial · Universidad de Buenos Aires (UBA)\nDiploma universitario en Industria 4.0 y sus tecnologías habilitadoras, con la inteligencia artificial como uno de sus pilares · INCALIN (UNSAM–INTI)\nFormación en Kaizen, gestión por procesos y metodologías ágiles · INTI" },
