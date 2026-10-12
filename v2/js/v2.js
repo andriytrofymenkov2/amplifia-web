@@ -1164,9 +1164,17 @@
     var bar = its[cur].querySelector(".gx-bar");
     bar.style.animation = "none"; void bar.offsetWidth; bar.style.animation = "";
   };
+  /* celular: los trabajos se deslizan de costado bajo el medidor fijo; el trabajo activo se centra en la franja */
+  var track = gx.querySelector(".gx-list"), mq = window.matchMedia("(max-width: 860px)");
+  var scrollTrack = function (i) {
+    if (!mq.matches) return;
+    var it = its[i], off = it.getBoundingClientRect().left - track.getBoundingClientRect().left + track.scrollLeft;
+    track.scrollTo({ left: off - (track.clientWidth - it.offsetWidth) / 2, behavior: reduce ? "auto" : "smooth" });
+  };
   var show = function (i) {
     cur = i;
     var d = its[i].dataset, txt = d.mode === "txt";
+    scrollTrack(i);
     /* trabajos con número: la aguja va de "antes" a "después" y el número se cuenta.
        trabajos de personas y ventas: la aguja hace el mismo recorrido y la lectura muestra el cambio en una palabra */
     var a = txt ? +d.a : +d.from, b = txt ? +d.b : +d.to, m = txt ? 1 : +d.max;
@@ -1200,6 +1208,20 @@
     /* PC: pasar el mouse por un trabajo lo mide; mientras el mouse está en la lista, la rotación espera */
     btn.addEventListener("pointerenter", function (e) { if (e.pointerType === "mouse" && j !== cur) show(j); });
   });
+  /* celular: al deslizar la franja, el trabajo que queda en el centro pasa a ser el activo (y el medidor cambia con él) */
+  var sT = 0;
+  track.addEventListener("scroll", function () {
+    if (!mq.matches) return;
+    clearTimeout(sT);
+    sT = setTimeout(function () {
+      var best = cur, dist = 1e9, c = track.scrollLeft + track.clientWidth / 2;
+      its.forEach(function (it, j) {
+        var mid = it.getBoundingClientRect().left - track.getBoundingClientRect().left + track.scrollLeft + it.offsetWidth / 2;
+        if (Math.abs(mid - c) < dist) { dist = Math.abs(mid - c); best = j; }
+      });
+      if (best !== cur) { show(best); arm(); }
+    }, 140);
+  }, { passive: true });
   var list = gx.querySelector(".gx-list");
   list.addEventListener("pointerenter", function (e) { if (e.pointerType !== "mouse") return; hold = true; gx.classList.add("is-hold"); arm(); });
   list.addEventListener("pointerleave", function (e) { if (e.pointerType !== "mouse") return; hold = false; gx.classList.remove("is-hold"); restartBar(); arm(); });

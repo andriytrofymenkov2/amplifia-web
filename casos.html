@@ -192,27 +192,30 @@
   /* lupa: la imagen crece desde su lugar hasta un tamaño cómodo (no pantalla completa) y vuelve a achicarse al cerrar */
   var lb = document.getElementById("csLb"), lbImg = lb.querySelector("img"), lbSrc = null, lbBusy = false;
   var calm = matchMedia("(prefers-reduced-motion: reduce)").matches;
-  function rectDelta(from, to) { return "translate(" + (from.left - to.left) + "px," + (from.top - to.top) + "px) scale(" + (from.width / to.width) + "," + (from.height / to.height) + ")"; }
+  /* la lupa solo fundea y agranda un poco desde el centro: sin estirar la imagen desde su recuadro (eso se veía feo) */
   function lbOpen(im) {
     if (lbBusy) return; lbBusy = true; lbSrc = im;
     lbImg.src = im.src; lbImg.alt = im.alt;
-    /* la versión en resolución completa (2752 px) se carga recién al ampliar y reemplaza a la miniatura apenas llega */
+    /* la versión grande se decodifica antes de mostrarse: el cambio de miniatura a grande no traba ni parpadea */
     var full = im.getAttribute("data-full");
-    if (full) { var hi = new Image(); hi.decoding = "async"; hi.onload = function () { if (!lb.hidden && lbSrc === im) lbImg.src = full; }; hi.src = full; }
+    if (full) {
+      var hi = new Image(); hi.decoding = "async"; hi.src = full;
+      (hi.decode ? hi.decode() : new Promise(function (r, j) { hi.onload = r; hi.onerror = j; })).then(function () {
+        if (!lb.hidden && lbSrc === im) lbImg.src = full;
+      }).catch(function () {});
+    }
     lb.hidden = false; document.body.style.overflow = "hidden";
-    var to = lbImg.getBoundingClientRect(), from = im.getBoundingClientRect();
-    im.style.visibility = "hidden";
-    var d = calm ? 1 : 520;
+    var d = calm ? 1 : 360;
     lb.animate([{ opacity: 0 }, { opacity: 1 }], { duration: d * 0.8, easing: "ease-out", fill: "both" });
-    lbImg.animate([{ transform: rectDelta(from, to), borderRadius: "18px" }, { transform: "none", borderRadius: "14px" }], { duration: d, easing: "cubic-bezier(0.2, 0.8, 0.2, 1)", fill: "both" }).onfinish = function () { lbBusy = false; };
+    lbImg.animate([{ opacity: 0, transform: "scale(0.94)" }, { opacity: 1, transform: "none" }], { duration: d, easing: "cubic-bezier(0.2, 0.8, 0.2, 1)", fill: "both" }).onfinish = function () { lbBusy = false; };
     lb.querySelector(".cs-lb-x").focus({ preventScroll: true });
   }
   function lbClose() {
     if (lbBusy || lb.hidden) return; lbBusy = true;
-    var from = lbImg.getBoundingClientRect(), to = lbSrc.getBoundingClientRect(), d = calm ? 1 : 420;
+    var d = calm ? 1 : 240;
     lb.animate([{ opacity: 1 }, { opacity: 0 }], { duration: d, easing: "ease-in", fill: "both" });
-    lbImg.animate([{ transform: "none" }, { transform: rectDelta(to, from), borderRadius: "18px" }], { duration: d, easing: "cubic-bezier(0.5, 0, 0.3, 1)", fill: "both" }).onfinish = function () {
-      lb.hidden = true; document.body.style.overflow = ""; lbSrc.style.visibility = ""; lbBusy = false;
+    lbImg.animate([{ opacity: 1, transform: "none" }, { opacity: 0, transform: "scale(0.94)" }], { duration: d, easing: "ease-in", fill: "both" }).onfinish = function () {
+      lb.hidden = true; document.body.style.overflow = ""; lbBusy = false;
       lb.getAnimations().forEach(function (a) { a.cancel(); }); lbImg.getAnimations().forEach(function (a) { a.cancel(); });
     };
   }
