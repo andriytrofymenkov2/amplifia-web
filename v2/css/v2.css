@@ -2233,3 +2233,5 @@ section:not(#hero):not(#manifiesto):not(#que-hacemos) :is(.prob-head .tiny:first
 }
 /* Trabajos (portada): contenedor de la sección interactiva, a todo el ancho de la pantalla */
 #saHost { display: block; margin: 0 calc(var(--pad) * -1); min-width: 0; }
+/* Trabajos (portada): contenedor de la sección interactiva, a todo el ancho de la pantalla */
+#saHost { display: block; margin: 0 calc(var(--pad) * -1); min-width: 0; }
