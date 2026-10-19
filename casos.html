@@ -3,14 +3,14 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Trabajos realizados — Grupo Amplifia</title>
+<title>Lo que construimos — Grupo Amplifia</title>
 <link rel="icon" href="v2/icons/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="v2/icons/favicon-32.png" sizes="32x32" type="image/png">
 <link rel="apple-touch-icon" href="v2/icons/apple-touch-icon.png">
 <meta name="description" content="Trabajos realizados por Grupo Amplifia: resultados reales en procesos, personas y ventas, sistemas a medida, agentes de inteligencia artificial y sitios web que potencian tu negocio.">
 <meta name="theme-color" content="#070707">
 <link rel="canonical" href="https://www.grupoamplifia.com/casos.html">
-<meta property="og:type" content="website"><meta property="og:site_name" content="Grupo Amplifia"><meta property="og:locale" content="es_AR"><meta property="og:url" content="https://www.grupoamplifia.com/casos.html"><meta property="og:title" content="Trabajos realizados — Grupo Amplifia"><meta property="og:description" content="Resultados reales, sistemas a medida y páginas que potencian tu negocio."><meta property="og:image" content="https://www.grupoamplifia.com/v2/og/amplifia-og.jpg">
+<meta property="og:type" content="website"><meta property="og:site_name" content="Grupo Amplifia"><meta property="og:locale" content="es_AR"><meta property="og:url" content="https://www.grupoamplifia.com/casos.html"><meta property="og:title" content="Lo que construimos — Grupo Amplifia"><meta property="og:description" content="Resultados reales, sistemas a medida y páginas que potencian tu negocio."><meta property="og:image" content="https://www.grupoamplifia.com/v2/og/amplifia-og.jpg">
 <style>
 @font-face{font-family:"IS";font-style:normal;src:url("v2/fonts/instrument-serif.woff2") format("woff2")}
 @font-face{font-family:"IS";font-style:italic;src:url("v2/fonts/instrument-serif-italic.woff2") format("woff2")}
@@ -393,7 +393,7 @@ function detalle(){
   ["Sistemas a medida","Plataformas que ya funcionan",PLAT.map(function(p){return {id:p.id,n:p.n,g:p.g.split(" · ")[1]}})],
   ["Presencia que vende","Páginas aumentadas que potencian tu negocio",WEBS.map(function(p){return {id:p.id,n:p.n,g:p.g.split(" · ")[1]}})]];
  function item(id,g,n,lead,rows,dvHtml){return '<article class="dt-it" id="'+id+'" data-n="'+n+'"><div class="dt-tx">'+(g?'<div class="dt-g">'+g+'</div>':'')+'<h3 class="dt-n">'+n+'</h3>'+(lead?'<p class="dt-lead">'+lead+'</p>':'')+'<div class="dt-rows">'+rows.map(function(r){return '<p><em>'+r[0]+'</em>'+r[1]+'</p>'}).join("")+'</div><a class="dt-lnk" href="'+WA+'" target="_blank" rel="noopener">Quiero algo así <i>→</i></a></div><div class="dv">'+dvHtml+'</div></article>'}
- var h='<section class="sec dtp" id="catalogo">'+G+'<div class="head"><span class="tiny">Trabajos realizados</span><h2 class="serif">Todo lo que <em>podemos hacer</em> por tu organización.</h2><p>Resultados reales, sistemas a medida y páginas que potencian tu negocio, con el problema que resuelven y qué cambia. Si algo se parece a lo que necesitás, escribinos.</p></div>';
+ var h='<section class="sec dtp" id="catalogo">'+G+'<div class="head"><span class="tiny">Lo que construimos</span><h2 class="serif">Todo lo que <em>podemos hacer</em> por tu organización.</h2><p>Resultados reales, sistemas a medida y páginas que potencian tu negocio, con el problema que resuelven y qué cambia. Si algo se parece a lo que necesitás, escribinos.</p></div>';
  h+='<i id="ixSent" style="display:block;height:1px;margin-top:-1px"></i><div class="ix" id="ix"><div class="dd" id="ixd"><i class="dd-bd"></i><button class="dd-btn" id="ixBtn" type="button" aria-haspopup="listbox" aria-expanded="false"><span class="dd-l">Ir directo a</span><span class="dd-v" id="ixV">Elegí un caso, un sistema o un sitio</span><i class="dd-c"></i></button><div class="dd-menu" id="ixMenu"><div class="dd-sh"><b>Ir directo a</b><button type="button" class="dd-x" aria-label="Cerrar"><i></i></button></div><div class="dd-sw"><input id="ixS" type="search" placeholder="Buscar…" autocomplete="off"></div><div class="ix-list" id="ixL">'+groups.map(function(g){return '<div class="ix-g">'+g[0]+'</div>'+g[2].map(function(x){return '<a href="#'+x.id+'" data-id="'+x.id+'"><b>'+x.n+'</b><span>'+x.g+'</span></a>'}).join("")}).join("")+'</div></div></div></div>';
  h+='<div class="dt-grp"><h3 class="serif">'+groups[0][0]+'</h3><p>'+groups[0][1]+'</p></div>'+TRAB.map(function(t){var v=t.txt?t.v:(t.pre+Math.round(t.to).toLocaleString("es-AR")+t.suf);return item(t.id,"",t.n,"",[["El desafío",t.d],["Qué hicimos",t.h],["Qué cambió",t.r]],dev({k:"trab",v:v,u:t.u,ph:PH[t.id]}))}).join("");
  [[groups[1],PLAT],[groups[2],WEBS]].forEach(function(g){h+='<div class="dt-grp"><h3 class="serif">'+g[0][0]+'</h3><p>'+g[0][1]+'</p></div>'+g[1].map(function(p){return item(p.id,p.g,p.n,p.lead,[["El problema",p.meta[0]],["Qué hicimos",p.meta[1]],["Qué cambia",p.meta[2]]],dev(p))}).join("")});
