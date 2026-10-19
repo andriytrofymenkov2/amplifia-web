@@ -90,7 +90,7 @@ function detalle(){
 html=home();
 app.innerHTML=html;
 /* las dos fotos de cada trabajo se alternan solas dentro de la pantalla */
-setInterval(function(){R.querySelectorAll(".scr.slide").forEach(function(sl){var im=sl.querySelectorAll("img");if(im.length<2)return;var d=sl.querySelectorAll(".sdots i"),k=0;im.forEach(function(e,i){if(e.classList.contains("on"))k=i});var n=(k+1)%im.length;im.forEach(function(e,i){e.classList.toggle("on",i===n)});d.forEach(function(e,i){e.classList.toggle("on",i===n)})})},3800);
+setInterval(function(){if(document.hidden)return;R.querySelectorAll(".scr.slide").forEach(function(sl){var rc=sl.getBoundingClientRect();if(rc.bottom<0||rc.top>innerHeight)return;var im=sl.querySelectorAll("img");if(im.length<2)return;var d=sl.querySelectorAll(".sdots i"),k=0;im.forEach(function(e,i){if(e.classList.contains("on"))k=i});var n=(k+1)%im.length;im.forEach(function(e,i){e.classList.toggle("on",i===n)});d.forEach(function(e,i){e.classList.toggle("on",i===n)})})},3800);
 
 if(VIEW==="detalle"&&R.getElementById("ixd")){
  var ixd=R.getElementById("ixd"),ixBtn=R.getElementById("ixBtn"),ixV=R.getElementById("ixV"),ixS=R.getElementById("ixS"),ixL=R.getElementById("ixL"),ixa=[].slice.call(ixL.querySelectorAll("a")),ixg=[].slice.call(ixL.querySelectorAll(".ix-g"));
