@@ -347,6 +347,9 @@ em{font-style:italic;color:var(--lime)}.serif{font-family:IS,serif;font-weight:4
  .blocks .bbub{top:5px;bottom:5px;left:5px}
  .blocks .blk{padding:12px 6px;white-space:normal;text-align:center;display:flex;align-items:center;justify-content:center;min-height:56px}.blocks .blk b{font-size:13px;line-height:1.15}
  .bdesc{font-size:14px;margin:0 0 18px;min-height:0}
+ .sl-p,.dock{-webkit-mask-image:none!important;mask-image:none!important;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='38' height='38' viewBox='0 0 38 38'%3E%3Ccircle cx='19' cy='19' r='17.5' fill='%230b0b0b' stroke='%23d7f24a'/%3E%3Cpath d='M16 12l7 7-7 7' fill='none' stroke='%23d7f24a' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat right 8px center/34px 34px;animation:arw 1.4s ease-in-out infinite}
+ .sl-p.end,.dock.end{background-image:none;animation:none}
+ @keyframes arw{50%{background-position:right 2px center}}
  .swh{display:none!important}
 }
 
@@ -599,6 +602,7 @@ document.addEventListener("keydown",function(e){if(e.key==="Escape"&&csEl.classL
  var bub=document.querySelector(".bbub"),bdesc=document.getElementById("bdesc"),blkBox=document.querySelector(".blocks");
  function bubPos(){var on=blks.filter(function(e){return e.classList.contains("on")})[0];if(!on)return;bub.style.left=on.offsetLeft+"px";bub.style.width=on.offsetWidth+"px";bdesc.textContent=on.dataset.d;if(blkBox.scrollWidth>blkBox.clientWidth)blkBox.scrollTo({left:on.offsetLeft-blkBox.clientWidth/2+on.offsetWidth/2,behavior:"smooth"})}
  window.addEventListener("resize",bubPos);
+ [].slice.call(document.querySelectorAll(".sl-p,.dock")).forEach(function(el){function u(){el.classList.toggle("end",el.scrollLeft+el.clientWidth>=el.scrollWidth-10)}el.addEventListener("scroll",u,{passive:true});u();if(window.ResizeObserver)new ResizeObserver(u).observe(el)});
  function open(b){var oi=blks.findIndex(function(e){return e.dataset.b===cur}),ni=blks.findIndex(function(e){return e.dataset.b===b});document.querySelector(".stage").style.setProperty("--dir",ni<oi?-1:1);cur=b;blks.forEach(function(e){e.classList.toggle("on",e.dataset.b===b)});bubPos();views.forEach(function(e){e.classList.toggle("on",e.dataset.v===b)});Object.keys(rots).forEach(function(k){rots[k].live(k===b)});if(b==="plat"||b==="web"){var r=rots[b];r.go(r.get())}}
  blks.forEach(function(e){e.addEventListener("click",function(){open(e.dataset.b)})});
  var sec=document.querySelector(".sec"),started=false;new IntersectionObserver(function(es){var on=es[0].isIntersecting;if(on&&!started){started=true;open("trab")}else if(started){Object.keys(rots).forEach(function(k){rots[k].live(on&&k===cur)})}},{threshold:.15}).observe(document.querySelector(".stage"));
