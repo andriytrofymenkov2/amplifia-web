@@ -333,6 +333,21 @@ em{font-style:italic;color:var(--lime)}.serif{font-family:IS,serif;font-weight:4
  .sl-r{margin:18px 0 16px;font-size:15px;max-width:none}.sl .vbtn{width:100%;justify-content:space-between}
 }
 
+/* ===== ronda 4: selector en cápsula de vidrio con burbuja ===== */
+.blocks{position:relative;display:inline-flex;gap:0;margin:0 0 1.2vw;padding:.4vw;border-radius:99px;background:rgba(255,255,255,.06);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);box-shadow:inset 0 1px 0 rgba(255,255,255,.14),0 1.4vw 4vw rgba(0,0,0,.5);grid-template-columns:none}
+.blocks .bbub{position:absolute;top:.4vw;bottom:.4vw;left:.4vw;width:0;border-radius:99px;background:var(--lime);box-shadow:0 0 2vw rgba(215,242,74,.4);transition:left .5s cubic-bezier(.2,.8,.2,1),width .5s cubic-bezier(.2,.8,.2,1)}
+.blocks .blk{position:relative;z-index:1;display:block;min-height:0;padding:1.05vw 2.2vw;border:0;border-radius:99px;background:none;box-shadow:none;-webkit-backdrop-filter:none;backdrop-filter:none;transform:none;overflow:visible;white-space:nowrap;color:rgba(243,239,230,.7);transition:color .4s}
+.blocks .blk::after,.blocks .blk .ic{display:none}
+.blocks .blk b{font:500 1.15vw Inter,system-ui,sans-serif;line-height:1}
+.blocks .blk:hover{color:#fff}.blocks .blk.on{color:#0b0b0b;box-shadow:none}
+.bdesc{margin:0 0 2.6vw;min-height:1.6em;font-size:1vw;color:var(--mute)}
+@media (max-width:860px){
+ .blocks{display:flex!important;width:100%!important;max-width:100%!important;overflow-x:auto;margin:0 0 10px!important;padding:5px!important;gap:0;scrollbar-width:none}.blocks::-webkit-scrollbar{display:none}
+ .blocks .bbub{top:5px;bottom:5px;left:5px}
+ .blocks .blk{flex:none;padding:15px 22px}.blocks .blk b{font-size:15px}
+ .bdesc{font-size:14px;margin:0 0 18px;min-height:0}
+}
+
 
 /* ---- encabezado y WhatsApp de la página ---- */
 .top{position:fixed;left:0;right:0;top:0;z-index:45;display:flex;justify-content:space-between;align-items:center;padding:1.1vw 3vw;background:linear-gradient(#070707 55%,rgba(7,7,7,0))}
@@ -443,7 +458,7 @@ function dial(){var t="";for(var k=0;k<=40;k++){var a=(-225+k*6.75)*Math.PI/180,
 
 function home(){
  var h='<section class="sec">'+G+'<div class="head"><span class="tiny">Lo que construimos</span><h2 class="serif">Soluciones <em>aumentadas</em>.</h2><p>Sistemas, agentes de IA, páginas y procesos: todo lo que hacemos para que tu organización rinda más. Elegí qué querés ver.</p></div>';
- h+='<div class="blocks">'+BLK.map(function(b){return '<button class="blk glass" data-b="'+b[0]+'"><i class="ic">'+ICO[b[0]]+'</i><div><b>'+b[1]+'</b><span>'+b[2]+'</span></div></button>'}).join("")+'</div><div class="swh">Deslizá <i>→</i></div><div class="stage">';
+ h+='<div class="blocks"><i class="bbub"></i>'+BLK.map(function(b){return '<button class="blk" data-b="'+b[0]+'" data-d="'+b[2]+'"><b>'+b[1]+'</b></button>'}).join("")+'</div><p class="bdesc" id="bdesc"></p><div class="swh">Deslizá <i>→</i></div><div class="stage">';
  h+='<div class="view" data-v="trab"><div class="gx" id="gx"><div class="gx-left"><div class="dd" id="dd"><i class="dd-bd"></i><button class="dd-btn" id="ddBtn" type="button" aria-haspopup="listbox" aria-expanded="false"><span class="dd-l">Elegí un caso</span><span class="dd-v" id="ddV"></span><i class="dd-c"></i></button><div class="dd-menu" id="ddMenu" role="listbox"><div class="dd-sh"><b>Elegí un caso</b><button type="button" class="dd-x" aria-label="Cerrar"><i></i></button></div><div class="dd-sw"><input id="ddS" type="search" placeholder="Buscar un caso…" autocomplete="off"></div><ul id="ddU">'+TRAB.map(function(t,i){return '<li role="option" data-i="'+i+'"><b>'+t.n+'</b><span>'+t.g+'</span></li>'}).join("")+'</ul></div></div><div class="dd-card" id="ddCard"></div><i class="dd-bar" id="ddBar"></i><div class="dd-nav"><button type="button" id="ddPrev" aria-label="Anterior">←</button><div class="dots" id="tdots">'+TRAB.map(function(){return '<i></i>'}).join("")+'</div><button type="button" id="ddNext" aria-label="Siguiente">→</button></div></div>'+dial()+'<div class="sl"><div class="sl-p" id="slP">'+TRAB.map(function(t,i){return '<button type="button" data-i="'+i+'">'+t.g.split(" · ")[1]+'</button>'}).join("")+'</div><div class="sl-c" id="slC"></div><p class="sl-r" id="slR"></p><button type="button" class="vbtn" id="slB">Ver el trabajo <i>→</i></button></div></div></div>';
  [["plat",PLAT],["web",WEBS]].forEach(function(g){h+='<div class="view" data-v="'+g[0]+'"><div class="dock" data-g="'+g[0]+'">'+g[1].map(function(p,i){return '<div class="tile glass" data-i="'+i+'">'+(g[0]==="web"?'':'<span>'+p.g.split(" · ")[0]+'</span>')+'<b>'+p.s+'</b></div>'}).join("")+'</div><div class="swh">Deslizá <i>→</i></div><div class="main"><div class="dv" data-g="'+g[0]+'"></div><div class="inf" data-g="'+g[0]+'"></div></div></div>'});
  h+='</div><div class="more"><span>¿Querés ver todos los casos, con el detalle de cada uno?</span><a class="btn" href="'+DETL+'">Ver el catálogo completo <i>→</i></a></div></section>';
@@ -550,7 +565,10 @@ function openCase(id){var f=findCase(id);if(!f)return;csEl.innerHTML=caseHtml(f)
 function closeCase(){csEl.classList.remove("on");document.body.style.overflow="";Object.keys(rots).forEach(function(k){rots[k].hold(false)})}
 document.addEventListener("click",function(e){var o=e.target.closest("[data-open]");if(o){e.preventDefault();openCase(o.dataset.open);return}if(e.target.closest("[data-close]"))closeCase()});
 document.addEventListener("keydown",function(e){if(e.key==="Escape"&&csEl.classList.contains("on"))closeCase()});
- function open(b){cur=b;blks.forEach(function(e){e.classList.toggle("on",e.dataset.b===b)});views.forEach(function(e){e.classList.toggle("on",e.dataset.v===b)});Object.keys(rots).forEach(function(k){rots[k].live(k===b)});if(b==="plat"||b==="web"){var r=rots[b];r.go(r.get())}}
+ var bub=document.querySelector(".bbub"),bdesc=document.getElementById("bdesc"),blkBox=document.querySelector(".blocks");
+ function bubPos(){var on=blks.filter(function(e){return e.classList.contains("on")})[0];if(!on)return;bub.style.left=on.offsetLeft+"px";bub.style.width=on.offsetWidth+"px";bdesc.textContent=on.dataset.d;if(blkBox.scrollWidth>blkBox.clientWidth)blkBox.scrollTo({left:on.offsetLeft-blkBox.clientWidth/2+on.offsetWidth/2,behavior:"smooth"})}
+ window.addEventListener("resize",bubPos);
+ function open(b){cur=b;blks.forEach(function(e){e.classList.toggle("on",e.dataset.b===b)});bubPos();views.forEach(function(e){e.classList.toggle("on",e.dataset.v===b)});Object.keys(rots).forEach(function(k){rots[k].live(k===b)});if(b==="plat"||b==="web"){var r=rots[b];r.go(r.get())}}
  blks.forEach(function(e){e.addEventListener("click",function(){open(e.dataset.b)})});
  var sec=document.querySelector(".sec"),started=false;new IntersectionObserver(function(es){var on=es[0].isIntersecting;if(on&&!started){started=true;open("trab")}else if(started){Object.keys(rots).forEach(function(k){rots[k].live(on&&k===cur)})}},{threshold:.15}).observe(document.querySelector(".stage"));
 }
