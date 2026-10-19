@@ -382,6 +382,27 @@ em{font-style:italic;color:var(--lime)}.serif{font-family:IS,serif;font-weight:4
  .sl-row{grid-template-columns:1fr;gap:18px}.sl-lap{order:1}.sl-side.l{order:2;text-align:left}.sl-side.l .sl-r{max-width:none;font-size:15px;margin:0}.sl-side.r{order:3}.sl-side.r{justify-content:center}.sl-side.r .vbtn{width:auto;justify-content:flex-start;gap:12px}.dock{justify-content:flex-start}
 }
 
+/* ===== ronda 7: fondos con color y foto real; textos centrados ===== */
+.sl-a,.sl-b{overflow:hidden;isolation:isolate}
+.sl-a::before,.sl-b::before{content:"";position:absolute;inset:0;z-index:-2;background:var(--img,none) center/cover no-repeat}
+.sl-a::before{filter:grayscale(1) brightness(.5) contrast(1.05)}
+.sl-b::before{filter:saturate(1.15) brightness(.9)}
+.sl-a::after,.sl-b::after{content:"";position:absolute;inset:0;z-index:-1}
+.sl-a::after{background:linear-gradient(180deg,rgba(8,8,8,.55),rgba(8,8,8,.7))}
+.sl-b::after{background:radial-gradient(ellipse 62% 52% at 50% 52%,rgba(0,0,0,.62) 0,rgba(0,0,0,.28) 70%,rgba(0,0,0,.5) 100%),linear-gradient(180deg,color-mix(in srgb,var(--tint,#2f6bff) 38%,transparent),transparent 65%)}
+.sl-a,.sl-b{background:#0b0b0b}
+.sl-b>*{text-shadow:0 .2cqw 2cqw rgba(0,0,0,.55)}
+.sl-lap .sl-v{text-shadow:0 .3cqw 3cqw rgba(0,0,0,.6)}
+.sl-r{max-width:none;margin:0}.sl-r .mtag{text-align:center}.sl-r .mname{font-size:2.3vw;margin:.5vw 0 .8vw}.sl-r p{font-size:1.05vw;line-height:1.55;color:rgba(243,239,230,.85);max-width:22vw;margin:0 auto}
+.sl-side.l .sl-r{max-width:none;font-size:inherit;margin:0}
+.ph3 .pl{text-align:center}.ph3 .pl .mlead{margin-left:auto;margin-right:auto}
+.ph3 .pr{text-align:center}.ph3 .pr .mlist li{padding-left:0}.ph3 .pr .mlist li::before{display:none}.ph3 .pr .acts{justify-content:center}
+@media (max-width:860px){
+ .sl-r .mname{font-size:9vw;margin:6px 0 10px}.sl-r p{font-size:15px;max-width:none}
+ .sl-side.l{text-align:center}
+ .ph3 .pl{text-align:center}.ph3 .pr .mlist li{padding-left:0;font-size:14px}
+}
+
 
 /* ---- encabezado y WhatsApp de la página ---- */
 .top{position:fixed;left:0;right:0;top:0;z-index:45;display:flex;justify-content:space-between;align-items:center;padding:1.1vw 3vw;background:linear-gradient(#070707 55%,rgba(7,7,7,0))}
@@ -482,8 +503,9 @@ function mock(p){
 }
 function dev(p){return p.k==="phone"?'<div class="pwrap"><div class="dev phone">'+mock(p)+'</div></div>':'<div class="dev lap">'+mock(p)+'</div>'}
 var DETL="#catalogo";
-function detailSplit(p){return '<div class="pl"><div class="mtag">'+p.g+'</div><div class="mname">'+p.n+'</div><p class="mlead">'+p.lead+'</p></div><div class="pr"><ul class="mlist">'+p.l.map(function(x){return '<li>'+x+'</li>'}).join("")+'</ul><div class="acts"><button type="button" class="vbtn" data-open="'+p.id+'">Ver en detalle <i>→</i></button><a class="btn o" href="'+WA+'" target="_blank" rel="noopener">Quiero algo así</a></div></div>'}
-function detail(p){return '<div class="mtag">'+p.g+'</div><div class="mname">'+p.n+'</div><p class="mlead">'+p.lead+'</p><ul class="mlist">'+p.l.map(function(x){return '<li>'+x+'</li>'}).join("")+'</ul><div class="acts"><button type="button" class="vbtn" data-open="'+p.id+'">Ver en detalle <i>→</i></button><a class="btn o" href="'+WA+'" target="_blank" rel="noopener">Quiero algo así</a></div>'}
+function tg(g){return g.replace(/^Presencia · /,"")}
+function detailSplit(p){return '<div class="pl"><div class="mtag">'+tg(p.g)+'</div><div class="mname">'+p.n+'</div><p class="mlead">'+p.lead+'</p></div><div class="pr"><ul class="mlist">'+p.l.map(function(x){return '<li>'+x+'</li>'}).join("")+'</ul><div class="acts"><button type="button" class="vbtn" data-open="'+p.id+'">Ver en detalle <i>→</i></button><a class="btn o" href="'+WA+'" target="_blank" rel="noopener">Quiero algo así</a></div></div>'}
+function detail(p){return '<div class="mtag">'+tg(p.g)+'</div><div class="mname">'+p.n+'</div><p class="mlead">'+p.lead+'</p><ul class="mlist">'+p.l.map(function(x){return '<li>'+x+'</li>'}).join("")+'</ul><div class="acts"><button type="button" class="vbtn" data-open="'+p.id+'">Ver en detalle <i>→</i></button><a class="btn o" href="'+WA+'" target="_blank" rel="noopener">Quiero algo así</a></div>'}
 
 /* ---- armado ---- */
 var app=document.getElementById("app"),html="",G='<i class="glow"></i>';
@@ -493,7 +515,7 @@ function dial(){var t="";for(var k=0;k<=40;k++){var a=(-225+k*6.75)*Math.PI/180,
 function home(){
  var h='<section class="sec">'+G+'<div class="head"><span class="tiny">Lo que construimos</span><h2 class="serif">Soluciones <em>aumentadas</em>.</h2><p>Sistemas, agentes de IA, páginas y procesos: todo lo que hacemos para que tu organización rinda más. Elegí qué querés ver.</p></div>';
  h+='<div class="blocks"><i class="bbub"></i>'+BLK.map(function(b){return '<button class="blk" data-b="'+b[0]+'" data-d="'+b[2]+'"><b>'+b[1]+'</b></button>'}).join("")+'</div><p class="bdesc" id="bdesc"></p><div class="swh">Deslizá <i>→</i></div><div class="stage">';
- h+='<div class="view" data-v="trab"><div class="gx" id="gx"><div class="gx-left"><div class="dd" id="dd"><i class="dd-bd"></i><button class="dd-btn" id="ddBtn" type="button" aria-haspopup="listbox" aria-expanded="false"><span class="dd-l">Elegí un caso</span><span class="dd-v" id="ddV"></span><i class="dd-c"></i></button><div class="dd-menu" id="ddMenu" role="listbox"><div class="dd-sh"><b>Elegí un caso</b><button type="button" class="dd-x" aria-label="Cerrar"><i></i></button></div><div class="dd-sw"><input id="ddS" type="search" placeholder="Buscar un caso…" autocomplete="off"></div><ul id="ddU">'+TRAB.map(function(t,i){return '<li role="option" data-i="'+i+'"><b>'+t.n+'</b><span>'+t.g+'</span></li>'}).join("")+'</ul></div></div><div class="dd-card" id="ddCard"></div><i class="dd-bar" id="ddBar"></i><div class="dd-nav"><button type="button" id="ddPrev" aria-label="Anterior">←</button><div class="dots" id="tdots">'+TRAB.map(function(){return '<i></i>'}).join("")+'</div><button type="button" id="ddNext" aria-label="Siguiente">→</button></div></div>'+dial()+'<div class="sl"><div class="sl-p" id="slP">'+TRAB.map(function(t,i){return '<button type="button" class="tile glass" data-i="'+i+'"><b>'+t.g.split(" · ")[1]+'</b></button>'}).join("")+'</div><div class="sl-row"><div class="sl-side l"><p class="sl-r" id="slR"></p></div><div class="sl-lap"><div class="dev lap"><div class="scr"><div class="sl-c" id="slC"></div></div></div></div><div class="sl-side r"><button type="button" class="vbtn" id="slB">Ver el trabajo <i>→</i></button></div></div></div></div></div>';
+ h+='<div class="view" data-v="trab"><div class="gx" id="gx"><div class="gx-left"><div class="dd" id="dd"><i class="dd-bd"></i><button class="dd-btn" id="ddBtn" type="button" aria-haspopup="listbox" aria-expanded="false"><span class="dd-l">Elegí un caso</span><span class="dd-v" id="ddV"></span><i class="dd-c"></i></button><div class="dd-menu" id="ddMenu" role="listbox"><div class="dd-sh"><b>Elegí un caso</b><button type="button" class="dd-x" aria-label="Cerrar"><i></i></button></div><div class="dd-sw"><input id="ddS" type="search" placeholder="Buscar un caso…" autocomplete="off"></div><ul id="ddU">'+TRAB.map(function(t,i){return '<li role="option" data-i="'+i+'"><b>'+t.n+'</b><span>'+t.g+'</span></li>'}).join("")+'</ul></div></div><div class="dd-card" id="ddCard"></div><i class="dd-bar" id="ddBar"></i><div class="dd-nav"><button type="button" id="ddPrev" aria-label="Anterior">←</button><div class="dots" id="tdots">'+TRAB.map(function(){return '<i></i>'}).join("")+'</div><button type="button" id="ddNext" aria-label="Siguiente">→</button></div></div>'+dial()+'<div class="sl"><div class="sl-p" id="slP">'+TRAB.map(function(t,i){return '<button type="button" class="tile glass" data-i="'+i+'"><b>'+t.g.split(" · ")[1]+'</b></button>'}).join("")+'</div><div class="sl-row"><div class="sl-side l"><div class="sl-r" id="slR"></div></div><div class="sl-lap"><div class="dev lap"><div class="scr"><div class="sl-c" id="slC"></div></div></div></div><div class="sl-side r"><button type="button" class="vbtn" id="slB">Ver el trabajo <i>→</i></button></div></div></div></div></div>';
  [["plat",PLAT],["web",WEBS]].forEach(function(g){h+='<div class="view" data-v="'+g[0]+'"><div class="dock" data-g="'+g[0]+'">'+g[1].map(function(p,i){return '<div class="tile glass" data-i="'+i+'">'+(g[0]==="web"?'':'<span>'+p.g.split(" · ")[0]+'</span>')+'<b>'+p.s+'</b></div>'}).join("")+'</div><div class="swh">Deslizá <i>→</i></div><div class="main"><div class="dv" data-g="'+g[0]+'"></div><div class="inf" data-g="'+g[0]+'"></div></div></div>'});
  h+='</div></section>';
  return h;
@@ -543,9 +565,10 @@ if(document.getElementById("dd")){
  var tdots=[].slice.call(document.querySelectorAll('#tdots i')),ddEl=document.getElementById("dd"),ddBtn=document.getElementById("ddBtn"),ddV=document.getElementById("ddV"),ddCard=document.getElementById("ddCard"),ddBar=document.getElementById("ddBar"),ddS=document.getElementById("ddS"),lis=[].slice.call(document.querySelectorAll("#ddU li")),gx=document.getElementById("gx");
  var slP=document.getElementById("slP"),slC=document.getElementById("slC"),slR=document.getElementById("slR"),slB=document.getElementById("slB"),slHint=false;
  var ANT=["Prestación técnica","Más espera, menos pacientes","Venta sin apoyo de IA","760 m²","Defender el precio","Plástico reciclado"];
+ var SLC={"t-cc":"#2f6bff","t-endo":"#12b8a6","t-costa":"#ff6a3d","t-nave":"#f2a516","t-precio":"#8b5cf6","t-poli":"#ec4899"},SLI={"t-cc":PH["t-cc"][0],"t-costa":PH["t-costa"][1],"t-precio":PH["t-precio"][0],"t-nave":PH["t-nave"][0]};
  function slShow(i){var t=TRAB[i],v=t.txt?t.v:t.pre+t.to.toLocaleString("es-AR")+t.suf;[].slice.call(slP.children).forEach(function(e,j){e.classList.toggle("on",j===i)});
   var on=slP.children[i];if(on&&slP.scrollWidth>slP.clientWidth)slP.scrollTo({left:on.offsetLeft-slP.clientWidth/2+on.offsetWidth/2,behavior:"smooth"});
-  slC.innerHTML='<div class="sl-b"><span class="sl-l">Ahora</span><div class="sl-v'+(t.txt?' t':'')+'">'+v+'</div><div class="sl-u">'+t.u+'</div></div><div class="sl-a"><span class="sl-l">Antes</span><div class="sl-ant">'+ANT[i]+'</div></div><i class="sl-h"></i>';slT=t;setX(6);if(slHint)sweep();slR.textContent=t.r;slB.setAttribute("data-open",t.id)}
+  slC.innerHTML='<div class="sl-b"><span class="sl-l">Ahora</span><div class="sl-v'+(t.txt?' t':'')+'">'+v+'</div><div class="sl-u">'+t.u+'</div></div><div class="sl-a"><span class="sl-l">Antes</span><div class="sl-ant">'+ANT[i]+'</div></div><i class="sl-h"></i>';slT=t;var tc=SLC[t.id]||"#2f6bff";slC.style.setProperty("--tint",tc);slC.style.setProperty("--img",SLI[t.id]?'url("'+SLI[t.id]+'")':"linear-gradient(135deg,"+tc+" -20%,#0b0b0b 85%)");setX(6);if(slHint)sweep();slR.innerHTML='<div class="mtag">'+t.g+'</div><div class="mname">'+t.n+'</div><p>'+t.r+'</p>';slB.setAttribute("data-open",t.id)}
  var slX=6,slV=0,slRaf=0,slT=null,slSw=false;
  function setX(x){slX=x;slC.style.setProperty("--x",x+"%");slC.style.setProperty("--xc",(x<=6?0:x>93?100:x)+"%");var el=slC.querySelector(".sl-v");if(false){var q=Math.max(0,Math.min(1,(x-6)/76));el.textContent=slT.pre+Math.round(slT.from+(slT.to-slT.from)*q).toLocaleString("es-AR")+slT.suf}}
  function slStop(){cancelAnimationFrame(slRaf)}
@@ -592,7 +615,7 @@ function caseHtml(f){var it=f.it,isT=f.kind==="t",val=isT?(it.txt?it.v:it.pre+Ma
  var vis=(isT?dev({k:"trab",v:val,u:it.u,ph:ph}):dev(it));
  var pv=f.list[(f.idx+f.list.length-1)%f.list.length],nx=f.list[(f.idx+1)%f.list.length];
  var isP=!isT&&it.k==="phone";
- var A=(isT?'':'<div class="cs-g">'+it.g+'</div>')+'<h2 class="cs-t">'+it.n+'</h2>'+(it.lead?'<p class="cs-lead">'+it.lead+'</p>':'')+'<div class="cs-lab">'+(isT?"El resultado":"Qué cambia")+'</div><p class="cs-res">'+res+'</p>';
+ var A=(isT?'':'<div class="cs-g">'+tg(it.g)+'</div>')+'<h2 class="cs-t">'+it.n+'</h2>'+(it.lead?'<p class="cs-lead">'+it.lead+'</p>':'')+'<div class="cs-lab">'+(isT?"El resultado":"Qué cambia")+'</div><p class="cs-res">'+res+'</p>';
  var B='<div class="cs-two">'+rows.map(function(r){return '<div><em>'+r[0]+'</em><p>'+r[1]+'</p></div>'}).join("")+'</div><div class="cs-cta"><a class="vbtn" href="'+WA+'" target="_blank" rel="noopener">Quiero algo así <i>→</i></a><button type="button" class="ghost" data-close>Seguir viendo</button></div><div class="cs-nav"><button type="button" data-open="'+pv.id+'"><small>Anterior</small>'+pv.n+'</button><button type="button" data-open="'+nx.id+'"><small>Siguiente</small>'+nx.n+'</button></div>';
  return '<button type="button" class="cs-x" data-close aria-label="Cerrar"><i></i></button>'+(isP?'<div class="cs-in ph3"><div class="cs-tx a">'+A+'</div><div class="cs-vis">'+vis+'</div><div class="cs-tx b">'+B+'</div></div>':'<div class="cs-in"><div class="cs-vis">'+vis+'</div><div class="cs-tx">'+A+B+'</div></div>')}
 function openCase(id){var f=findCase(id);if(!f)return;csEl.innerHTML=caseHtml(f);csEl.scrollTop=0;csEl.classList.add("on");document.body.style.overflow="hidden";Object.keys(rots).forEach(function(k){rots[k].hold(true)})}
