@@ -354,6 +354,30 @@ em{font-style:italic;color:var(--lime)}.serif{font-family:IS,serif;font-weight:4
 .blocks::before{content:"";position:absolute;inset:0;border-radius:99px;padding:1.5px;pointer-events:none;background:linear-gradient(100deg,transparent 30%,rgba(215,242,74,.95) 50%,transparent 70%) 0 0/250% 100%;-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask:linear-gradient(#000 0 0) content-box exclude,linear-gradient(#000 0 0);animation:rim 4.5s linear infinite}
 @keyframes rim{from{background-position:130% 0}to{background-position:-30% 0}}
 @media (prefers-reduced-motion:reduce){.blocks::before{animation:none}.view.on{animation:none}}
+/* ===== ronda 6: todo centrado + deslizador dentro de una notebook ===== */
+.head{text-align:center}.head p{margin-left:auto;margin-right:auto}
+.blocks{display:flex;width:max-content;max-width:100%;margin-left:auto;margin-right:auto}
+.bdesc{text-align:center}
+.dock{justify-content:center}
+.sl{display:flex;flex-direction:column;align-items:center}
+.sl-p{justify-content:center}
+.sl-lap{width:46vw;max-width:100%;margin:0 auto}
+.sl-lap .lap{width:100%}
+.sl-lap .scr{background:#0b0c0a}
+.sl-lap .sl-c{position:absolute;inset:0;height:auto;border:0;border-radius:0}
+.sl-lap .sl-ant{font-size:6.4cqw}.sl-lap .sl-v{font-size:12.5cqw;text-shadow:0 0 5cqw rgba(215,242,74,.3)}.sl-lap .sl-v.t{font-size:9.4cqw}
+.sl-lap .sl-l{font-size:1.5cqw;margin-bottom:1.2cqw}.sl-lap .sl-u{font-size:1.5cqw;margin-top:1.6cqw}
+.sl-lap .sl-h{box-shadow:0 0 3cqw var(--lime),-6cqw 0 8cqw rgba(215,242,74,.28)}.sl-lap .sl-h::after{width:6cqw;height:6cqw;margin:-3cqw;font-size:2.6cqw}
+.sl{width:100%}.sl-row{display:grid;grid-template-columns:minmax(0,1fr) 46vw minmax(0,1fr);gap:3vw;align-items:center;width:100%}
+.sl-side.l{text-align:right}.sl-side.l .sl-r{margin:0 0 0 auto;max-width:22vw;font-size:1.05vw}.sl-side.r{display:flex;justify-content:flex-start}
+@media (max-width:860px){
+ .sl-lap{width:92%}
+ .sl-lap .sl-l,.sl-lap .sl-u{font-size:3cqw}.sl-lap .sl-l{margin-bottom:2cqw}.sl-lap .sl-u{margin-top:2.4cqw}
+ .sl-lap .sl-ant{font-size:9cqw}.sl-lap .sl-v{font-size:17cqw}.sl-lap .sl-v.t{font-size:12.5cqw}
+ .sl-lap .sl-h::after{width:11cqw;height:11cqw;margin:-5.5cqw;font-size:5cqw}
+ .sl-row{grid-template-columns:1fr;gap:18px}.sl-lap{order:1}.sl-side.l{order:2;text-align:left}.sl-side.l .sl-r{max-width:none;font-size:15px;margin:0}.sl-side.r{order:3}.sl-side.r .vbtn{width:100%;justify-content:space-between}.dock{justify-content:flex-start}
+}
+
 
 /* ---- encabezado y WhatsApp de la página ---- */
 .top{position:fixed;left:0;right:0;top:0;z-index:45;display:flex;justify-content:space-between;align-items:center;padding:1.1vw 3vw;background:linear-gradient(#070707 55%,rgba(7,7,7,0))}
@@ -465,7 +489,7 @@ function dial(){var t="";for(var k=0;k<=40;k++){var a=(-225+k*6.75)*Math.PI/180,
 function home(){
  var h='<section class="sec">'+G+'<div class="head"><span class="tiny">Lo que construimos</span><h2 class="serif">Soluciones <em>aumentadas</em>.</h2><p>Sistemas, agentes de IA, páginas y procesos: todo lo que hacemos para que tu organización rinda más. Elegí qué querés ver.</p></div>';
  h+='<div class="blocks"><i class="bbub"></i>'+BLK.map(function(b){return '<button class="blk" data-b="'+b[0]+'" data-d="'+b[2]+'"><b>'+b[1]+'</b></button>'}).join("")+'</div><p class="bdesc" id="bdesc"></p><div class="swh">Deslizá <i>→</i></div><div class="stage">';
- h+='<div class="view" data-v="trab"><div class="gx" id="gx"><div class="gx-left"><div class="dd" id="dd"><i class="dd-bd"></i><button class="dd-btn" id="ddBtn" type="button" aria-haspopup="listbox" aria-expanded="false"><span class="dd-l">Elegí un caso</span><span class="dd-v" id="ddV"></span><i class="dd-c"></i></button><div class="dd-menu" id="ddMenu" role="listbox"><div class="dd-sh"><b>Elegí un caso</b><button type="button" class="dd-x" aria-label="Cerrar"><i></i></button></div><div class="dd-sw"><input id="ddS" type="search" placeholder="Buscar un caso…" autocomplete="off"></div><ul id="ddU">'+TRAB.map(function(t,i){return '<li role="option" data-i="'+i+'"><b>'+t.n+'</b><span>'+t.g+'</span></li>'}).join("")+'</ul></div></div><div class="dd-card" id="ddCard"></div><i class="dd-bar" id="ddBar"></i><div class="dd-nav"><button type="button" id="ddPrev" aria-label="Anterior">←</button><div class="dots" id="tdots">'+TRAB.map(function(){return '<i></i>'}).join("")+'</div><button type="button" id="ddNext" aria-label="Siguiente">→</button></div></div>'+dial()+'<div class="sl"><div class="sl-p" id="slP">'+TRAB.map(function(t,i){return '<button type="button" data-i="'+i+'">'+t.g.split(" · ")[1]+'</button>'}).join("")+'</div><div class="sl-c" id="slC"></div><p class="sl-r" id="slR"></p><button type="button" class="vbtn" id="slB">Ver el trabajo <i>→</i></button></div></div></div>';
+ h+='<div class="view" data-v="trab"><div class="gx" id="gx"><div class="gx-left"><div class="dd" id="dd"><i class="dd-bd"></i><button class="dd-btn" id="ddBtn" type="button" aria-haspopup="listbox" aria-expanded="false"><span class="dd-l">Elegí un caso</span><span class="dd-v" id="ddV"></span><i class="dd-c"></i></button><div class="dd-menu" id="ddMenu" role="listbox"><div class="dd-sh"><b>Elegí un caso</b><button type="button" class="dd-x" aria-label="Cerrar"><i></i></button></div><div class="dd-sw"><input id="ddS" type="search" placeholder="Buscar un caso…" autocomplete="off"></div><ul id="ddU">'+TRAB.map(function(t,i){return '<li role="option" data-i="'+i+'"><b>'+t.n+'</b><span>'+t.g+'</span></li>'}).join("")+'</ul></div></div><div class="dd-card" id="ddCard"></div><i class="dd-bar" id="ddBar"></i><div class="dd-nav"><button type="button" id="ddPrev" aria-label="Anterior">←</button><div class="dots" id="tdots">'+TRAB.map(function(){return '<i></i>'}).join("")+'</div><button type="button" id="ddNext" aria-label="Siguiente">→</button></div></div>'+dial()+'<div class="sl"><div class="sl-p" id="slP">'+TRAB.map(function(t,i){return '<button type="button" data-i="'+i+'">'+t.g.split(" · ")[1]+'</button>'}).join("")+'</div><div class="sl-row"><div class="sl-side l"><p class="sl-r" id="slR"></p></div><div class="sl-lap"><div class="dev lap"><div class="scr"><div class="sl-c" id="slC"></div></div></div></div><div class="sl-side r"><button type="button" class="vbtn" id="slB">Ver el trabajo <i>→</i></button></div></div></div></div></div>';
  [["plat",PLAT],["web",WEBS]].forEach(function(g){h+='<div class="view" data-v="'+g[0]+'"><div class="dock" data-g="'+g[0]+'">'+g[1].map(function(p,i){return '<div class="tile glass" data-i="'+i+'">'+(g[0]==="web"?'':'<span>'+p.g.split(" · ")[0]+'</span>')+'<b>'+p.s+'</b></div>'}).join("")+'</div><div class="swh">Deslizá <i>→</i></div><div class="main"><div class="dv" data-g="'+g[0]+'"></div><div class="inf" data-g="'+g[0]+'"></div></div></div>'});
  h+='</div><div class="more"><span>¿Querés ver todos los casos, con el detalle de cada uno?</span><a class="btn" href="'+DETL+'">Ver el catálogo completo <i>→</i></a></div></section>';
  return h;
