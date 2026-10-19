@@ -545,7 +545,7 @@ if(document.getElementById("dd")){
  var ANT=["Prestación técnica","Más espera, menos pacientes","Venta sin apoyo de IA","760 m²","Defender el precio","Plástico reciclado"];
  function slShow(i){var t=TRAB[i],v=t.txt?t.v:t.pre+t.to.toLocaleString("es-AR")+t.suf;[].slice.call(slP.children).forEach(function(e,j){e.classList.toggle("on",j===i)});
   var on=slP.children[i];if(on&&slP.scrollWidth>slP.clientWidth)slP.scrollTo({left:on.offsetLeft-slP.clientWidth/2+on.offsetWidth/2,behavior:"smooth"});
-  slC.innerHTML='<div class="sl-b"><span class="sl-l">Ahora</span><div class="sl-v'+(t.txt?' t':'')+'">'+v+'</div><div class="sl-u">'+t.u+'</div></div><div class="sl-a"><span class="sl-l">Antes</span><div class="sl-ant">'+ANT[i]+'</div></div><i class="sl-h"></i>';slT=t;setX(6);if(slHint)sweep();slR.textContent=t.r;slB.setAttribute("data-open",t.id)}
+  slC.innerHTML='<div class="sl-b"><span class="sl-l">Ahora</span><div class="sl-v'+(t.txt?' t':'')+'">'+v+'</div><div class="sl-u">'+t.u+'</div></div><div class="sl-a"><span class="sl-l">Antes</span><div class="sl-ant">'+ANT[i]+'</div></div><i class="sl-h"></i>';slT=t;setX(6);slR.textContent=t.r;slB.setAttribute("data-open",t.id)}
  var slX=6,slV=0,slRaf=0,slT=null,slSw=false;
  function setX(x){slX=x;slC.style.setProperty("--x",x+"%");slC.style.setProperty("--xc",(x<=6?0:x>93?100:x)+"%");var el=slC.querySelector(".sl-v");if(false){var q=Math.max(0,Math.min(1,(x-6)/76));el.textContent=slT.pre+Math.round(slT.from+(slT.to-slT.from)*q).toLocaleString("es-AR")+slT.suf}}
  function slStop(){cancelAnimationFrame(slRaf)}
@@ -554,7 +554,7 @@ if(document.getElementById("dd")){
  (function(){var dr=false,lx=0,lt=0;function mv(e){var r=slC.getBoundingClientRect(),x=Math.max(2,Math.min(98,(e.clientX-r.left)/r.width*100)),now=performance.now();if(lt){var dt=Math.max(1,now-lt);slV=slV*.5+((x-lx)/dt)*.5}lx=x;lt=now;setX(x)}
   slC.addEventListener("pointerdown",function(e){if(!(e.target.classList&&e.target.classList.contains("sl-h")))return;slStop();dr=true;slV=0;lt=0;try{slC.setPointerCapture(e.pointerId)}catch(x){}mv(e)});slC.addEventListener("pointermove",function(e){if(dr)mv(e)});
   function up(){if(!dr)return;dr=false;if(Math.abs(slV)>.01)glide()}slC.addEventListener("pointerup",up);slC.addEventListener("pointercancel",up);
-  new IntersectionObserver(function(es,o){if(es[0].isIntersecting&&!slHint){slHint=true;o.disconnect();sweep()}},{threshold:.6}).observe(slC)})();
+  new IntersectionObserver(function(es,o){if(es[0].isIntersecting&&!slHint){slHint=true;o.disconnect()}},{threshold:.6}).observe(slC)})();
  function showT(i){var t=TRAB[i];slShow(i);tdots.forEach(function(e,j){e.classList.toggle('on',j===i)});lis.forEach(function(e,j){e.classList.toggle("on",j===i)});ddV.textContent=t.n;
   ddCard.innerHTML='<p>'+t.r+'</p><button type="button" class="vbtn" data-open="'+t.id+'">Ver el trabajo <i>→</i></button>';ddCard.classList.remove("in");void ddCard.offsetWidth;ddCard.classList.add("in");
   var dR=document.getElementById("ddR");if(dR){dR.innerHTML='<div><em>El desafío</em><p>'+t.d+'</p></div><div><em>Lo que hicimos</em><p>'+t.h+'</p></div>';dR.classList.remove("in");void dR.offsetWidth;dR.classList.add("in")}
