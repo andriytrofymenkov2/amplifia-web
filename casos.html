@@ -314,7 +314,7 @@ em{font-style:italic;color:var(--lime)}.serif{font-family:IS,serif;font-weight:4
 /* ===== ronda 3: deslizador antes / ahora ===== */
 .gx{display:block}.gx-left,.dial,.gx-r{display:none!important}
 .sl{max-width:none}
-.sl-p{display:flex;gap:.9vw;flex-wrap:wrap;margin-bottom:2.2vw}.sl-p .tile{text-align:left;color:var(--paper)}.sl-p .tile.on::after{animation:none;transform:none}.sl-p .tile:not(.on) b{color:rgba(243,239,230,.7)}
+.sl-p{display:flex;gap:.9vw;flex-wrap:wrap;margin-bottom:2.2vw}.sl-p .tile{text-align:center;color:var(--paper)}.sl-p .tile.on::after{animation:none;transform:none}.sl-p .tile:not(.on) b{color:rgba(243,239,230,.7)}
 .sl-c{position:relative;height:22vw;border-radius:1.4vw;overflow:hidden;border:1px solid var(--line);touch-action:pan-y;user-select:none;-webkit-user-select:none}
 .sl-a,.sl-b{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:0 6%}
 .sl-a{background:radial-gradient(circle at 50% 50%,#171717,#0d0d0d 75%);clip-path:inset(0 calc(100% - var(--xc,0%)) 0 0)}
@@ -403,6 +403,7 @@ em{font-style:italic;color:var(--lime)}.serif{font-family:IS,serif;font-weight:4
  .ph3 .pl{text-align:center}.ph3 .pr .mlist li{padding-left:0;font-size:14px}
 }
 
+.tile,.dock .tile,.sl-p .tile{text-align:center}.tile span,.tile b{text-align:center}
 
 /* ---- encabezado y WhatsApp de la página ---- */
 .top{position:fixed;left:0;right:0;top:0;z-index:45;display:flex;justify-content:space-between;align-items:center;padding:1.1vw 3vw;background:linear-gradient(#070707 55%,rgba(7,7,7,0))}
@@ -620,6 +621,8 @@ function caseHtml(f){var it=f.it,isT=f.kind==="t",val=isT?(it.txt?it.v:it.pre+Ma
  return '<button type="button" class="cs-x" data-close aria-label="Cerrar"><i></i></button>'+(isP?'<div class="cs-in ph3"><div class="cs-tx a">'+A+'</div><div class="cs-vis">'+vis+'</div><div class="cs-tx b">'+B+'</div></div>':'<div class="cs-in"><div class="cs-vis">'+vis+'</div><div class="cs-tx">'+A+B+'</div></div>')}
 function openCase(id){var f=findCase(id);if(!f)return;csEl.innerHTML=caseHtml(f);csEl.scrollTop=0;csEl.classList.add("on");document.body.style.overflow="hidden";Object.keys(rots).forEach(function(k){rots[k].hold(true)})}
 function closeCase(){csEl.classList.remove("on");document.body.style.overflow="";Object.keys(rots).forEach(function(k){rots[k].hold(false)})}
+window.addEventListener("click",function(e){if(!csEl.classList.contains("on"))return;var t=e.target;if(!t||!t.closest||t===csEl||csEl.contains(t))return;if(t.closest("a[href*='#'],.hdr a,.hdr button,.menu a,.menu button,[data-go]"))closeCase()},true);
+window.addEventListener("hashchange",function(){if(csEl.classList.contains("on"))closeCase()});
 document.addEventListener("click",function(e){var o=e.target.closest("[data-open]");if(o){e.preventDefault();openCase(o.dataset.open);return}if(e.target.closest("[data-close]"))closeCase()});
 document.addEventListener("keydown",function(e){if(e.key==="Escape"&&csEl.classList.contains("on"))closeCase()});
  var bub=document.querySelector(".bbub"),bdesc=document.getElementById("bdesc"),blkBox=document.querySelector(".blocks");
