@@ -343,10 +343,11 @@ em{font-style:italic;color:var(--lime)}.serif{font-family:IS,serif;font-weight:4
 .blocks .blk:hover{color:#fff}.blocks .blk.on{color:#0b0b0b;box-shadow:none}
 .bdesc{margin:0 0 2.6vw;min-height:1.6em;font-size:1vw;color:var(--mute)}
 @media (max-width:860px){
- .blocks{display:flex!important;width:100%!important;max-width:100%!important;overflow-x:auto;margin:0 0 10px!important;padding:5px!important;gap:0;scrollbar-width:none}.blocks::-webkit-scrollbar{display:none}
+ .blocks{display:grid!important;grid-template-columns:repeat(3,1fr);width:100%!important;max-width:100%!important;overflow:hidden;margin:0 0 10px!important;padding:5px!important;gap:0}.blocks::-webkit-scrollbar{display:none}
  .blocks .bbub{top:5px;bottom:5px;left:5px}
- .blocks .blk{flex:none;padding:15px 22px}.blocks .blk b{font-size:15px}
+ .blocks .blk{padding:12px 6px;white-space:normal;text-align:center;display:flex;align-items:center;justify-content:center;min-height:56px}.blocks .blk b{font-size:13px;line-height:1.15}
  .bdesc{font-size:14px;margin:0 0 18px;min-height:0}
+ .bdesc + .swh{display:none!important}
 }
 
 /* ===== ronda 5: transición lateral entre pestañas + borde de luz en la cápsula ===== */
