@@ -496,10 +496,16 @@ if(document.getElementById("dd")){
  var ANT=["Prestación técnica","Más espera, menos pacientes","Venta sin apoyo de IA","760 m²","Defender el precio","Plástico reciclado"];
  function slShow(i){var t=TRAB[i],v=t.txt?t.v:t.pre+t.to.toLocaleString("es-AR")+t.suf;[].slice.call(slP.children).forEach(function(e,j){e.classList.toggle("on",j===i)});
   var on=slP.children[i];if(on&&slP.scrollWidth>slP.clientWidth)slP.scrollTo({left:on.offsetLeft-slP.clientWidth/2+on.offsetWidth/2,behavior:"smooth"});
-  slC.innerHTML='<div class="sl-a"><span class="sl-l">Antes</span><div class="sl-ant">'+ANT[i]+'</div></div><div class="sl-b"><span class="sl-l">Ahora</span><div class="sl-v'+(t.txt?' t':'')+'">'+v+'</div><div class="sl-u">'+t.u+'</div></div><i class="sl-h"></i>';slC.style.setProperty("--x","6%");slR.textContent=t.r;slB.setAttribute("data-open",t.id)}
- (function(){var dr=false;function mv(e){var r=slC.getBoundingClientRect();slC.style.setProperty("--x",Math.max(3,Math.min(97,(e.clientX-r.left)/r.width*100))+"%")}
-  slC.addEventListener("pointerdown",function(e){dr=true;try{slC.setPointerCapture(e.pointerId)}catch(x){}mv(e)});slC.addEventListener("pointermove",function(e){if(dr)mv(e)});slC.addEventListener("pointerup",function(){dr=false});slC.addEventListener("pointercancel",function(){dr=false});
-  new IntersectionObserver(function(es,o){if(es[0].isIntersecting&&!slHint){slHint=true;o.disconnect();var t0=performance.now();(function f(t){var p=Math.min(1,(t-t0)/1400);slC.style.setProperty("--x",(6+Math.sin(p*Math.PI)*58)+"%");if(p<1)requestAnimationFrame(f)})(t0)}},{threshold:.6}).observe(slC)})();
+  slC.innerHTML='<div class="sl-a"><span class="sl-l">Antes</span><div class="sl-ant">'+ANT[i]+'</div></div><div class="sl-b"><span class="sl-l">Ahora</span><div class="sl-v'+(t.txt?' t':'')+'">'+v+'</div><div class="sl-u">'+t.u+'</div></div><i class="sl-h"></i>';slT=t;setX(6);if(slHint)sweep();slR.textContent=t.r;slB.setAttribute("data-open",t.id)}
+ var slX=6,slV=0,slRaf=0,slT=null,slSw=false;
+ function setX(x){slX=x;slC.style.setProperty("--x",x+"%");var el=slC.querySelector(".sl-v");if(el&&slT&&!slT.txt){var q=Math.max(0,Math.min(1,(x-6)/76));el.textContent=slT.pre+Math.round(slT.from+(slT.to-slT.from)*q).toLocaleString("es-AR")+slT.suf}}
+ function slStop(){cancelAnimationFrame(slRaf)}
+ function sweep(){slStop();var t0=performance.now();(function f(t){var p=Math.min(1,(t-t0)/1700),e=p<.5?2*p*p:1-Math.pow(-2*p+2,2)/2;setX(6+Math.sin(p*Math.PI)*70*(1-.0*e));if(p<1)slRaf=requestAnimationFrame(f);else setX(6)})(t0)}
+ function glide(){slStop();(function f(){slV*=.93;var x=slX+slV*16;if(x<3){x=3;slV*=-.45}else if(x>97){x=97;slV*=-.45}setX(x);if(Math.abs(slV)>.003)slRaf=requestAnimationFrame(f)})()}
+ (function(){var dr=false,lx=0,lt=0;function mv(e){var r=slC.getBoundingClientRect(),x=Math.max(3,Math.min(97,(e.clientX-r.left)/r.width*100)),now=performance.now();if(lt){var dt=Math.max(1,now-lt);slV=slV*.5+((x-lx)/dt)*.5}lx=x;lt=now;setX(x)}
+  slC.addEventListener("pointerdown",function(e){slStop();dr=true;slV=0;lt=0;try{slC.setPointerCapture(e.pointerId)}catch(x){}mv(e)});slC.addEventListener("pointermove",function(e){if(dr)mv(e)});
+  function up(){if(!dr)return;dr=false;if(Math.abs(slV)>.01)glide()}slC.addEventListener("pointerup",up);slC.addEventListener("pointercancel",up);
+  new IntersectionObserver(function(es,o){if(es[0].isIntersecting&&!slHint){slHint=true;o.disconnect();sweep()}},{threshold:.6}).observe(slC)})();
  function showT(i){var t=TRAB[i];slShow(i);tdots.forEach(function(e,j){e.classList.toggle('on',j===i)});lis.forEach(function(e,j){e.classList.toggle("on",j===i)});ddV.textContent=t.n;
   ddCard.innerHTML='<p>'+t.r+'</p><button type="button" class="vbtn" data-open="'+t.id+'">Ver el trabajo <i>→</i></button>';ddCard.classList.remove("in");void ddCard.offsetWidth;ddCard.classList.add("in");
   var dR=document.getElementById("ddR");if(dR){dR.innerHTML='<div><em>El desafío</em><p>'+t.d+'</p></div><div><em>Lo que hicimos</em><p>'+t.h+'</p></div>';dR.classList.remove("in");void dR.offsetWidth;dR.classList.add("in")}
