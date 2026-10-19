@@ -348,6 +348,12 @@ em{font-style:italic;color:var(--lime)}.serif{font-family:IS,serif;font-weight:4
  .bdesc{font-size:14px;margin:0 0 18px;min-height:0}
 }
 
+/* ===== ronda 5: transición lateral entre pestañas + borde de luz en la cápsula ===== */
+.view.on{animation:vslide .65s cubic-bezier(.2,.8,.2,1) backwards}
+@keyframes vslide{from{opacity:0;transform:translateX(calc(var(--dir,1)*5vw))}to{opacity:1;transform:none}}
+.blocks::before{content:"";position:absolute;inset:0;border-radius:99px;padding:1.5px;pointer-events:none;background:linear-gradient(100deg,transparent 30%,rgba(215,242,74,.95) 50%,transparent 70%) 0 0/250% 100%;-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask:linear-gradient(#000 0 0) content-box exclude,linear-gradient(#000 0 0);animation:rim 4.5s linear infinite}
+@keyframes rim{from{background-position:130% 0}to{background-position:-30% 0}}
+@media (prefers-reduced-motion:reduce){.blocks::before{animation:none}.view.on{animation:none}}
 
 /* ---- encabezado y WhatsApp de la página ---- */
 .top{position:fixed;left:0;right:0;top:0;z-index:45;display:flex;justify-content:space-between;align-items:center;padding:1.1vw 3vw;background:linear-gradient(#070707 55%,rgba(7,7,7,0))}
@@ -568,7 +574,7 @@ document.addEventListener("keydown",function(e){if(e.key==="Escape"&&csEl.classL
  var bub=document.querySelector(".bbub"),bdesc=document.getElementById("bdesc"),blkBox=document.querySelector(".blocks");
  function bubPos(){var on=blks.filter(function(e){return e.classList.contains("on")})[0];if(!on)return;bub.style.left=on.offsetLeft+"px";bub.style.width=on.offsetWidth+"px";bdesc.textContent=on.dataset.d;if(blkBox.scrollWidth>blkBox.clientWidth)blkBox.scrollTo({left:on.offsetLeft-blkBox.clientWidth/2+on.offsetWidth/2,behavior:"smooth"})}
  window.addEventListener("resize",bubPos);
- function open(b){cur=b;blks.forEach(function(e){e.classList.toggle("on",e.dataset.b===b)});bubPos();views.forEach(function(e){e.classList.toggle("on",e.dataset.v===b)});Object.keys(rots).forEach(function(k){rots[k].live(k===b)});if(b==="plat"||b==="web"){var r=rots[b];r.go(r.get())}}
+ function open(b){var oi=blks.findIndex(function(e){return e.dataset.b===cur}),ni=blks.findIndex(function(e){return e.dataset.b===b});document.querySelector(".stage").style.setProperty("--dir",ni<oi?-1:1);cur=b;blks.forEach(function(e){e.classList.toggle("on",e.dataset.b===b)});bubPos();views.forEach(function(e){e.classList.toggle("on",e.dataset.v===b)});Object.keys(rots).forEach(function(k){rots[k].live(k===b)});if(b==="plat"||b==="web"){var r=rots[b];r.go(r.get())}}
  blks.forEach(function(e){e.addEventListener("click",function(){open(e.dataset.b)})});
  var sec=document.querySelector(".sec"),started=false;new IntersectionObserver(function(es){var on=es[0].isIntersecting;if(on&&!started){started=true;open("trab")}else if(started){Object.keys(rots).forEach(function(k){rots[k].live(on&&k===cur)})}},{threshold:.15}).observe(document.querySelector(".stage"));
 }
