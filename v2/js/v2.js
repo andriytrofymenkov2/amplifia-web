@@ -42,6 +42,8 @@
     if (lenis) { if (open) lenis.stop(); else lenis.start(); }
     else body.style.overflow = open ? "hidden" : "";
   }
+  /* la sección "Trabajos" (v2/js/soluciones.js) abre paneles a pantalla completa: mientras están abiertos se pausa el desplazamiento suave */
+  window.addEventListener("sa:lock", function (e) { if (lenis) { if (e.detail) lenis.stop(); else lenis.start(); } });
   menuBtn.addEventListener("click", function () { setMenu(!root.classList.contains("menu-open")); });
   document.addEventListener("keydown", function (e) { if (e.key === "Escape") setMenu(false); });
   document.addEventListener("click", function (e) {
@@ -155,7 +157,7 @@
     manifiesto: "Más herramientas no alcanzan. Las integramos con tus procesos y tu gente para que den <b>resultados</b>.",
     problema: "<b>Hola, soy Ampli.</b> Si te suena alguna de estas señales, un diagnóstico es el primer paso.",
     "que-hacemos": "Procesos, IA y personas en un solo equipo: por eso las mejoras <b>se sostienen</b>.",
-    casos: "Trabajos reales: el medidor muestra el <b>antes y el después</b> de cada uno.",
+    casos: "Trabajos reales: elegí un caso y mirá <b>qué cambió</b> en cada uno.",
     frentes: "Seis capacidades, desde Lean y Kaizen hasta IA y datos para decidir. Elegí por dónde <b>empezar</b>.",
     metodo: "Nuestra <b>metodología 4D</b>: diagnóstico, diseño, despliegue y desempeño.",
     servicios: "Diagnóstico, training o implementación: cada uno con <b>entregables concretos</b>.",

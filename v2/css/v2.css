@@ -2231,3 +2231,5 @@ section:not(#hero):not(#manifiesto):not(#que-hacemos) :is(.prob-head .tiny:first
   .gx-more a { margin: 8px 0 2px; font-size: 12px; }
   .gx-bar { bottom: 0; left: 16px; width: calc(100% - 32px); }
 }
+/* Trabajos (portada): contenedor de la sección interactiva, a todo el ancho de la pantalla */
+#saHost { display: block; margin: 0 calc(var(--pad) * -1); min-width: 0; }
