@@ -317,7 +317,7 @@ em{font-style:italic;color:var(--lime)}.serif{font-family:IS,serif;font-weight:4
 .sl-p{display:flex;gap:.9vw;flex-wrap:wrap;margin-bottom:2.2vw}.sl-p .tile{text-align:left;color:var(--paper)}.sl-p .tile.on::after{animation:none;transform:none}.sl-p .tile:not(.on) b{color:rgba(243,239,230,.7)}
 .sl-c{position:relative;height:22vw;border-radius:1.4vw;overflow:hidden;border:1px solid var(--line);touch-action:pan-y;cursor:ew-resize;user-select:none;-webkit-user-select:none}
 .sl-a,.sl-b{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:0 6%}
-.sl-a{background:radial-gradient(circle at 50% 50%,#171717,#0d0d0d 75%);clip-path:inset(0 calc(100% - var(--xc,6%)) 0 0)}
+.sl-a{background:radial-gradient(circle at 50% 50%,#171717,#0d0d0d 75%);clip-path:inset(0 calc(100% - var(--xc,0%)) 0 0)}
 .sl-b{background:radial-gradient(circle at 50% 50%,rgba(215,242,74,.26),transparent 72%),#0b0d06}
 .sl-l{font-size:.85vw;letter-spacing:.18em;text-transform:uppercase;color:var(--lime);margin-bottom:.5vw}.sl-a .sl-l{color:var(--mute)}
 .sl-ant{font:italic 400 6.2vw IS;line-height:1;color:rgba(243,239,230,.42)}
@@ -547,7 +547,7 @@ if(document.getElementById("dd")){
   var on=slP.children[i];if(on&&slP.scrollWidth>slP.clientWidth)slP.scrollTo({left:on.offsetLeft-slP.clientWidth/2+on.offsetWidth/2,behavior:"smooth"});
   slC.innerHTML='<div class="sl-b"><span class="sl-l">Ahora</span><div class="sl-v'+(t.txt?' t':'')+'">'+v+'</div><div class="sl-u">'+t.u+'</div></div><div class="sl-a"><span class="sl-l">Antes</span><div class="sl-ant">'+ANT[i]+'</div></div><i class="sl-h"></i>';slT=t;setX(6);if(slHint)sweep();slR.textContent=t.r;slB.setAttribute("data-open",t.id)}
  var slX=6,slV=0,slRaf=0,slT=null,slSw=false;
- function setX(x){slX=x;slC.style.setProperty("--x",x+"%");slC.style.setProperty("--xc",(x>93?100:x)+"%");var el=slC.querySelector(".sl-v");if(false){var q=Math.max(0,Math.min(1,(x-6)/76));el.textContent=slT.pre+Math.round(slT.from+(slT.to-slT.from)*q).toLocaleString("es-AR")+slT.suf}}
+ function setX(x){slX=x;slC.style.setProperty("--x",x+"%");slC.style.setProperty("--xc",(x<=6?0:x>93?100:x)+"%");var el=slC.querySelector(".sl-v");if(false){var q=Math.max(0,Math.min(1,(x-6)/76));el.textContent=slT.pre+Math.round(slT.from+(slT.to-slT.from)*q).toLocaleString("es-AR")+slT.suf}}
  function slStop(){cancelAnimationFrame(slRaf)}
  function sweep(){slStop();var t0=performance.now();(function f(t){var p=Math.min(1,(t-t0)/1700),e=p<.5?2*p*p:1-Math.pow(-2*p+2,2)/2;setX(6+Math.sin(p*Math.PI)*93);if(p<1)slRaf=requestAnimationFrame(f);else setX(6)})(t0)}
  function glide(){slStop();(function f(){slV*=.93;var x=slX+slV*16;if(x<2){x=2;slV*=-.45}else if(x>98){x=98;slV*=-.45}setX(x);if(Math.abs(slV)>.003)slRaf=requestAnimationFrame(f)})()}
