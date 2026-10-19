@@ -279,8 +279,8 @@
     ampliSide = "R"; ampli.classList.add("on-right");
   }
   function ampliWalk(id, done) {
-    if (!phone) { if (ampliSide === null) ampliDock(); if (done) done(); return; }
-    if (phone) { if (ampliSide === null) { gsap.set(ampli, { x: 6, y: 0 }); ampliSide = "L"; } if (done) done(); return; }
+    if (ampliSide === null) ampliDock(); if (done) done(); return;
+
     if (ampliSide === null) {
       var p0 = ampliPick(0), bx = ampliBox(), x0 = gsap.getProperty(ampli, "x"), y0 = gsap.getProperty(ampli, "y");
       gsap.set(ampli, { x: p0.l - (bx.l - x0), y: p0.t - (bx.t - y0) }); ampliSide = p0.l > window.innerWidth / 2 ? "R" : "L"; ampli.classList.toggle("on-right", ampliSide === "R"); if (done) done(); return;
@@ -412,7 +412,7 @@
   })();
 
   var ampliIdle = null;
-  window.addEventListener("resize", function () { clearTimeout(ampliIdle); ampliIdle = setTimeout(function () { if (!phone && ampliSide !== null) ampliDock(); }, 300); });
+  window.addEventListener("resize", function () { clearTimeout(ampliIdle); ampliIdle = setTimeout(function () { if (ampliSide !== null) ampliDock(); }, 300); });
   gsap.to("#prog", { scaleX: 1, ease: "none", scrollTrigger: { start: 0, end: "max", scrub: 0.2 } });
   /* el botón de WhatsApp y las redes aparecen al pasar el inicio y quedan hasta el final (antes se apagaban en el último píxel de la página) */
   ScrollTrigger.create({ trigger: "#hero", start: "bottom 60%",
