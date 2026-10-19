@@ -279,7 +279,16 @@ em{font-style:italic;color:var(--lime)}.serif{font-family:IS,serif;font-weight:4
 @media (min-width:861px){
  .head{margin-bottom:1.6vw}.head h2{font-size:3.7vw}.head p{margin-top:.7vw;font-size:1vw}
  .blocks{margin-bottom:2vw;gap:1.2vw}.blk{min-height:7vw;padding:1.15vw 1.5vw;gap:.8vw}.blk .ic{width:2.4vw;height:2.4vw}.blk b{font-size:1.8vw}.blk div span{font-size:.8vw}
- .gx{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:3vw}.dial{width:25vw;justify-self:center}.rd .v{font-size:3.2vw}.rd .v.t{font-size:2.7vw}
+ .gx{grid-template-columns:minmax(0,1fr) 25vw minmax(0,1fr);gap:3vw}.gx-left{grid-column:1;grid-row:1;justify-self:end;width:100%}.dial{grid-column:2;grid-row:1;width:25vw;justify-self:center}
+ .gx-left .dd{width:25vw;max-width:100%}
+ .gx-left .dd-btn{display:flex;align-items:center;gap:1vw;padding:.55vw .7vw .55vw 1.5vw;border-radius:99px;border:1px solid rgba(243,239,230,.2);background:rgba(255,255,255,.04)}
+ .gx-left .dd-btn:hover,.gx-left .dd.open .dd-btn{border-color:var(--lime);box-shadow:0 0 1.6vw rgba(215,242,74,.16)}
+ .gx-left .dd-l{display:none}.gx-left .dd-v{flex:1;margin:0;font-size:1.55vw;white-space:nowrap}
+ .gx-left .dd-c{flex:none;width:2.2vw;height:2.2vw;margin:0;border:0;border-radius:50%;background:var(--lime);position:relative;transform:none}
+ .gx-left .dd-c::after{content:"";position:absolute;left:50%;top:50%;width:.5vw;height:.5vw;margin:-.4vw 0 0 -.25vw;border-right:2px solid #0b0b0b;border-bottom:2px solid #0b0b0b;transform:rotate(45deg);transition:transform .3s}
+ .gx-left .dd.open .dd-c{margin:0;transform:none}.gx-left .dd.open .dd-c::after{transform:rotate(-135deg);margin-top:-.15vw}
+ .gx-left .dd-menu{border-radius:1.4vw;right:auto;width:36vw}.gx-left .dd-menu li b{font-size:1.4vw;white-space:nowrap}
+ .gx-left .dd-card p{max-width:100%}.rd .v{font-size:3.2vw}.rd .v.t{font-size:2.7vw}
  .more{flex-direction:column;justify-content:center;align-items:center;gap:1.2vw;text-align:center;margin-top:2.6vw;padding-top:2.2vw;font-size:1.1vw;color:var(--paper)}
  .more .btn{font-size:1.15vw;padding:1.05vw 2.4vw;box-shadow:0 0 2vw rgba(215,242,74,.25)}
  .main.ph3{grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);gap:4vw}
