@@ -455,11 +455,11 @@ em{font-style:italic;color:var(--lime)}.serif{font-family:IS,serif;font-weight:4
  .blocks .blk.on .dm::after{width:6px;height:6px}
  .blocks .blk b{font-size:19px!important;line-height:1.08;padding-bottom:3px}
 }
-/* ===== ronda 9: propuesta B minimalista con cabezal de flechas, notebook con pie limpio y sin repeticiones ===== */
+/* ===== ronda 9: propuesta B minimalista con cabezal de flechas, texto a la izquierda y boton a la derecha del monitor ===== */
 .bdesc,.sl-p,.dock,.swh{display:none!important}
 .blocks{margin-bottom:2vw!important}
-.cnav{display:flex;align-items:center;justify-content:space-between;gap:1.2vw;max-width:42vw;margin:0 auto 1.2vw;padding:0 .2vw .7vw;border-bottom:1px solid rgba(243,239,230,.12)}
-.cnav.wide{max-width:56vw;margin-bottom:1.8vw}
+.cnav{display:flex;align-items:center;justify-content:space-between;gap:1.2vw;max-width:34vw;margin:0 auto 1.4vw;padding:0 .2vw .7vw;border-bottom:1px solid rgba(243,239,230,.12)}
+.cnav.wide{max-width:34vw;margin-bottom:1.6vw}
 .cnav-id{display:flex;flex-direction:column;gap:.15vw;min-width:0}
 .cnav-k{font-size:.66vw;letter-spacing:.18em;text-transform:uppercase;color:var(--lime);line-height:1.1}
 .cnav-r{display:flex;align-items:center;gap:.65vw;min-width:0}
@@ -468,20 +468,21 @@ em{font-style:italic;color:var(--lime)}.serif{font-family:IS,serif;font-weight:4
 .cnav-arr{display:inline-flex;align-items:center;gap:.55vw;flex:none}
 .cnav-arr button{width:2.5vw;height:2.5vw;border-radius:50%;border:1px solid rgba(243,239,230,.24);background:rgba(255,255,255,.03);display:grid;place-items:center;font-size:1vw;color:var(--paper);transition:.22s}
 .cnav-arr button:hover{border-color:var(--lime);background:var(--lime);color:#070707;box-shadow:0 0 1vw rgba(215,242,74,.35)}
-.sl-row{display:grid!important;grid-template-columns:minmax(0,1fr) auto!important;gap:1.8vw 2vw!important;align-items:end!important;max-width:42vw;margin:0 auto}
-.sl-lap{grid-column:1/-1;grid-row:1;width:100%!important;padding:0 1.2vw}
-.sl-side.l{grid-column:1;grid-row:2;text-align:left!important}
+.sl-row{display:grid!important;grid-template-columns:minmax(0,1fr) 34vw minmax(0,1fr)!important;gap:3.5vw!important;align-items:center!important;max-width:100%;width:100%;margin:0 auto}
+.sl-lap{grid-column:2;grid-row:1;width:34vw!important;padding:0}
+.sl-side.l{grid-column:1;grid-row:1;justify-self:end;max-width:24vw;text-align:left!important}
 .sl-side.l .sl-r .mtag{display:none}
-.sl-side.l .sl-r .mname{font-size:2.1vw;margin:0 0 .35vw;text-align:left}
-.sl-side.l .sl-r p{font-size:.98vw;line-height:1.5;color:rgba(243,239,230,.78);max-width:none;margin:0;text-align:left}
-.sl-side.r{grid-column:2;grid-row:2;justify-content:flex-end}
-.view[data-v="web"] .main{display:grid!important;grid-template-columns:1fr!important;gap:1.8vw!important;max-width:42vw;margin:0 auto}
-.view[data-v="web"] .main .dv{grid-column:1!important;grid-row:1!important;padding:0 1.2vw}
+.sl-side.l .sl-r .mname{font-size:2.2vw;margin:0 0 .5vw;text-align:left}
+.sl-side.l .sl-r p{font-size:1vw;line-height:1.55;color:rgba(243,239,230,.8);max-width:none;margin:0;text-align:left}
+.sl-side.r{grid-column:3;grid-row:1;justify-self:start;justify-content:flex-start}
+.view[data-v="web"] .main{display:grid!important;grid-template-columns:minmax(0,1fr) 34vw minmax(0,1fr)!important;gap:3.5vw!important;align-items:center!important;max-width:100%;width:100%;margin:0 auto}
+.view[data-v="web"] .main .dv{grid-column:2!important;grid-row:1!important;width:34vw!important;padding:0}
 .view[data-v="web"] .main .dv .lap{width:100%!important}
-.view[data-v="web"] .main .inf{display:flex!important;align-items:flex-end;justify-content:space-between;gap:2vw;grid-column:1!important;grid-row:2!important;text-align:left}
-.view[data-v="web"] .nb-copy{flex:1;min-width:0}
-.view[data-v="web"] .nb-copy .mname{font-size:2.1vw;margin:0 0 .35vw}
-.view[data-v="web"] .nb-copy p{font-size:.98vw;line-height:1.5;color:rgba(243,239,230,.78);margin:0}
+.view[data-v="web"] .main .inf{display:contents!important}
+.view[data-v="web"] .nb-copy{grid-column:1;grid-row:1;justify-self:end;max-width:24vw;min-width:0;text-align:left}
+.view[data-v="web"] .nb-copy .mname{font-size:2.2vw;margin:0 0 .5vw}
+.view[data-v="web"] .nb-copy p{font-size:1vw;line-height:1.55;color:rgba(243,239,230,.8);margin:0}
+.view[data-v="web"] .main .inf>.vbtn{grid-column:3;grid-row:1;justify-self:start}
 .view[data-v="plat"] .main.ph3{max-width:62vw;margin:0 auto}
 .view[data-v="plat"] .pl .mtag{display:none}
 .vbtn{width:auto!important;justify-content:flex-start!important}
@@ -495,16 +496,17 @@ em{font-style:italic;color:var(--lime)}.serif{font-family:IS,serif;font-weight:4
  .cnav-arr{gap:7px}
  .cnav-arr button{width:36px;height:36px;font-size:15px}
  .sl-row{grid-template-columns:1fr!important;gap:14px!important;max-width:100%}
- .sl-lap{padding:0 6px;margin-bottom:6px}
- .sl-side.l{grid-column:1;grid-row:2}
+ .sl-lap{grid-column:1;grid-row:1;width:92%!important;padding:0;margin:0 auto 6px}
+ .sl-side.l{grid-column:1;grid-row:2;justify-self:stretch;max-width:none}
  .sl-side.l .sl-r .mname{font-size:24px;margin:0 0 5px}
  .sl-side.l .sl-r p{font-size:14px}
- .sl-side.r{grid-column:1;grid-row:3;justify-content:flex-start}
- .view[data-v="web"] .main{gap:14px!important;max-width:100%}
- .view[data-v="web"] .main .dv{padding:0 6px;margin-bottom:6px}
- .view[data-v="web"] .main .inf{flex-direction:column;align-items:flex-start;gap:12px}
+ .sl-side.r{grid-column:1;grid-row:3;justify-self:start;justify-content:flex-start}
+ .view[data-v="web"] .main{grid-template-columns:1fr!important;gap:14px!important;max-width:100%}
+ .view[data-v="web"] .main .dv{grid-column:1!important;grid-row:1!important;width:92%!important;padding:0;margin:0 auto 6px}
+ .view[data-v="web"] .nb-copy{grid-column:1;grid-row:2;justify-self:stretch;max-width:none}
  .view[data-v="web"] .nb-copy .mname{font-size:24px;margin:0 0 5px}
  .view[data-v="web"] .nb-copy p{font-size:14px}
+ .view[data-v="web"] .main .inf>.vbtn{grid-column:1;grid-row:3;justify-self:start}
  .vbtn,.sl .vbtn{width:auto!important;gap:9px;padding:6px 6px 6px 16px;font-size:13.5px}
  .vbtn i{width:28px;height:28px;font-size:13px}
 }
@@ -569,7 +571,7 @@ function dev(p){return p.k==="phone"?'<div class="pwrap"><div class="dev phone">
 var DETL="?v=detalle&d="+DEV;
 function tg(g){return g.replace(/^Presencia · /,"")}
 function detailSplit(p){return '<div class="pl"><div class="mname">'+(p.sub||p.n)+'</div><p class="mlead">'+p.lead+'</p></div><div class="pr"><ul class="mlist">'+p.l.map(function(x){return '<li>'+x+'</li>'}).join("")+'</ul><div class="acts"><button type="button" class="vbtn" data-open="'+p.id+'">Ver en detalle <i>→</i></button><a class="btn o" href="#">Quiero algo así</a></div></div>'}
-function detailNb(p){return '<div class="nb-foot"><div class="nb-tx"><div class="mname">'+(p.sub||p.n)+'</div><p>'+p.lead+'</p></div><button type="button" class="vbtn" data-open="'+p.id+'">Ver en detalle <i>→</i></button></div>'}
+function detailNb(p){return '<div class="nb-copy"><div class="mname">'+(p.sub||p.n)+'</div><p>'+p.lead+'</p></div><button type="button" class="vbtn" data-open="'+p.id+'">Ver en detalle <i>→</i></button>'}
 function detail(p){return '<div class="mname">'+(p.sub||p.n)+'</div><p class="mlead">'+p.lead+'</p><ul class="mlist">'+p.l.map(function(x){return '<li>'+x+'</li>'}).join("")+'</ul><div class="acts"><button type="button" class="vbtn" data-open="'+p.id+'">Ver en detalle <i>→</i></button><a class="btn o" href="#">Quiero algo así</a></div>'}
 
 /* ---- armado ---- */
@@ -580,8 +582,8 @@ function dial(){var t="";for(var k=0;k<=40;k++){var a=(-225+k*6.75)*Math.PI/180,
 function home(){
  var h='<section class="sec">'+G+'<div class="head"><span class="tiny">Lo que construimos</span><h2 class="serif">Soluciones <em>aumentadas</em>.</h2><p>Sistemas, agentes de IA, páginas y procesos: todo lo que hacemos para que tu organización rinda más. Elegí qué querés ver.</p></div>';
  h+='<div class="blocks"><i class="bbub"></i>'+BLK.map(function(b){return '<button class="blk" data-b="'+b[0]+'" data-d="'+b[2]+'"><i class="dm"></i><b>'+b[1]+'</b></button>'}).join("")+'</div><p class="bdesc" id="bdesc"></p><div class="swh">Deslizá <i>→</i></div><div class="stage">';
- h+='<div class="view" data-v="trab"><div class="gx" id="gx"><div class="gx-left"><div class="dd" id="dd"><i class="dd-bd"></i><button class="dd-btn" id="ddBtn" type="button" aria-haspopup="listbox" aria-expanded="false"><span class="dd-l">Elegí un caso</span><span class="dd-v" id="ddV"></span><i class="dd-c"></i></button><div class="dd-menu" id="ddMenu" role="listbox"><div class="dd-sh"><b>Elegí un caso</b><button type="button" class="dd-x" aria-label="Cerrar"><i></i></button></div><div class="dd-sw"><input id="ddS" type="search" placeholder="Buscar un caso…" autocomplete="off"></div><ul id="ddU">'+TRAB.map(function(t,i){return '<li role="option" data-i="'+i+'"><b>'+t.n+'</b><span>'+t.g+'</span></li>'}).join("")+'</ul></div></div><div class="dd-card" id="ddCard"></div><i class="dd-bar" id="ddBar"></i><div class="dd-nav"><button type="button" id="ddPrev" aria-label="Anterior">←</button><div class="dots" id="tdots">'+TRAB.map(function(){return '<i></i>'}).join("")+'</div><button type="button" id="ddNext" aria-label="Siguiente">→</button></div></div>'+dial()+'<div class="sl"><div class="cnav"><div class="cnav-l"><i class="cnav-dot"></i><div class="cnav-tx"><span class="cnav-k" id="cnK-trab"></span><strong class="cnav-n" id="cnN-trab"></strong></div></div><div class="cnav-r"><button type="button" class="cnav-arr" data-cstep="trab,-1" aria-label="Anterior">←</button><button type="button" class="cnav-arr" data-cstep="trab,1" aria-label="Siguiente">→</button></div></div><div class="sl-p" id="slP">'+TRAB.map(function(t,i){return '<button type="button" class="tile glass" data-i="'+i+'"><b>'+t.g.split(" · ")[1]+'</b></button>'}).join("")+'</div><div class="sl-row"><div class="sl-side l"><div class="sl-r" id="slR"></div></div><div class="sl-lap"><div class="dev lap"><div class="scr"><div class="sl-c" id="slC"></div></div></div></div><div class="sl-side r"><button type="button" class="vbtn" id="slB">Ver el trabajo <i>→</i></button></div></div></div></div></div>';
- [["plat",PLAT],["web",WEBS]].forEach(function(g){h+='<div class="view" data-v="'+g[0]+'"><div class="cnav"><div class="cnav-l"><i class="cnav-dot"></i><div class="cnav-tx">'+(g[0]==="web"?'':'<span class="cnav-k" id="cnK-'+g[0]+'"></span>')+'<strong class="cnav-n" id="cnN-'+g[0]+'"></strong></div></div><div class="cnav-r"><button type="button" class="cnav-arr" data-cstep="'+g[0]+',-1" aria-label="Anterior">←</button><button type="button" class="cnav-arr" data-cstep="'+g[0]+',1" aria-label="Siguiente">→</button></div></div><div class="dock" data-g="'+g[0]+'">'+g[1].map(function(p,i){return '<div class="tile glass" data-i="'+i+'">'+(g[0]==="web"?'':'<span>'+p.g.split(" · ")[0]+'</span>')+'<b>'+p.s+'</b></div>'}).join("")+'</div><div class="swh">Deslizá <i>→</i></div><div class="main"><div class="dv" data-g="'+g[0]+'"></div><div class="inf" data-g="'+g[0]+'"></div></div></div>'});
+ h+='<div class="view" data-v="trab"><div class="gx" id="gx"><div class="gx-left"><div class="dd" id="dd"><i class="dd-bd"></i><button class="dd-btn" id="ddBtn" type="button" aria-haspopup="listbox" aria-expanded="false"><span class="dd-l">Elegí un caso</span><span class="dd-v" id="ddV"></span><i class="dd-c"></i></button><div class="dd-menu" id="ddMenu" role="listbox"><div class="dd-sh"><b>Elegí un caso</b><button type="button" class="dd-x" aria-label="Cerrar"><i></i></button></div><div class="dd-sw"><input id="ddS" type="search" placeholder="Buscar un caso…" autocomplete="off"></div><ul id="ddU">'+TRAB.map(function(t,i){return '<li role="option" data-i="'+i+'"><b>'+t.n+'</b><span>'+t.g+'</span></li>'}).join("")+'</ul></div></div><div class="dd-card" id="ddCard"></div><i class="dd-bar" id="ddBar"></i><div class="dd-nav"><button type="button" id="ddPrev" aria-label="Anterior">←</button><div class="dots" id="tdots">'+TRAB.map(function(){return '<i></i>'}).join("")+'</div><button type="button" id="ddNext" aria-label="Siguiente">→</button></div></div>'+dial()+'<div class="sl"><div class="sl-p" id="slP">'+TRAB.map(function(t,i){return '<button type="button" class="tile glass" data-i="'+i+'"><b>'+t.g.split(" · ")[1]+'</b></button>'}).join("")+'</div><div class="cnav" data-cnav="trab"><div class="cnav-id"><span class="cnav-k" id="cnK-trab"></span><div class="cnav-r"><i class="cnav-dot"></i><b class="cnav-n" id="cnN-trab"></b></div></div><div class="cnav-arr"><button type="button" data-cstep="trab,-1" aria-label="Anterior">←</button><button type="button" data-cstep="trab,1" aria-label="Siguiente">→</button></div></div><div class="sl-row"><div class="sl-side l"><div class="sl-r" id="slR"></div></div><div class="sl-lap"><div class="dev lap"><div class="scr"><div class="sl-c" id="slC"></div></div></div></div><div class="sl-side r"><button type="button" class="vbtn" id="slB">Ver el trabajo <i>→</i></button></div></div></div></div></div>';
+ [["plat",PLAT],["web",WEBS]].forEach(function(g){h+='<div class="view" data-v="'+g[0]+'"><div class="dock" data-g="'+g[0]+'">'+g[1].map(function(p,i){return '<div class="tile glass" data-i="'+i+'">'+(g[0]==="web"?'':'<span>'+p.g.split(" · ")[0]+'</span>')+'<b>'+p.s+'</b></div>'}).join("")+'</div><div class="swh">Deslizá <i>→</i></div><div class="cnav'+(g[0]==="plat"?" wide":"")+'" data-cnav="'+g[0]+'"><div class="cnav-id">'+(g[0]==="plat"?'<span class="cnav-k" id="cnK-'+g[0]+'"></span>':'')+'<div class="cnav-r"><i class="cnav-dot"></i><b class="cnav-n" id="cnN-'+g[0]+'"></b></div></div><div class="cnav-arr"><button type="button" data-cstep="'+g[0]+',-1" aria-label="Anterior">←</button><button type="button" data-cstep="'+g[0]+',1" aria-label="Siguiente">→</button></div></div><div class="main"><div class="dv" data-g="'+g[0]+'"></div><div class="inf" data-g="'+g[0]+'"></div></div></div>'});
  h+='</div><div class="note">Maqueta: las pantallas son ilustrativas; en la versión final van capturas o videos reales con datos de prueba. Los sistemas sobre software libre se presentan como implementación y adaptación propia.</div></section>';
  return h;
 }
