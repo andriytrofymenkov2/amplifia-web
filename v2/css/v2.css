@@ -2235,3 +2235,14 @@ section:not(#hero):not(#manifiesto):not(#que-hacemos) :is(.prob-head .tiny:first
 #saHost { display: block; margin: 0 calc(var(--pad) * -1); min-width: 0; }
 /* Trabajos (portada): contenedor de la sección interactiva, a todo el ancho de la pantalla */
 #saHost { display: block; margin: 0 calc(var(--pad) * -1); min-width: 0; }
+
+/* Cierre compacto de ¿Qué hacemos? justo debajo de Procesos / IA / Personas */
+.caps-foot { width: min(100%, 1180px); margin-top: clamp(18px, 3vh, 30px); padding-top: clamp(18px, 2.6vh, 26px); border-top: 1px solid rgba(215, 242, 74, 0.28); display: flex; align-items: baseline; justify-content: center; gap: clamp(12px, 1.5vw, 22px); flex-wrap: wrap; text-align: center; }
+.caps-foot .caps-k { font-size: clamp(11px, 0.85vw, 13px); letter-spacing: 0.22em; text-transform: uppercase; color: var(--lime); font-weight: 500; display: inline-flex; align-items: center; gap: 10px; }
+.caps-foot .caps-k::after { content: "→"; font-size: 1.1em; }
+.caps-foot .caps-sum { margin: 0; font-family: var(--serif); font-size: clamp(24px, 2.5vw, 42px); line-height: 1.1; letter-spacing: -0.015em; color: var(--paper); }
+.caps-foot .caps-sum em { font-style: italic; color: var(--lime); }
+@media (max-width: 860px) {
+  .caps-foot { flex-direction: column; align-items: flex-start; text-align: left; gap: 6px; margin-top: 18px; padding-top: 16px; }
+  .caps-foot .caps-sum { font-size: clamp(25px, 7.2vw, 34px); }
+}
