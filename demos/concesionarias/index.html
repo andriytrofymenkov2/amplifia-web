@@ -1,0 +1,1540 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Grupo Amplifia · Demo para concesionarias</title>
+<meta name="description" content="Grupo Amplifia — demo de sitio para concesionarias: usados seleccionados y 0km. Financiación hasta 100%.">
+<link rel="icon" href="img/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@300;400;500;600;700;800;900&family=Montserrat:wght@600;800;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#0a1118;          /* negro azulado */
+    --navy-2:#101a24;
+    --navy-3:#17232f;
+    --blue:#0d6a9f;          /* azul acero del logo */
+    --blue-bright:#2c9ad8;
+    --silver:#b9c1c4;
+    --ink:#0a1118;
+    --ink-2:#3a4450;
+    --muted:#6d7782;
+    --line:#e2e6ea;
+    --bg:#ffffff;
+    --bg-2:#f2f4f6;
+    --radius:16px;
+    --pad:clamp(20px,4vw,56px);
+    --ease:cubic-bezier(.2,.7,.2,1);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{font-family:"Inter Tight",system-ui,sans-serif;color:var(--ink);background:var(--bg);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+  img{display:block;max-width:100%}
+  a{color:inherit;text-decoration:none}
+  button{font:inherit;cursor:pointer;border:0;background:none;color:inherit}
+  .wrap{max-width:1480px;margin:0 auto;padding:0 var(--pad)}
+  .eyebrow{font-size:12px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--blue)}
+  .on-dark .eyebrow,.eyebrow.light{color:var(--blue-bright)}
+  h1,h2,h3{font-weight:500;letter-spacing:-.03em;line-height:1}
+  h2{font-size:clamp(38px,5.6vw,80px)}
+
+  /* Botones */
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;height:50px;padding:0 28px;border-radius:999px;font-size:15px;font-weight:600;transition:transform .25s var(--ease),background .25s,color .25s,border-color .25s;white-space:nowrap}
+  .btn:hover{transform:translateY(-1px)}
+  .btn-light{background:#fff;color:var(--ink)}
+  .btn-light:hover{background:var(--blue-bright);color:#fff}
+  .btn-ghost{border:1.5px solid rgba(255,255,255,.75);color:#fff;backdrop-filter:blur(6px)}
+  .btn-ghost:hover{background:#fff;color:var(--ink)}
+  .btn-dark{background:var(--navy);color:#fff}
+  .btn-dark:hover{background:var(--blue)}
+  .btn-outline{border:1.5px solid var(--ink);color:var(--ink)}
+  .btn-outline:hover{background:var(--ink);color:#fff}
+  .btn-blue{background:var(--blue);color:#fff}
+  .btn-blue:hover{background:var(--blue-bright)}
+  .btn svg{width:18px;height:18px}
+
+  /* ---------- NAV ---------- */
+  .nav{position:fixed;inset:0 0 auto 0;z-index:50;transition:background .35s,box-shadow .35s,transform .4s var(--ease);color:#fff}
+  .nav .wrap{display:flex;align-items:center;justify-content:space-between;height:78px}
+  .nav.solid{background:rgba(10,17,24,.86);backdrop-filter:blur(16px) saturate(140%);box-shadow:0 1px 0 rgba(255,255,255,.06)}
+  .nav.hide{transform:translateY(-100%)}
+  /* Logo en texto */
+  .logo{display:flex;align-items:center;line-height:1}
+  /* Logo en texto */
+  .bm{display:inline-flex;flex-direction:column;align-items:center;font-family:"Montserrat","Inter Tight",sans-serif;color:#fff;line-height:.86;text-shadow:0 2px 14px rgba(0,0,0,.35)}
+  .bm b{font-weight:800}
+  .bm .c{color:#3482c3}
+  .bm-sub{display:flex;align-items:center;justify-content:center;gap:.45em;width:100%;font-weight:600;letter-spacing:.06em;border-top:1px solid rgba(255,255,255,.55)}
+  .bm-sub svg{flex:none}
+  /* en una línea (menú) */
+  .bm-line .bm-top{font-size:31px;letter-spacing:-.005em}
+  .bm-line .bm-sub{font-size:10.5px;margin-top:6px;padding-top:5px}
+  .bm-line .bm-sub svg{width:13px;height:13px}
+  /* apilado como el original (pantalla de carga y pie) */
+  .bm-stack .bm-top{display:flex;flex-direction:column;align-items:center;font-size:clamp(64px,8vw,104px);letter-spacing:-.01em}
+  .bm-stack .bm-sub{font-size:clamp(15px,1.8vw,22px);margin-top:.5em;padding-top:.5em}
+  .bm-stack .bm-sub svg{width:1.5em;height:1.5em}
+  .loader .bm-stack .bm-top{font-size:clamp(60px,9vw,96px)}
+  /* Redes sociales */
+  .social{display:flex;gap:10px}
+  .social a{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;border:1px solid rgba(255,255,255,.35);color:#fff;backdrop-filter:blur(6px);transition:background .25s,color .25s,border-color .25s,transform .25s var(--ease)}
+  .social a:hover{background:#fff;color:var(--navy);border-color:#fff;transform:translateY(-2px)}
+  .social svg{width:19px;height:19px}
+  .foot-top .social a{display:grid;padding:0;opacity:1}
+  .hero-side{display:flex;flex-direction:column;align-items:flex-end;gap:16px;margin-right:64px}
+  .hero-side .hero-tag{margin-right:0}
+  .social-label{font-size:12px;letter-spacing:.16em;text-transform:uppercase;opacity:.75;margin-right:4px;align-self:center}
+  .nav-links{display:flex;gap:36px;font-size:15px;font-weight:500}
+  .nav-links a{position:relative;opacity:.9}
+  .nav-links a::after{content:"";position:absolute;left:0;right:0;bottom:-6px;height:2px;background:var(--blue-bright);transform:scaleX(0);transition:transform .3s var(--ease)}
+  .nav-links a:hover::after{transform:scaleX(1)}
+  .nav .btn{height:42px;padding:0 20px;font-size:14px}
+  .nav-cta{display:flex;gap:10px;align-items:center}
+  .burger{display:none;width:40px;height:40px;place-items:center}
+  .burger span{display:block;width:22px;height:2px;background:currentColor;margin:5px auto}
+  .mobile-menu{position:fixed;inset:78px 0 0 0;background:var(--navy);color:#fff;z-index:49;padding:32px var(--pad);display:flex;flex-direction:column;gap:6px;transform:translateY(-12px);opacity:0;pointer-events:none;transition:.3s var(--ease)}
+  .mobile-menu.open{transform:none;opacity:1;pointer-events:auto}
+  .mobile-menu a{font-size:30px;font-weight:500;padding:12px 0;border-bottom:1px solid rgba(255,255,255,.1)}
+
+  /* ---------- HERO ---------- */
+  .hero{position:relative;height:100svh;min-height:680px;color:#fff;overflow:hidden;background:#000}
+  .hero-media{position:absolute;inset:0}
+  .hero-zoom{position:absolute;inset:0;transform:scale(1.08);animation:heroZoom 9s var(--ease) forwards}
+  .hero-zoom img{width:100%;height:100%;object-fit:cover}
+  /* Brillo de las ópticas traseras: capas sobre la posición real de la foto */
+  .tail-fx{position:absolute;pointer-events:none;opacity:0;animation:ignite 1.4s 1.2s forwards}
+  .tail-fx i{position:absolute;display:block;border-radius:50%;mix-blend-mode:screen}
+  .tail-fx .tl{background:radial-gradient(closest-side,rgba(255,70,55,.9),rgba(255,20,20,.45) 55%,rgba(255,0,0,0));filter:blur(5px);animation:breathe 3.6s ease-in-out infinite}
+  .tail-fx .led{background:radial-gradient(closest-side,rgba(255,225,215,.95),rgba(255,90,80,.6) 60%,rgba(255,0,0,0));filter:blur(2px);animation:breathe 3.6s ease-in-out infinite}
+  .tail-fx .halo{background:radial-gradient(closest-side,rgba(255,40,40,.42),rgba(255,0,0,0));filter:blur(14px);animation:breathe 3.6s ease-in-out infinite}
+  .tail-fx .floor{left:44%;top:78%;width:58%;height:30%;background:radial-gradient(closest-side,rgba(255,30,60,.4),rgba(255,0,40,0));filter:blur(18px);animation:breathe 3.6s ease-in-out infinite}
+  @keyframes breathe{0%,100%{opacity:.45}50%{opacity:1}}
+  /* Vapor de los escapes */
+  .tail-fx .puff{width:4.6%;aspect-ratio:1;height:auto;margin:0;transform:translate(-50%,-50%) scale(.3);opacity:0;mix-blend-mode:screen;
+    background:radial-gradient(closest-side,rgba(235,242,250,.6),rgba(210,222,235,.25) 50%,rgba(200,215,230,0));filter:blur(11px);
+    animation:puff var(--dur) var(--delay) cubic-bezier(.25,.6,.3,1) infinite}
+  @keyframes puff{
+    0%{transform:translate(-50%,-50%) scale(.25);opacity:0}
+    12%{opacity:var(--o)}
+    55%{opacity:calc(var(--o) * .6)}
+    100%{transform:translate(calc(-50% + var(--dx)),calc(-50% + var(--dy))) scale(calc(var(--s) * 1.5),var(--s)) rotate(var(--rot));opacity:0}}
+  @keyframes ignite{0%{opacity:0}12%{opacity:.9}18%{opacity:.1}30%{opacity:1}36%{opacity:.35}100%{opacity:1}}
+  @keyframes heroZoom{to{transform:scale(1)}}
+  /* Portada inmersiva: solo un velo suave arriba y abajo, la luz de los portones queda libre */
+  .hero::after{content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(180deg,rgba(0,0,0,.45) 0%,rgba(0,0,0,0) 26%,rgba(0,0,0,0) 52%,rgba(0,0,0,.72) 100%)}
+  .hero-content{position:absolute;inset:auto 0 0 0;z-index:2;padding-bottom:clamp(40px,7vh,84px)}
+  .hero-content .wrap{display:flex;align-items:flex-end;justify-content:space-between;gap:40px;flex-wrap:wrap}
+  .hero h1{font-size:clamp(40px,5.4vw,84px);font-weight:500;max-width:12ch;letter-spacing:-.035em;line-height:1.02;text-shadow:0 2px 24px rgba(0,0,0,.35)}
+  .hero p{font-size:clamp(15px,1.25vw,18px);opacity:.88;max-width:46ch;margin:20px 0 30px;line-height:1.55}
+  .hero-ctas{display:flex;gap:12px;flex-wrap:wrap}
+  .hero-tag{font-size:13px;opacity:.8;text-align:right;line-height:1.6;margin-right:64px}
+  .hero-tag b{display:block;font-size:15px;opacity:1;font-weight:600}
+  .reveal-up{opacity:0;transform:translateY(28px);animation:up 1s var(--ease) forwards}
+  .d1{animation-delay:.15s}.d2{animation-delay:.3s}.d3{animation-delay:.45s}
+  @keyframes up{to{opacity:1;transform:none}}
+
+  /* ---------- BUSCADOR ---------- */
+  .search{position:relative;z-index:5;background:var(--navy);color:#fff;border-top:1px solid rgba(255,255,255,.06)}
+  .search .wrap{display:grid;grid-template-columns:auto repeat(3,1fr) auto;align-items:center;padding-top:22px;padding-bottom:22px}
+  .search-title{font-weight:600;font-size:15px;padding-right:32px}
+  .search-title span{display:block;font-weight:400;font-size:13px;color:#8d99a5}
+  .field{border-left:1px solid #22303c;padding:4px 24px}
+  .field label{display:block;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#8d99a5;margin-bottom:4px}
+  .field select{width:100%;background:transparent;border:0;color:#fff;font:inherit;font-size:16px;font-weight:500;outline:none;cursor:pointer;appearance:none}
+  .field select option{color:var(--ink)}
+  .search .btn{margin-left:16px}
+
+  /* ---------- SECCIONES ---------- */
+  .sec{padding:clamp(90px,11vw,160px) 0}
+  .sec-head{display:flex;justify-content:space-between;align-items:flex-end;gap:30px;margin-bottom:clamp(36px,5vw,64px);flex-wrap:wrap}
+  .sec-head p{max-width:42ch;color:var(--ink-2);font-size:17px;line-height:1.55}
+  .sec-head .eyebrow{margin-bottom:20px}
+  .dark{background:var(--navy);color:#fff}
+  .dark .sec-head p{color:#9aa6b2}
+
+  /* ---------- STATEMENT: foto de fondo con parallax + números ---------- */
+  .statement{position:relative;min-height:100svh;display:flex;flex-direction:column;justify-content:center;color:#fff;overflow:hidden;background:#05090d;text-align:center}
+  .st-bg{position:absolute;left:0;right:0;top:-10%;height:120%;will-change:transform}
+  .st-bg img{width:100%;height:100%;object-fit:cover;object-position:60% 55%}
+  .statement::before{content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(180deg,rgba(5,9,13,.85) 0%,rgba(5,9,13,.42) 30%,rgba(5,9,13,.42) 58%,rgba(5,9,13,.92) 100%)}
+  .st-in{position:relative;z-index:2;padding:clamp(110px,14vh,160px) var(--pad) 0}
+  .st-in .eyebrow{color:var(--blue-bright)}
+  .statement h2{font-size:clamp(42px,6vw,96px);font-weight:600;letter-spacing:-.045em;line-height:1;margin:22px auto 22px;max-width:14ch;text-shadow:0 4px 40px rgba(0,0,0,.4)}
+  .st-lead{max-width:52ch;margin:0 auto;color:rgba(255,255,255,.8);font-size:18px;line-height:1.6}
+  .st-cta{display:flex;gap:12px;justify-content:center;margin-top:34px;flex-wrap:wrap}
+  .statement-row{position:relative;z-index:2;display:grid;grid-template-columns:repeat(4,1fr);max-width:1480px;width:100%;margin:clamp(60px,9vh,110px) auto 0;padding:0 var(--pad) clamp(40px,6vh,70px)}
+  .statement-row div{padding:26px 10px 6px;border-top:1px solid rgba(255,255,255,.22)}
+  .statement-row div + div{border-left:1px solid rgba(255,255,255,.12)}
+  .statement-row b{display:block;font-size:clamp(44px,4.6vw,72px);font-weight:600;letter-spacing:-.05em;line-height:1;color:#3a9be0;text-shadow:0 0 40px rgba(58,155,224,.35)}
+  .statement-row small{display:block;font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.65);margin-top:10px}
+
+  /* ---------- SHOWCASE FULL-BLEED (estilo Rivian) ---------- */
+  .show{position:relative;height:100svh;min-height:700px;color:#fff;overflow:hidden;background:#000;cursor:zoom-in}
+  .show > img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transform:scale(1.15);will-change:transform}
+  .show{will-change:clip-path}
+  .show::before{content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(180deg,rgba(4,8,12,.85) 0%,rgba(4,8,12,.55) 26%,rgba(4,8,12,.1) 48%,rgba(4,8,12,0) 58%,rgba(4,8,12,.85) 100%);pointer-events:none}
+  .show-top{position:absolute;z-index:2;top:clamp(110px,15vh,170px);left:0;right:0;text-align:center;padding:0 20px}
+  .show-top .eyebrow{color:var(--blue-bright)}
+  .show-top h2{font-size:clamp(52px,8.5vw,140px);font-weight:600;letter-spacing:-.05em;margin:14px 0 14px;text-shadow:0 2px 6px rgba(0,0,0,.35),0 6px 50px rgba(0,0,0,.55)}
+  .show-top p{font-size:clamp(16px,1.4vw,20px);opacity:.95;text-shadow:0 2px 12px rgba(0,0,0,.6)}
+  .show-bottom{position:absolute;z-index:2;left:0;right:0;bottom:clamp(28px,5vh,56px)}
+  .show-bottom .wrap{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;flex-wrap:wrap}
+  .specs{display:flex;gap:clamp(24px,4vw,64px)}
+  .specs div{font-size:13px;opacity:.8}
+  .specs b{display:block;font-size:clamp(24px,2.6vw,38px);font-weight:500;letter-spacing:-.03em;opacity:1;color:#fff}
+  .show-ctas{display:flex;gap:10px;flex-wrap:wrap}
+  .zoom-hint{display:inline-flex;align-items:center;gap:8px;font-size:13px;opacity:.85;margin-top:18px}
+
+  /* ---------- CARRUSEL DE TARJETAS ALTAS ---------- */
+  .rail{display:flex;gap:18px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;padding:0 var(--pad) 8px;scroll-padding:0 var(--pad)}
+  .rail::-webkit-scrollbar{display:none}
+  .tall{position:relative;flex:none;width:clamp(290px,31vw,500px);aspect-ratio:4/5;border-radius:var(--radius);overflow:hidden;scroll-snap-align:start;cursor:zoom-in;background:#111;color:#fff}
+  .tall img{width:100%;height:100%;object-fit:cover;transition:transform 1.2s var(--ease)}
+  .tall:hover img{transform:scale(1.06)}
+  .tall::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(4,8,12,0) 45%,rgba(4,8,12,.88) 100%);pointer-events:none}
+  .tall-info{position:absolute;z-index:2;left:26px;right:26px;bottom:24px}
+  .tall-info .eyebrow{color:var(--blue-bright);font-size:11px}
+  .tall-info h3{font-size:clamp(28px,2.4vw,38px);font-weight:600;margin:8px 0 6px}
+  .tall-info p{font-size:14px;opacity:.82}
+  .tall-row{display:flex;justify-content:space-between;align-items:center;margin-top:18px;gap:10px}
+  .tall-row .price{font-size:20px;font-weight:700;color:#fff}
+  .tall-row .price small{display:block;font-size:11px;font-weight:500;opacity:.7;color:#fff}
+  .pill{position:absolute;z-index:2;top:18px;right:18px;display:flex;align-items:center;gap:6px;font-size:12px;font-weight:600;padding:7px 11px;border-radius:999px;background:rgba(10,17,24,.6);color:#fff;backdrop-filter:blur(8px)}
+  .rail-nav{display:flex;gap:10px}
+  .rail-nav button{width:50px;height:50px;border-radius:50%;border:1.5px solid rgba(255,255,255,.3);display:grid;place-items:center;color:#fff;transition:.2s}
+  .rail-nav button:hover{background:#fff;color:var(--ink)}
+
+  /* ---------- STOCK EN TARJETAS ---------- */
+  .stock{background:var(--bg-2)}
+  .filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:22px;align-items:center}
+  .chips{display:flex;gap:8px;flex-wrap:wrap}
+  .chip{height:42px;padding:0 18px;border-radius:999px;border:1px solid #d3d9de;font-size:14px;font-weight:500;background:#fff;transition:.2s;white-space:nowrap;flex:none}
+  .chip:hover{border-color:var(--ink)}
+  .chip.active{background:var(--navy);border-color:var(--navy);color:#fff}
+  .filters .push{margin-left:auto;display:flex;gap:8px}
+  .filters select{height:42px;border-radius:999px;border:1px solid #d3d9de;padding:0 16px;font:inherit;font-size:14px;background:#fff;outline:none}
+  .count{font-size:14px;color:var(--muted);margin-bottom:16px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:22px}
+  .card{background:#fff;border-radius:var(--radius);overflow:hidden;display:flex;flex-direction:column;transition:transform .45s var(--ease),box-shadow .45s var(--ease)}
+  .card:hover{transform:translateY(-6px);box-shadow:0 30px 60px -30px rgba(10,17,24,.35)}
+  .card-img{position:relative;aspect-ratio:16/10;overflow:hidden;background:#dde3e8;cursor:zoom-in}
+  .card-img img{width:100%;height:100%;object-fit:cover;transition:transform 1s var(--ease)}
+  .card:hover .card-img img{transform:scale(1.07)}
+  .card-img .pill{top:12px;right:12px}
+  .badge{position:absolute;z-index:2;top:12px;left:12px;font-size:11px;font-weight:700;letter-spacing:.1em;padding:6px 10px;border-radius:999px;background:#fff;color:var(--ink)}
+  .badge.okm{background:var(--blue);color:#fff}
+  .badge.sold{background:#c23b3b;color:#fff}
+  .card.sold .card-img img{filter:grayscale(1) brightness(.75)}
+  .card-body{padding:22px 24px 24px;display:flex;flex-direction:column;flex:1}
+  .card-brand{font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--blue)}
+  .card-title{font-size:23px;font-weight:600;letter-spacing:-.025em;margin:5px 0 14px;line-height:1.15}
+  .card-meta{display:flex;gap:18px;font-size:14px;color:var(--ink-2);padding-bottom:18px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+  .card-meta span{display:flex;align-items:center;gap:6px}
+  .card-foot{display:flex;justify-content:space-between;align-items:center;gap:12px;padding-top:16px;margin-top:auto}
+  .price{font-size:22px;font-weight:700;letter-spacing:-.025em;white-space:nowrap}
+  .price small{display:block;font-size:12px;color:var(--muted);font-weight:500;letter-spacing:0}
+  .price.ask{color:var(--blue)}
+  .card-foot .btn{height:42px;padding:0 18px;font-size:14px}
+  .more{display:flex;justify-content:center;margin-top:34px}
+  .empty{grid-column:1/-1;padding:60px 20px;text-align:center;color:var(--muted)}
+
+  /* ---------- SPLIT FULL-BLEED ---------- */
+  .bleed{position:relative;min-height:100svh;color:#fff;display:flex;align-items:flex-end;overflow:hidden;background:var(--navy)}
+  .bleed > img{position:absolute;inset:0;width:100%;height:120%;object-fit:cover;top:-10%;will-change:transform}
+  .bleed::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(10,17,24,.2),rgba(10,17,24,.9))}
+  .bleed .wrap{position:relative;z-index:2;width:100%;padding-bottom:clamp(50px,8vw,100px)}
+  .bleed h2{max-width:13ch;font-size:clamp(44px,7vw,110px);font-weight:600;letter-spacing:-.045em}
+  .bleed p.lead{max-width:48ch;font-size:18px;opacity:.88;margin:22px 0 40px;line-height:1.5}
+  .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:rgba(255,255,255,.16);border-radius:var(--radius);overflow:hidden;margin-bottom:40px;max-width:1040px;backdrop-filter:blur(10px)}
+  .step{background:rgba(10,17,24,.55);padding:28px}
+  .step b{font-size:13px;color:var(--blue-bright);letter-spacing:.1em}
+  .step h4{font-size:20px;font-weight:600;margin:10px 0 8px}
+  .step p{font-size:14px;opacity:.75;line-height:1.5}
+
+  /* ---------- FINANCIACIÓN ---------- */
+  .fin{display:grid;grid-template-columns:1fr 1fr;gap:clamp(30px,5vw,90px);align-items:center}
+  .calc{background:var(--navy-2);border:1px solid #1f2c38;border-radius:24px;padding:clamp(28px,3.5vw,48px)}
+  .range{margin-bottom:28px}
+  .range-top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:12px}
+  .range-top label{font-size:14px;color:#9aa6b2;font-weight:500}
+  .range-top output{font-size:20px;font-weight:600;letter-spacing:-.02em}
+  input[type=range]{width:100%;-webkit-appearance:none;appearance:none;height:4px;border-radius:4px;background:linear-gradient(var(--blue-bright),var(--blue-bright)) 0/var(--p,50%) 100% no-repeat,#2a3846;outline:none}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;border-radius:50%;background:#fff;border:0;box-shadow:0 0 0 6px rgba(44,154,216,.25);cursor:grab}
+  input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;background:#fff;border:0;cursor:grab}
+  .cuotas{display:flex;gap:8px;flex-wrap:wrap}
+  .cuotas .chip{background:transparent;border-color:#2a3846;color:#fff}
+  .cuotas .chip.active{background:#fff;color:var(--ink);border-color:#fff}
+  .result{margin-top:32px;padding-top:28px;border-top:1px solid #22303c;display:flex;justify-content:space-between;align-items:flex-end;gap:20px;flex-wrap:wrap}
+  .result .big{font-size:clamp(44px,4.6vw,64px);font-weight:500;letter-spacing:-.04em;line-height:1}
+  .result small{display:block;font-size:13px;color:#9aa6b2;margin-bottom:8px}
+  .fine{font-size:12px;color:#7c8896;margin-top:18px;line-height:1.5}
+  .fin-copy ul{list-style:none;margin:32px 0 36px}
+  .fin-copy li{display:flex;gap:14px;padding:17px 0;border-bottom:1px solid #1f2c38;font-size:17px}
+  .fin-copy li svg{flex:none;margin-top:2px}
+
+  /* ---------- MARCAS ---------- */
+  .brands{padding:44px 0;overflow:hidden;border-top:1px solid #1a2631;background:var(--navy)}
+  .marquee{display:flex;gap:84px;width:max-content;animation:marquee 38s linear infinite}
+  .marquee span{font-size:30px;font-weight:700;letter-spacing:-.02em;color:#3a4a59;text-transform:uppercase;white-space:nowrap}
+  @keyframes marquee{to{transform:translateX(-50%)}}
+
+  /* ---------- POR QUÉ ELEGIRNOS ---------- */
+  .why-sec{position:relative;overflow:clip}
+  .why-sec::before{content:"";position:absolute;width:900px;height:900px;right:-300px;top:-380px;border-radius:50%;background:radial-gradient(circle,rgba(44,154,216,.18),rgba(44,154,216,0) 65%);pointer-events:none}
+  .why{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;position:relative}
+  .why-card{position:relative;aspect-ratio:3/4;border-radius:20px;overflow:hidden;color:#fff;cursor:zoom-in;isolation:isolate}
+  .why-card img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform 1.4s var(--ease),filter .6s}
+  .why-card:hover img{transform:scale(1.07)}
+  .why-card::after{content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(180deg,rgba(6,11,16,.15) 0%,rgba(6,11,16,0) 35%,rgba(6,11,16,.92) 100%);pointer-events:none}
+  .why-card .num{position:absolute;z-index:2;top:26px;left:30px;font-size:13px;font-weight:600;letter-spacing:.16em;color:var(--blue-bright)}
+  .why-card .ic{position:absolute;z-index:2;top:20px;right:22px;width:46px;height:46px;border-radius:50%;background:rgba(255,255,255,.12);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.2);display:grid;place-items:center}
+  .why-card .txt{position:absolute;z-index:2;left:30px;right:30px;bottom:30px}
+  .why-card h4{font-size:clamp(26px,2.2vw,34px);font-weight:600;letter-spacing:-.03em;line-height:1.05;margin-bottom:12px}
+  .why-card p{font-size:15px;line-height:1.55;opacity:.8;max-width:32ch}
+  .why-card .line{display:block;width:40px;height:2px;background:var(--blue-bright);margin-bottom:18px;transition:width .6s var(--ease)}
+  .why-card:hover .line{width:90px}
+  .rating{position:relative;display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:clamp(20px,4vw,60px);margin-top:20px;padding:clamp(28px,3.5vw,44px) clamp(28px,4vw,56px);border-radius:20px;background:linear-gradient(120deg,#0f2232,#0b1620 60%);border:1px solid #1d2d3b;overflow:hidden}
+  .rating b{font-size:clamp(64px,7vw,110px);font-weight:600;letter-spacing:-.05em;line-height:.9;background:linear-gradient(180deg,#fff,#8fc9ec);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .rating .stars{color:#f5c518;letter-spacing:4px;font-size:20px;margin-bottom:8px}
+  .rating span{display:block;color:#9aa6b2;font-size:16px;line-height:1.5}
+  .rating span strong{color:#fff;font-weight:600;font-size:22px;display:block;margin-bottom:2px}
+
+  /* ---------- CONTACTO ---------- */
+  .contact{background:var(--bg-2)}
+  .contact-grid{display:grid;grid-template-columns:1.1fr 1fr;gap:20px}
+  .visit{position:relative;border-radius:24px;overflow:hidden;color:#fff;min-height:640px;display:flex;flex-direction:column;justify-content:flex-end;padding:clamp(28px,3.5vw,48px);cursor:zoom-in}
+  .visit > img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform 1.2s var(--ease)}
+  .visit:hover > img{transform:scale(1.04)}
+  .visit::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(10,17,24,.05) 20%,rgba(10,17,24,.92))}
+  .visit > *:not(img){position:relative;z-index:2;cursor:default}
+  .visit .eyebrow{color:var(--blue-bright);margin-bottom:14px}
+  .visit h3{font-size:clamp(34px,3.6vw,54px);font-weight:600;margin-bottom:26px}
+  .branch{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:15px 0;border-top:1px solid rgba(255,255,255,.2);font-size:15px}
+  .branch small{display:block;opacity:.7;font-size:13px;margin-top:2px}
+  .branch a{font-size:13px;font-weight:600;border-bottom:1px solid currentColor;white-space:nowrap;cursor:pointer}
+  form.lead{background:#fff;border-radius:24px;padding:clamp(28px,3.5vw,48px)}
+  form.lead h3{font-size:clamp(30px,3vw,44px);font-weight:600;margin-bottom:8px}
+  form.lead > p{color:var(--ink-2);margin-bottom:28px}
+  .row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .fld{display:flex;flex-direction:column;gap:6px;margin-bottom:14px}
+  .fld label{font-size:13px;font-weight:500;color:var(--ink-2)}
+  .fld input,.fld textarea{height:52px;border:1px solid #d3d9de;border-radius:12px;padding:0 14px;font:inherit;font-size:15px;background:#fff;outline:none;transition:border-color .2s}
+  .fld textarea{height:110px;padding:12px 14px;resize:vertical}
+  .fld input:focus,.fld textarea:focus{border-color:var(--blue)}
+  .seg{display:flex;background:var(--bg-2);border-radius:999px;padding:4px;margin-bottom:24px}
+  .seg button{flex:1;height:42px;border-radius:999px;font-size:14px;font-weight:600;color:var(--muted);transition:.25s}
+  .seg button.active{background:#fff;color:var(--ink);box-shadow:0 1px 4px rgba(0,0,0,.08)}
+  form.lead .btn{width:100%;height:56px;margin-top:6px}
+
+  /* ---------- FOOTER ---------- */
+  footer{background:var(--navy);color:#c3cbd2;padding:90px 0 30px;overflow:hidden}
+  .foot-top{display:grid;grid-template-columns:1.4fr repeat(3,1fr);gap:40px;margin-bottom:80px}
+  .foot-top h5{color:#fff;font-size:14px;font-weight:600;margin-bottom:18px}
+  .foot-top div > a:not(.logo){display:block;font-size:15px;padding:6px 0;opacity:.75;transition:opacity .2s}
+  .foot-top div > a:not(.logo):hover{opacity:1}
+  .foot-top p{max-width:34ch;line-height:1.55;font-size:15px;margin-top:18px;opacity:.75}
+  .wordmark{font-size:clamp(70px,18vw,280px);font-weight:900;letter-spacing:-.055em;line-height:.8;color:#fff;white-space:nowrap;margin-left:-.04em}
+  .wordmark .c{color:#3482c3}
+  .foot-bottom{display:flex;justify-content:space-between;gap:20px;font-size:13px;opacity:.6;margin-top:36px;flex-wrap:wrap}
+
+  /* ---------- WHATSAPP ---------- */
+  .wa{position:fixed;right:22px;bottom:22px;z-index:60;width:60px;height:60px;border-radius:50%;background:#25d366;display:grid;place-items:center;box-shadow:0 10px 30px -6px rgba(37,211,102,.6);transition:transform .25s var(--ease)}
+  .wa:hover{transform:scale(1.08)}
+  .wa::before{content:"";position:absolute;inset:0;border-radius:50%;background:#25d366;animation:ping 2.4s infinite;z-index:-1}
+  @keyframes ping{0%{transform:scale(1);opacity:.5}80%,100%{transform:scale(1.7);opacity:0}}
+
+  /* ---------- VISOR DE FOTOS (lightbox) ---------- */
+  .lb{position:fixed;inset:0;z-index:200;background:rgba(5,9,13,.97);color:#fff;display:grid;grid-template-rows:auto 1fr auto;opacity:0;pointer-events:none;transition:opacity .35s}
+  .lb.open{opacity:1;pointer-events:auto}
+  .lb-top{display:flex;justify-content:space-between;align-items:center;padding:18px var(--pad);gap:20px}
+  .lb-title{font-size:18px;font-weight:600}
+  .lb-title small{display:block;font-size:13px;font-weight:400;opacity:.6;margin-top:2px}
+  .lb-top-r{display:flex;align-items:center;gap:12px}
+  .lb-count{font-size:14px;opacity:.7;font-variant-numeric:tabular-nums}
+  .lb-btn{width:48px;height:48px;border-radius:50%;background:rgba(255,255,255,.1);display:grid;place-items:center;color:#fff;transition:background .2s}
+  .lb-btn:hover{background:rgba(255,255,255,.22)}
+  .lb-stage{position:relative;display:grid;place-items:center;overflow:hidden;padding:0 clamp(12px,6vw,96px);min-height:0}
+  .lb-stage img{max-width:100%;max-height:calc(100svh - 190px);object-fit:contain;border-radius:8px;user-select:none;transition:opacity .25s}
+  .lb-stage .lb-btn{position:absolute;top:50%;transform:translateY(-50%);width:56px;height:56px}
+  .lb-prev{left:clamp(10px,2vw,28px)}
+  .lb-next{right:clamp(10px,2vw,28px)}
+  .lb-thumbs{display:flex;gap:10px;justify-content:center;padding:16px var(--pad) 22px;overflow-x:auto;scrollbar-width:none}
+  .lb-thumbs:empty{padding:10px}
+  .lb-thumbs button{flex:none;width:96px;aspect-ratio:3/2;border-radius:8px;overflow:hidden;opacity:.45;outline:2px solid transparent;outline-offset:2px;transition:.2s}
+  .lb-thumbs button.on{opacity:1;outline-color:var(--blue-bright)}
+  .lb-thumbs img{width:100%;height:100%;object-fit:cover}
+
+  /* ---------- EFECTOS ---------- */
+  .loader{position:fixed;inset:0;z-index:400;background:var(--navy);display:grid;place-items:center;clip-path:inset(0 0 0 0);transition:clip-path 1.1s cubic-bezier(.76,0,.24,1)}
+  .loader.done{clip-path:inset(0 0 100% 0)}
+  .loader-in{display:flex;flex-direction:column;align-items:center;gap:22px;color:#fff}
+  .loader .bm{animation:ldIn .9s var(--ease) both}
+  .loader-bar{width:160px;height:2px;background:rgba(255,255,255,.12);border-radius:2px;overflow:hidden}
+  .loader-bar i{display:block;height:100%;background:var(--blue-bright);animation:ldBar 1.1s var(--ease) forwards}
+  .loader-word{font-weight:800;letter-spacing:.32em;font-size:12px;opacity:.7}
+  @keyframes ldIn{from{opacity:0;transform:scale(.8)}to{opacity:1;transform:none}}
+  @keyframes ldBar{from{width:0}to{width:100%}}
+  .progress{position:fixed;top:0;left:0;width:100%;height:3px;z-index:70;background:linear-gradient(90deg,var(--blue),var(--blue-bright));transform-origin:0 50%;transform:scaleX(0);pointer-events:none}
+  .split .w{display:inline-block;overflow:hidden;vertical-align:top;padding-bottom:.1em;margin-bottom:-.1em}
+  .split .w > span{display:inline-block;transform:translateY(110%);transition:transform 1.1s var(--ease)}
+  .split.go .w > span{transform:none}
+  .tilt{transition:transform .5s var(--ease);transform-style:preserve-3d;will-change:transform}
+  .rail.dragging{cursor:grabbing;scroll-snap-type:none}
+  .rail.dragging .tall{pointer-events:none}
+  .hero-content,.hero-media{will-change:transform}
+
+
+  /* ---------- MOVIMIENTOS EXTRA ---------- */
+  /* Cursor personalizado (solo con mouse) */
+  .cur-dot,.cur-ring{position:fixed;left:0;top:0;z-index:500;pointer-events:none;border-radius:50%;opacity:0;transition:opacity .3s}
+  .cur-dot{width:6px;height:6px;margin:-3px 0 0 -3px;background:#fff;mix-blend-mode:difference}
+  .cur-ring{width:38px;height:38px;margin:-19px 0 0 -19px;border:1.5px solid rgba(255,255,255,.7);mix-blend-mode:difference;display:grid;place-items:center;font-size:11px;font-weight:700;letter-spacing:.12em;color:#0a1118;transition:width .35s var(--ease),height .35s var(--ease),margin .35s var(--ease),background .35s,border-color .35s,opacity .3s}
+  .cur-ring span{opacity:0;transition:opacity .2s}
+  body.has-cursor .cur-dot,body.has-cursor .cur-ring{opacity:1}
+  body.cur-link .cur-ring{width:58px;height:58px;margin:-29px 0 0 -29px;background:rgba(255,255,255,.12)}
+  body.cur-view .cur-ring{width:86px;height:86px;margin:-43px 0 0 -43px;background:#fff;border-color:#fff;mix-blend-mode:normal}
+  body.cur-view .cur-ring span{opacity:1}
+  body.cur-view .cur-dot{opacity:0}
+  /* Destello en botones */
+  .btn{position:relative;overflow:hidden;isolation:isolate}
+  .btn::after{content:"";position:absolute;top:0;bottom:0;left:-60%;width:40%;z-index:-1;background:linear-gradient(100deg,transparent,rgba(255,255,255,.45),transparent);transform:skewX(-20deg);transition:left .7s var(--ease)}
+  .btn:hover::after{left:130%}
+  .btn.mag{transition:transform .35s var(--ease),background .25s,color .25s,border-color .25s}
+  /* Fotos del stock que se revelan con cortina */
+  .card .card-img{clip-path:inset(100% 0 0 0);transition:clip-path 1.1s cubic-bezier(.77,0,.18,1)}
+  .card .card-img img{transform:scale(1.25);transition:transform 1.6s var(--ease)}
+  .card.seen .card-img{clip-path:inset(0 0 0 0)}
+  .card.seen .card-img img{transform:scale(1)}
+  .card.seen:hover .card-img img{transform:scale(1.07)}
+  .card{opacity:0;transform:translateY(40px);transition:opacity .9s var(--ease),transform .9s var(--ease),box-shadow .45s var(--ease)}
+  .card.seen{opacity:1;transform:none}
+  .brands{transition:transform .5s var(--ease)}
+
+
+  /* =========================================================
+     CAPA PREMIUM: todo oscuro, grano fílmico, secciones que cuentan una historia
+     ========================================================= */
+  body::after{content:"";position:fixed;inset:-50%;z-index:450;pointer-events:none;opacity:.07;mix-blend-mode:overlay;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    animation:grain 1.2s steps(6) infinite}
+  @keyframes grain{0%{transform:translate(0,0)}20%{transform:translate(-3%,2%)}40%{transform:translate(2%,-3%)}60%{transform:translate(-2%,3%)}80%{transform:translate(3%,1%)}100%{transform:translate(0,0)}}
+
+  /* Stock en oscuro */
+  .stock{background:var(--navy);color:#fff}
+  .stock .sec-head p{color:#9aa6b2}
+  .stock .chip{background:transparent;border-color:#2a3846;color:#c9d2da}
+  .stock .chip:hover{border-color:#fff;color:#fff}
+  .stock .chip.active{background:#fff;border-color:#fff;color:var(--navy)}
+  .stock .filters select{background:#0f1923;border-color:#2a3846;color:#fff}
+  .stock .count{color:#7f8c98}
+  .stock .card{background:#0f1923;border:1px solid #1b2834;color:#fff}
+  .stock .card:hover{box-shadow:0 30px 70px -30px rgba(44,154,216,.35);border-color:#2a3d50}
+  .stock .card-brand{color:var(--blue-bright)}
+  .stock .card-meta{color:#9aa6b2;border-color:#1f2c38}
+  .stock .price small{color:#7f8c98}
+  .stock .price.ask{color:var(--blue-bright)}
+  .stock .btn-outline{border-color:rgba(255,255,255,.35);color:#fff}
+  .stock .btn-outline:hover{background:#fff;color:var(--navy);border-color:#fff}
+  .stock .btn-dark{background:#fff;color:var(--navy)}
+  .stock .empty{color:#9aa6b2}
+  .stock .card-img{background:#15212c}
+
+  /* Contacto en oscuro */
+  .contact{background:#070c11}
+  form.lead{background:#0f1923;border:1px solid #1b2834;color:#fff}
+  form.lead > p,.fld label{color:#9aa6b2}
+  .fld input,.fld textarea{background:#15212c;border-color:#2a3846;color:#fff}
+  .fld input::placeholder,.fld textarea::placeholder{color:#5f6c78}
+  .seg{background:#15212c}
+  .seg button{color:#9aa6b2}
+  .seg button.active{background:#fff;color:var(--navy)}
+  form.lead .btn-dark{background:var(--blue)}
+  form.lead .btn-dark:hover{background:var(--blue-bright)}
+
+  /* Recién ingresados: sección fija con desplazamiento horizontal */
+  .rail-sec .pin{position:relative}
+  .rail-sec.pinned{padding:0}
+  .rail-sec.pinned .pin{position:sticky;top:0;height:100svh;display:flex;flex-direction:column;justify-content:center;overflow:hidden;padding-top:60px}
+  .rail-sec.pinned .rail{overflow:visible;scroll-snap-type:none;width:max-content;will-change:transform}
+  .rail-sec.pinned .tall{width:auto;height:min(60vh,620px)}
+  .rail-sec.pinned .rail-nav{display:none}
+  .rail-prog{display:none;position:relative;height:2px;background:#22303c;margin:34px var(--pad) 0}
+  .rail-prog i{position:absolute;inset:0;background:var(--blue-bright);transform-origin:0 50%;transform:scaleX(0)}
+  .rail-sec.pinned .rail-prog{display:block}
+  .rail-hint{display:none;font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:#7f8c98;align-items:center;gap:10px}
+  .rail-sec.pinned .rail-hint{display:flex}
+
+  /* Franja de texto gigante que se mueve con el scroll */
+  .bigband{background:var(--navy);overflow:hidden;padding:clamp(40px,6vw,80px) 0;border-top:1px solid #16212b;border-bottom:1px solid #16212b}
+  .bb-row{display:flex;white-space:nowrap;font-size:clamp(56px,9vw,150px);font-weight:800;letter-spacing:-.04em;line-height:1.02;text-transform:uppercase;will-change:transform}
+  .bb-row span{padding-right:.35em}
+  .bb-row .o{color:transparent;-webkit-text-stroke:1.5px rgba(255,255,255,.35)}
+  .bb-row .b{color:#fff}
+  .bb-row .c{color:#3482c3}
+
+  /* Por qué elegirnos: imagen fija que cambia mientras pasan los textos */
+  .story{display:grid;grid-template-columns:1.15fr .85fr;gap:clamp(30px,5vw,90px);margin-top:10px}
+  .story-media{position:sticky;top:12vh;height:76vh;border-radius:22px;overflow:hidden;background:#000;align-self:start}
+  .story-media img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transform:scale(1.1);transition:opacity 1s var(--ease),transform 1.8s var(--ease)}
+  .story-media img.on{opacity:1;transform:none}
+  .story-media::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(6,11,16,0) 60%,rgba(6,11,16,.75));pointer-events:none}
+  .story-count{position:absolute;z-index:2;left:28px;bottom:24px;font-size:13px;letter-spacing:.2em;color:#fff}
+  .story-count b{font-size:28px;letter-spacing:-.02em;margin-right:6px}
+  .story-bar{position:absolute;z-index:2;left:28px;right:28px;bottom:16px;height:2px;background:rgba(255,255,255,.18)}
+  .story-bar i{position:absolute;left:0;top:0;bottom:0;width:33.33%;background:var(--blue-bright);transition:transform .8s var(--ease)}
+  .story-steps .st{min-height:76vh;display:flex;flex-direction:column;justify-content:center;opacity:.22;transition:opacity .7s var(--ease),transform .7s var(--ease);transform:translateX(20px)}
+  .story-steps .st.on{opacity:1;transform:none}
+  .st .tag{font-size:12px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--blue-bright)}
+  .st h3{font-size:clamp(34px,3.6vw,58px);font-weight:600;letter-spacing:-.04em;margin:24px 0 16px;line-height:1}
+  .st p{font-size:18px;line-height:1.6;color:#9aa6b2;max-width:38ch}
+  .st ul{list-style:none;margin-top:22px;display:grid;gap:10px}
+  .st li{display:flex;gap:10px;align-items:center;font-size:15px;color:#d5dde4}
+  .st li::before{content:"";width:18px;height:1px;background:var(--blue-bright)}
+
+  /* Paneles que se expanden */
+  .explore{background:#070c11;padding:clamp(90px,11vw,150px) 0}
+  .explore{color:#fff}
+  .explore .sec-head p{color:#9aa6b2}
+  body{background:var(--navy)}
+  .panels{display:flex;gap:14px;height:min(74vh,720px)}
+  .panel{position:relative;flex:1;border-radius:20px;overflow:hidden;color:#fff;transition:flex 1s cubic-bezier(.7,0,.2,1);min-width:0;background:#000}
+  .panels:hover .panel{flex:.75}
+  .panels .panel:hover{flex:2.6}
+  .panel img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:saturate(.85) brightness(.7);transition:transform 1.4s var(--ease),filter .8s}
+  .panel:hover img{transform:scale(1.06);filter:saturate(1) brightness(.85)}
+  .panel::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(6,11,16,.25),rgba(6,11,16,.15) 40%,rgba(6,11,16,.9));pointer-events:none}
+  .panel .pn{position:absolute;z-index:2;top:24px;left:26px;font-size:13px;letter-spacing:.2em;color:var(--blue-bright);font-weight:600}
+  .panel .pt{position:absolute;z-index:2;left:26px;right:26px;bottom:26px}
+  .panel h3{font-size:clamp(26px,2.4vw,38px);font-weight:600;letter-spacing:-.03em;line-height:1.02;white-space:nowrap}
+  .panel p{font-size:15px;color:rgba(255,255,255,.8);max-width:34ch;margin-top:12px;max-height:0;opacity:0;overflow:hidden;transition:max-height .8s var(--ease),opacity .5s}
+  .panel:hover p{max-height:120px;opacity:1}
+  .panel .go{display:inline-flex;align-items:center;gap:10px;margin-top:16px;font-weight:600;font-size:14px;border-bottom:1px solid rgba(255,255,255,.4);padding-bottom:4px}
+  @media (max-width:1080px){
+    .story{grid-template-columns:1fr}
+    .story-media{top:84px;height:44vh;z-index:3}
+    .story-steps .st{min-height:62vh;transform:none}
+    .panels{flex-direction:column;height:auto}
+    .panel{flex:none!important;height:280px}
+    .panel p{max-height:none;opacity:1}
+    .panel h3{white-space:normal}
+  }
+
+
+  /* ---------- PIE NUEVO ---------- */
+  footer{padding:0 0 30px;background:#060a0e}
+  .foot-cta{position:relative;overflow:hidden;color:#fff;padding:clamp(110px,14vw,190px) 0;text-align:center}
+  .foot-cta > img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:60% 60%;filter:brightness(.42) saturate(1.1)}
+  .foot-cta::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,#070c11 0%,rgba(7,12,17,.2) 30%,rgba(7,12,17,.2) 70%,#060a0e 100%);pointer-events:none}
+  .foot-cta .wrap{position:relative;z-index:2}
+  .foot-cta h2{font-size:clamp(44px,6.4vw,100px);font-weight:600;letter-spacing:-.045em;margin:20px 0 20px}
+  .foot-cta p{max-width:50ch;margin:0 auto 34px;color:rgba(255,255,255,.8);font-size:18px;line-height:1.55}
+  .foot-cta .hero-ctas{justify-content:center}
+  .foot-main{display:grid;grid-template-columns:1.5fr 1fr 1fr 1.2fr;gap:40px;padding-top:70px;padding-bottom:60px;border-bottom:1px solid #18232e}
+  .foot-brand p{max-width:34ch;line-height:1.6;font-size:15px;color:#9aa6b2;margin:22px 0 22px}
+  .foot-col h5{color:#fff;font-size:13px;letter-spacing:.14em;text-transform:uppercase;font-weight:600;margin-bottom:18px}
+  .foot-col a,.foot-col span{display:block;font-size:15px;padding:6px 0;color:#9aa6b2;transition:color .2s}
+  .foot-col a:hover{color:#fff}
+  .foot-bottom{display:flex;justify-content:space-between;gap:20px;font-size:13px;color:#6f7b87;padding-top:26px;flex-wrap:wrap}
+  .foot-bottom a{text-decoration:underline}
+  /* Íconos oficiales de redes */
+  .social{display:flex;gap:10px;align-items:center}
+  .social a{width:40px;height:40px;border:0;border-radius:11px;padding:0;background:none;backdrop-filter:none;display:block;transition:transform .25s var(--ease),filter .25s}
+  .social a:hover{background:none;transform:translateY(-2px) scale(1.06);filter:brightness(1.08)}
+  .social svg{width:100%;height:100%;display:block}
+  .nav-social a{width:34px;height:34px}
+  .nav-cta{gap:14px}
+  @media (max-width:860px){ .foot-main{grid-template-columns:1fr 1fr} .foot-brand{grid-column:1/-1} }
+  @media (max-width:680px){ .nav-social a{width:30px;height:30px} .bm-line .bm-top{font-size:25px} .foot-main{grid-template-columns:1fr} }
+
+
+  /* ---------- CELULARES Y TABLETS: liviano y sin efectos pesados ---------- */
+  .card-title{overflow-wrap:anywhere}
+  @media (hover:none), (max-width:860px){
+    body::after{display:none}                                   /* sin grano fílmico */
+    .tail-fx .puff{mix-blend-mode:normal;filter:blur(5px)}       /* vapor más liviano */
+    .tail-fx .puff:nth-of-type(3n),.tail-fx .puff:nth-of-type(3n+1){display:none}
+    .btn-ghost,.pill,.steps,.st-badge,.stage-nav button,.nav.solid,.social a{-webkit-backdrop-filter:none;backdrop-filter:none}
+    .nav.solid{background:rgba(10,17,24,.97)}
+    .show,.show > img,.hero-zoom,.st-bg{will-change:auto}
+  }
+  @media (max-width:680px){
+    .sec{padding:72px 0}
+    .sec-head{margin-bottom:28px}
+    .hero h1{font-size:40px}
+    .hero p{font-size:15px}
+    .hero-ctas .btn{flex:1 1 auto}
+    .statement h2{font-size:38px}
+    .statement-row small{font-size:11px;letter-spacing:.08em}
+    .statement-row b{font-size:40px}
+    .show-top h2{font-size:44px}
+    .show-bottom .specs b{font-size:22px}
+    .show-ctas{width:100%}
+    .show-ctas .btn{flex:1}
+    .foot-cta h2{font-size:40px}
+    .foot-cta .hero-ctas .btn{width:100%}
+    .filters select{font-size:13px;padding:0 10px}
+    .lb-top{padding:12px 14px}
+    .lb-title{font-size:15px}
+    .wa{width:54px;height:54px;right:16px;bottom:16px}
+  }
+
+  .ilus{position:absolute;z-index:2;left:12px;bottom:12px;font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;padding:5px 9px;border-radius:999px;background:rgba(10,17,24,.72);color:rgba(255,255,255,.85)}
+
+  /* ---------- ASESOR VIRTUAL ---------- */
+  .asst{position:fixed;right:22px;bottom:96px;z-index:65;font-family:"Inter Tight",system-ui,sans-serif}
+  .asst-fab{position:relative;display:flex;align-items:center;gap:10px;height:52px;padding:0 20px 0 16px;border-radius:999px;color:#fff;font-weight:600;font-size:14.5px;letter-spacing:.01em;
+    background:linear-gradient(135deg,#123049,#0b1720);border:1px solid rgba(90,170,230,.45);box-shadow:0 14px 40px -10px rgba(44,154,216,.55),inset 0 1px 0 rgba(255,255,255,.08);transition:transform .3s var(--ease),box-shadow .3s}
+  .asst-fab:hover{transform:translateY(-2px);box-shadow:0 18px 50px -10px rgba(44,154,216,.75)}
+  .asst-fab svg{width:22px;height:22px;color:#7cc4f2;animation:twinkle 3s ease-in-out infinite}
+  @keyframes twinkle{0%,100%{transform:scale(1) rotate(0)}50%{transform:scale(1.12) rotate(12deg)}}
+  .asst-fab::after{content:"";position:absolute;top:9px;right:12px;width:8px;height:8px;border-radius:50%;background:#2ee08a;box-shadow:0 0 0 3px #0b1720}
+  .asst.open .asst-fab{opacity:0;pointer-events:none;transform:scale(.9)}
+  .asst-tip{position:absolute;right:0;bottom:64px;width:max-content;max-width:240px;padding:12px 30px 12px 14px;border-radius:14px 14px 4px 14px;background:#fff;color:#0a1118;font-size:14px;font-weight:500;line-height:1.35;box-shadow:0 14px 40px -12px rgba(0,0,0,.5);cursor:pointer;opacity:0;transform:translateY(8px);pointer-events:none;transition:.4s var(--ease)}
+  .asst-tip.on{opacity:1;transform:none;pointer-events:auto}
+  .asst-tip button{position:absolute;top:4px;right:8px;font-size:18px;color:#6d7782;line-height:1}
+  .asst-panel{position:absolute;right:0;bottom:0;width:390px;height:min(640px,calc(100svh - 130px));display:flex;flex-direction:column;border-radius:24px;overflow:hidden;color:#e8edf2;
+    background:linear-gradient(180deg,#0e1a24 0%,#0a1219 100%);border:1px solid #1f3142;box-shadow:0 40px 90px -20px rgba(0,0,0,.75),0 0 0 1px rgba(255,255,255,.02) inset;
+    opacity:0;transform:translateY(20px) scale(.97);transform-origin:bottom right;pointer-events:none;transition:opacity .35s var(--ease),transform .45s var(--ease)}
+  .asst-panel.on{opacity:1;transform:none;pointer-events:auto}
+  .asst-h{display:flex;align-items:center;gap:12px;padding:16px 16px 14px 18px;border-bottom:1px solid #1a2a38;background:linear-gradient(180deg,rgba(44,154,216,.1),rgba(44,154,216,0))}
+  .asst-av{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;background:radial-gradient(circle at 30% 25%,#2c9ad8,#0d4f78);box-shadow:0 0 0 3px rgba(44,154,216,.18)}
+  .asst-av svg{width:22px;height:22px;color:#fff}
+  .asst-ht{flex:1;min-width:0}
+  .asst-ht b{display:block;font-size:15.5px;font-weight:600}
+  .asst-ht small{display:flex;align-items:center;gap:6px;font-size:12.5px;color:#8fa1b1;margin-top:2px}
+  .asst-ht small i{width:7px;height:7px;border-radius:50%;background:#2ee08a;box-shadow:0 0 8px #2ee08a}
+  .asst-x{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;color:#9aa6b2;transition:.2s}
+  .asst-x:hover{background:rgba(255,255,255,.08);color:#fff}
+  .asst-x svg{width:18px;height:18px}
+  .asst-body{flex:1;overflow-y:auto;padding:18px 16px 8px;display:flex;flex-direction:column;gap:10px;scrollbar-width:thin;scrollbar-color:#22374a transparent}
+  .msg{max-width:88%;padding:11px 14px;border-radius:18px;font-size:14.5px;line-height:1.5;animation:msgIn .4s var(--ease) both}
+  @keyframes msgIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+  .msg p{margin:0}
+  .msg.bot{align-self:flex-start;background:#15232f;border:1px solid #1d3042;border-bottom-left-radius:6px}
+  .msg.me{align-self:flex-end;background:linear-gradient(135deg,#1478b5,#0d5f92);color:#fff;border-bottom-right-radius:6px}
+  .msg b{color:#fff}
+  .dots{display:inline-flex;gap:4px;padding:4px 2px}
+  .dots i{width:7px;height:7px;border-radius:50%;background:#7f94a6;animation:dot 1.2s infinite}
+  .dots i:nth-child(2){animation-delay:.15s}.dots i:nth-child(3){animation-delay:.3s}
+  @keyframes dot{0%,60%,100%{opacity:.3;transform:none}30%{opacity:1;transform:translateY(-3px)}}
+  .asst-chips{display:flex;flex-wrap:wrap;gap:7px;margin:2px 0 4px}
+  .asst-chips button{padding:8px 13px;border-radius:999px;border:1px solid #284257;background:rgba(44,154,216,.07);color:#cfe3f1;font-size:13px;font-weight:500;transition:.2s}
+  .asst-chips button:hover{background:#2c9ad8;border-color:#2c9ad8;color:#fff}
+  .asst-cars{display:grid;gap:8px;margin-top:10px}
+  .asst-car{display:grid;grid-template-columns:96px 1fr;gap:12px;padding:8px;border-radius:14px;background:#0f1a24;border:1px solid #1d3042}
+  .asst-car img{width:96px;height:100%;min-height:78px;object-fit:cover;border-radius:10px}
+  .asst-car b{display:block;font-size:13.5px;line-height:1.25}
+  .asst-car small{display:block;font-size:12px;color:#8fa1b1;margin-top:2px}
+  .asst-car .p{display:block;font-size:13.5px;font-weight:700;color:#fff;margin-top:4px}
+  .asst-car .p em{font-style:normal;font-weight:500;font-size:11px;color:#8fa1b1}
+  .asst-car .r{display:flex;gap:6px;margin-top:7px}
+  .asst-car .r button,.asst-car .r a{font-size:12px;font-weight:600;padding:5px 10px;border-radius:999px;border:1px solid #2a4054;color:#dbe8f1}
+  .asst-car .r a{background:#fff;color:#0a1118;border-color:#fff}
+  .asst-more,.asst-link,.asst-wa{display:inline-flex;align-items:center;gap:8px;margin-top:10px;font-size:13px;font-weight:600;color:#7cc4f2}
+  .asst-link{display:flex}
+  .asst-wa{padding:8px 14px;border-radius:999px;background:#25d366;color:#fff}
+  .asst-wa svg{width:16px;height:16px}
+  .asst-f{display:flex;gap:8px;padding:12px 14px 6px;border-top:1px solid #1a2a38}
+  .asst-f input{flex:1;height:46px;border-radius:999px;border:1px solid #243a4d;background:#0f1a24;color:#fff;padding:0 18px;font:inherit;font-size:14.5px;outline:none;transition:border-color .2s}
+  .asst-f input:focus{border-color:#2c9ad8}
+  .asst-f input::placeholder{color:#62778a}
+  .asst-f button{width:46px;height:46px;border-radius:50%;background:#2c9ad8;color:#fff;display:grid;place-items:center;transition:.2s}
+  .asst-f button:hover{background:#45aae6}
+  .asst-f button svg{width:20px;height:20px}
+  .asst-note{font-size:11px;color:#5f7386;text-align:center;padding:4px 16px 12px}
+  @media (max-width:680px){
+    .asst{right:16px;bottom:82px}
+    .asst-fab{width:52px;padding:0;justify-content:center}
+    .asst-fab span{display:none}
+    .asst-fab::after{top:6px;right:6px}
+    .asst.open{inset:0;right:0;bottom:0}
+    .asst-panel{position:fixed;inset:0;width:auto;height:100%;border-radius:0;border:0}
+    .asst-tip{bottom:60px}
+  }
+
+
+  /* Faros del Camaro: brillo blanco azulado sobre la foto */
+  .st-glow{position:absolute;left:0;right:0;top:-10%;height:120%;z-index:1;pointer-events:none;will-change:transform}
+  .hl-box{position:absolute;opacity:0}
+  .statement.lit .hl-box{animation:hlOn 1.6s .2s forwards}
+  .hl-box i{position:absolute;display:block;border-radius:50%;mix-blend-mode:screen;animation:hlPulse 4.2s ease-in-out infinite}
+  .hl-halo{left:61%;top:47%;width:30%;height:25%;background:radial-gradient(closest-side,rgba(165,212,255,.5),rgba(120,180,255,.18) 55%,rgba(120,180,255,0));filter:blur(18px)}
+  .hl-flare{left:52%;top:58.4%;width:50%;height:.9%;border-radius:0!important;background:linear-gradient(90deg,rgba(150,205,255,0),rgba(190,225,255,.75) 50%,rgba(150,205,255,0));filter:blur(1.5px)}
+  .hl-core{left:70%;top:55%;width:14%;height:9%;background:radial-gradient(closest-side,rgba(240,248,255,.95),rgba(160,205,255,.55) 50%,rgba(120,180,255,0));filter:blur(6px)}
+  .hl-led{left:71.6%;top:57.2%;width:10.8%;height:3.6%;background:radial-gradient(closest-side,#fff,rgba(220,238,255,.8) 45%,rgba(160,205,255,0));filter:blur(2.5px)}
+  .hl-drl{left:79.9%;top:68.2%;width:3.6%;height:11%;border-radius:40%!important;background:radial-gradient(closest-side,#fff,rgba(210,232,255,.75) 50%,rgba(160,205,255,0));filter:blur(3px)}
+  .hl-halo.b{left:39%;top:46%;width:18%;height:22%}
+  .hl-core.b{left:44.6%;top:51.6%;width:7.4%;height:7.6%}
+  .hl-led.b{left:46.2%;top:54%;width:4.2%;height:3.2%}
+  .hl-drl.b{left:44.7%;top:60.4%;width:2.2%;height:7.6%}
+  .hl-flare{left:62%;width:30%}
+  @keyframes hlPulse{0%,100%{opacity:.7}50%{opacity:1}}
+  @keyframes hlOn{0%{opacity:0}10%{opacity:.9}16%{opacity:.15}26%{opacity:1}32%{opacity:.4}100%{opacity:1}}
+
+  /* ---------- REVEAL ---------- */
+  .rv{opacity:0;transform:translateY(40px);transition:opacity 1s var(--ease),transform 1s var(--ease)}
+  .rv.shown{opacity:1;transform:none}
+
+  /* ---------- RESPONSIVE ---------- */
+  @media (max-width:1080px){
+    .nav-links{display:none}
+    .burger{display:grid}
+    .search .wrap{grid-template-columns:1fr 1fr;gap:14px}
+    .search-title{grid-column:1/-1;padding:0}
+    .field{border:1px solid #22303c;border-radius:10px;padding:10px 14px}
+    .search .btn{grid-column:1/-1;margin:0}
+    .fin,.contact-grid{grid-template-columns:1fr}
+    .why{grid-template-columns:1fr}
+    .why-card{aspect-ratio:4/5}
+    .statement-row{grid-template-columns:1fr 1fr}
+    .statement-row div:nth-child(3){border-left:0}
+    .rating{grid-template-columns:1fr}
+    .foot-top{grid-template-columns:1fr 1fr}
+    .hero-tag{display:none}
+    .hero-side{align-items:flex-start;margin-right:0}
+  }
+  @media (max-width:680px){
+    .nav-cta .btn{display:none}
+    .hero h1{font-size:42px}
+    .show{height:88svh;min-height:600px}
+    .show-top{top:110px}
+    .show-bottom .wrap{flex-direction:column;align-items:flex-start}
+    .tall{width:82vw}
+    .steps{grid-template-columns:1fr}
+    .row{grid-template-columns:1fr}
+    .filters .push{margin-left:0;width:100%}
+    .filters .push select{flex:1;min-width:0}
+    .chips{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;width:calc(100% + var(--pad));margin-right:calc(var(--pad) * -1);padding-right:var(--pad)}
+    .chips::-webkit-scrollbar{display:none}
+    .grid{grid-template-columns:1fr}
+    .foot-top{grid-template-columns:1fr}
+    .search .wrap{grid-template-columns:1fr}
+    .rating a{margin-left:0}
+    .lb-top .btn{display:none}
+    .lb-stage{padding:0}
+    .lb-stage img{border-radius:0}
+    .lb-stage .lb-btn{width:44px;height:44px;background:rgba(0,0,0,.45)}
+    .lb-thumbs{justify-content:flex-start}
+  }
+  @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.rv,.tail-fx,.card,.story-steps .st,.hl-box{opacity:1;transform:none}body::after{display:none}.card .card-img{clip-path:none}}
+</style>
+</head>
+<body>
+<div class="loader" id="loader"><div class="loader-in"><span class="bm bm-stack"><span class="bm-top"><b>GRUPO</b> <b class="c">AMPLIFIA</b></span><span class="bm-sub"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" aria-hidden="true"><circle cx="12" cy="12" r="9.6"/><path d="M2.7 10.6c3.1.8 5.6 1.2 9.3 1.2s6.2-.4 9.3-1.2"/><circle cx="12" cy="13.2" r="2.1" fill="currentColor" stroke="none"/><path d="M12 15.3v6.3"/></svg>DEMO CONCESIONARIA</span></span><div class="loader-bar"><i></i></div></div></div>
+<div class="progress" id="progress"></div>
+<div class="cur-dot" id="curDot"></div><div class="cur-ring" id="curRing"><span>VER</span></div>
+
+<!-- ================= NAV ================= -->
+<header class="nav" id="nav">
+  <div class="wrap">
+    <a href="#top" class="logo" aria-label="Grupo Amplifia inicio">
+      <span class="bm bm-line"><span class="bm-top"><b>GRUPO</b> <b class="c">AMPLIFIA</b></span><span class="bm-sub"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" aria-hidden="true"><circle cx="12" cy="12" r="9.6"/><path d="M2.7 10.6c3.1.8 5.6 1.2 9.3 1.2s6.2-.4 9.3-1.2"/><circle cx="12" cy="13.2" r="2.1" fill="currentColor" stroke="none"/><path d="M12 15.3v6.3"/></svg>DEMO CONCESIONARIA</span></span>
+    </a>
+    <nav class="nav-links">
+      <a href="#destacados">Destacados</a>
+      <a href="#stock">Stock</a>
+      <a href="#vender">Vendé tu auto</a>
+      <a href="#financiacion">Financiación</a>
+      <a href="#contacto">Contacto</a>
+    </nav>
+    <div class="nav-cta">
+      
+      <a href="#stock" class="btn btn-light">Ver stock</a>
+      <button class="burger" id="burger" aria-label="Menú"><span></span><span></span></button>
+    </div>
+  </div>
+</header>
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#destacados">Destacados</a>
+  <a href="#stock">Stock</a>
+  <a href="#vender">Vendé tu auto</a>
+  <a href="#financiacion">Financiación</a>
+  <a href="#contacto">Contacto</a>
+</div>
+
+<!-- ================= HERO ================= -->
+<section class="hero" id="top">
+  <div class="hero-media"><div class="hero-zoom">
+    <img src="img/hero.jpg" alt="" id="heroImg">
+    <div class="tail-fx" id="tailFx" aria-hidden="true">
+      <i class="floor"></i>
+      <i class="halo" style="left:52%;top:44%;width:22%;height:24%"></i>
+      <i class="halo" style="left:71.5%;top:44%;width:17%;height:20%"></i>
+      <i class="tl" style="left:56.6%;top:52.6%;width:13.6%;height:8.4%"></i>
+      <i class="tl" style="left:74.4%;top:52%;width:10%;height:6.6%"></i>
+      <i class="led" style="left:57.9%;top:54.2%;width:11%;height:3%"></i>
+      <i class="led" style="left:75.4%;top:53.4%;width:8%;height:2.4%"></i>
+    </div>
+  </div></div>
+  <div class="hero-content">
+    <div class="wrap">
+      <div>
+        <h1 class="reveal-up">Manejá el auto que te merecés.</h1>
+        <p class="reveal-up d1">Usados seleccionados y 0km, con financiación hasta el 100% y tu usado como parte de pago. Elegilo hoy, llevátelo hoy.</p>
+        <div class="hero-ctas reveal-up d2">
+          <a href="#stock" class="btn btn-light">Ver stock disponible</a>
+          <a href="#vender" class="btn btn-ghost">Tasar mi usado</a>
+        </div>
+      </div>
+      <div class="hero-side reveal-up d3"><div class="hero-tag"><b>Grupo Amplifia · Tu ciudad</b><span id="heroUnits">32</span> unidades listas para entregar</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= STATEMENT ================= -->
+<section class="statement">
+  <div class="st-bg" id="stBg"><img src="img/showroom.jpg" alt=""></div>
+  <div class="st-glow" id="stGlow" aria-hidden="true"><div class="hl-box" id="hlBox">
+    <i class="hl-halo"></i><i class="hl-flare"></i><i class="hl-core"></i><i class="hl-led"></i><i class="hl-drl"></i>
+    <i class="hl-halo b"></i><i class="hl-core b"></i><i class="hl-led b"></i><i class="hl-drl b"></i>
+  </div></div>
+  <div class="st-in">
+    <div class="eyebrow rv">Stock de octubre · Entrega inmediata</div>
+    <h2 class="rv">Tu próximo auto ya está en la agencia.</h2>
+    <p class="st-lead rv">Usados revisados y 0km listos para entregar. Financiamos hasta el 100%, tomamos tu usado y salís manejando.</p>
+    <div class="st-cta rv"><a href="#stock" class="btn btn-light">Ver autos disponibles</a><a href="#contacto" class="btn btn-ghost">Reservá tu prueba de manejo</a></div>
+  </div>
+  <div class="statement-row">
+    <div class="rv"><b data-count="32" id="stUnits">0</b><small>Autos listos para entregar</small></div>
+    <div class="rv"><b data-count="90" data-suffix="%">0</b><small>De clientes nos recomienda</small></div>
+    <div class="rv"><b>100%</b><small>Financiado</small></div>
+    <div class="rv"><b data-count="11" id="stBrands">0</b><small>Marcas para elegir</small></div>
+  </div>
+</section>
+
+<!-- ================= PORTADA GRANDE 1 (se elige desde el panel) ================= -->
+<section class="show" id="destacados" data-show="0">
+  <img src="" alt="">
+  <div class="show-top">
+    <div class="eyebrow"></div>
+    <h2></h2>
+    <p></p>
+    <span class="zoom-hint"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-5-5M11 8v6M8 11h6"/></svg><span class="zh"></span></span>
+  </div>
+  <div class="show-bottom">
+    <div class="wrap">
+      <div class="specs"></div>
+      <div class="show-ctas">
+        <button class="btn btn-ghost" data-act="gal">Ver todas las fotos</button>
+        <a class="btn btn-light" data-act="ask" target="_blank" rel="noopener" href="#">Quiero este auto</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= RECIÉN INGRESADOS (se fija y se desplaza en horizontal) ================= -->
+<section class="sec dark on-dark rail-sec">
+  <div class="pin">
+    <div class="wrap">
+      <div class="sec-head rv">
+        <div><div class="eyebrow">Recién ingresados</div><h2>Llegaron esta semana.<br>No duran mucho.</h2></div>
+        <div class="rail-nav"><button id="railPrev" aria-label="Anterior"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M15 6l-6 6 6 6"/></svg></button><button id="railNext" aria-label="Siguiente"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M9 6l6 6-6 6"/></svg></button></div>
+        <div class="rail-hint">Seguí bajando <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+      </div>
+    </div>
+    <div class="rail rv" id="rail"></div>
+    <div class="rail-prog"><i id="railProg"></i></div>
+  </div>
+</section>
+
+<!-- ================= PORTADA GRANDE 2 (se elige desde el panel) ================= -->
+<section class="show" data-show="1">
+  <img src="" alt="">
+  <div class="show-top">
+    <div class="eyebrow"></div>
+    <h2></h2>
+    <p></p>
+    <span class="zoom-hint"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-5-5M11 8v6M8 11h6"/></svg><span class="zh"></span></span>
+  </div>
+  <div class="show-bottom">
+    <div class="wrap">
+      <div class="specs"></div>
+      <div class="show-ctas">
+        <button class="btn btn-ghost" data-act="gal">Ver todas las fotos</button>
+        <a class="btn btn-light" data-act="ask" target="_blank" rel="noopener" href="#">Quiero este auto</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= STOCK ================= -->
+<section class="sec stock" id="stock">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <div><div class="eyebrow">Stock disponible · Octubre 2026</div><h2>Elegí el tuyo<br>y llevátelo hoy.</h2></div>
+      <p>Precios de entrega + cuotas. Tu usado vale como parte de pago. Escribinos por WhatsApp y te lo reservamos.</p>
+    </div>
+    <div class="filters rv" id="filters"></div>
+    <div class="count" id="count"></div>
+    <div class="grid" id="grid"></div>
+    <div class="more"><button class="btn btn-dark" id="more"></button></div>
+  </div>
+</section>
+
+<!-- ================= VENDÉ / CONSIGNÁ ================= -->
+<section class="bleed" id="vender">
+  <img src="img/taos-4.jpg" alt="Frente de la agencia" data-parallax>
+  <div class="wrap">
+    <div class="eyebrow light rv">Tasación gratis · Parte de pago · Consignación</div>
+    <h2 class="rv" style="margin-top:18px">Tu usado vale más de lo que pensás.</h2>
+    <p class="lead rv">Te lo tasamos gratis y lo usás para cambiarlo por uno mejor. O lo vendemos por vos en consignación. Rápido, seguro y sin vueltas.</p>
+    <div class="steps rv">
+      <div class="step"><b>01</b><h4>Mandanos fotos por WhatsApp</h4><p>Marca, modelo, año y kilómetros. En minutos te pasamos un valor estimado.</p></div>
+      <div class="step"><b>02</b><h4>Lo tasamos en la agencia</h4><p>Revisión rápida, sin costo y sin compromiso.</p></div>
+      <div class="step"><b>03</b><h4>Salís con tu auto nuevo</h4><p>Lo dejás como parte de pago y te llevás otro de nuestro stock en el día.</p></div>
+    </div>
+    <div class="hero-ctas rv">
+      <a href="#contacto" class="btn btn-light" data-mode="vender">Tasar mi auto gratis</a>
+      <a href="#contacto" class="btn btn-ghost" data-mode="consignar">Quiero consignar</a>
+    </div>
+  </div>
+</section>
+
+<!-- ================= FINANCIACIÓN ================= -->
+<section class="sec dark on-dark" id="financiacion">
+  <div class="wrap fin">
+    <div class="fin-copy rv">
+      <div class="eyebrow" style="margin-bottom:20px">Financiación hasta el 100%</div>
+      <h2>Llevátelo hoy.<br>Pagalo en cuotas.</h2>
+      <ul>
+        <li><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2c9ad8" stroke-width="2.2"><path d="M20 6 9 17l-5-5"/></svg>Financiación hasta el 100% de la unidad.</li>
+        <li><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2c9ad8" stroke-width="2.2"><path d="M20 6 9 17l-5-5"/></svg>Créditos prendarios.</li>
+        <li><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2c9ad8" stroke-width="2.2"><path d="M20 6 9 17l-5-5"/></svg>Tu usado como parte de pago.</li>
+        <li><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2c9ad8" stroke-width="2.2"><path d="M20 6 9 17l-5-5"/></svg>Asesoramiento personalizado en toda la gestión.</li>
+      </ul>
+      <a href="#contacto" class="btn btn-light">Quiero mi cuota</a>
+    </div>
+    <div class="calc rv">
+      <div class="range">
+        <div class="range-top"><label for="rPrice">Valor del vehículo</label><output id="oPrice"></output></div>
+        <input type="range" id="rPrice" min="5000000" max="50000000" step="500000" value="20000000">
+      </div>
+      <div class="range">
+        <div class="range-top"><label for="rDown">Entrega</label><output id="oDown"></output></div>
+        <input type="range" id="rDown" min="0" max="80" step="5" value="40">
+      </div>
+      <div class="range-top"><label>Plazo en cuotas</label></div>
+      <div class="cuotas" id="cuotas">
+        <button class="chip" data-n="12">12</button><button class="chip" data-n="24">24</button><button class="chip active" data-n="36">36</button><button class="chip" data-n="48">48</button><button class="chip" data-n="60">60</button>
+      </div>
+      <div class="result">
+        <div><small>Cuota mensual estimada</small><div class="big" id="oCuota"></div></div>
+        <div style="text-align:right"><small>Monto a financiar</small><b id="oFin" style="font-size:20px"></b></div>
+      </div>
+      <p class="fine">Simulación de referencia con tasa ilustrativa. Sujeto a aprobación crediticia y condiciones vigentes. Consultá tu plan exacto con un asesor.</p>
+    </div>
+  </div>
+</section>
+<!-- ================= POR QUÉ ELEGIRNOS ================= -->
+<section class="sec dark on-dark why-sec">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <div><div class="eyebrow">Por qué comprar con nosotros</div><h2>Comprá tranquilo.<br>Manejá feliz.</h2></div>
+      <p>Así trabajamos cada venta, con transparencia de principio a fin.</p>
+    </div>
+    <div class="story">
+      <div class="story-media" id="storyMedia">
+        <img src="img/taos-5.jpg" alt="" class="on">
+        <img src="img/taos-6.jpg" alt="" loading="lazy">
+        <img src="img/taos-8.jpg" alt="" loading="lazy">
+        <div class="story-bar"><i id="storyBar"></i></div>
+      </div>
+      <div class="story-steps">
+        <div class="st on"><span class="tag">Garantía de calidad</span><h3>Autos revisados.<br>Cero sorpresas.</h3><p>Cada unidad pasa control mecánico y de papeles antes de salir a la venta. Lo que ves es lo que te llevás.</p><ul><li>Control mecánico completo</li><li>Documentación al día</li><li>Fotos reales de cada unidad</li></ul></div>
+        <div class="st"><span class="tag">Financiación</span><h3>Cuotas que<br>entran en tu bolsillo.</h3><p>Crédito prendario hasta el 100% del valor. Tu usado suma como entrega y te armamos un plan a medida.</p><ul><li>Hasta 60 cuotas</li><li>Aprobación rápida</li><li>Tu usado como parte de pago</li></ul></div>
+        <div class="st"><span class="tag">Acompañamiento</span><h3>Te acompañamos<br>hasta la entrega.</h3><p>De la prueba de manejo a la transferencia, un asesor se encarga de todo para que solo te ocupes de manejar.</p><ul><li>Prueba de manejo</li><li>Gestoría y transferencia</li><li>Atención por WhatsApp</li></ul></div>
+      </div>
+    </div>
+    <div class="rating rv">
+      <b>★ 5.0</b>
+      <div><div class="stars">★★★★★</div><span><strong>Opiniones de clientes</strong>Espacio para mostrar las opiniones reales de tus clientes.</span></div>
+      <a class="btn btn-light" href="#contacto">Ver opiniones</a>
+    </div>
+  </div>
+</section>
+
+<!-- ================= EXPLORÁ (paneles que se expanden) ================= -->
+<section class="explore">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <div><div class="eyebrow">Todo en un solo lugar</div><h2>¿Qué querés<br>hacer hoy?</h2></div>
+      <p>Comprá, financiá, vendé o vení a verlos en persona. Te respondemos al toque.</p>
+    </div>
+    <div class="panels rv">
+      <a class="panel" href="#stock"><img src="img/taos-3.jpg" alt="" loading="lazy"><div class="pt"><h3>Comprar</h3><p>Usados revisados y 0km listos para entregar. Elegí el tuyo.</p><span class="go">Ver stock →</span></div></a>
+      <a class="panel" href="#financiacion"><img src="img/fiesta-5.jpg" alt="" loading="lazy"><div class="pt"><h3>Financiar</h3><p>Hasta el 100% en cuotas fijas. Simulá tu cuota en segundos.</p><span class="go">Simular cuota →</span></div></a>
+      <a class="panel" href="#vender"><img src="img/amarok-3.jpg" alt="" loading="lazy"><div class="pt"><h3>Vender mi usado</h3><p>Tasación gratis y parte de pago. O lo vendemos por vos.</p><span class="go">Tasar gratis →</span></div></a>
+      <a class="panel" href="#contacto"><img src="img/siena-2.jpg" alt="" loading="lazy"><div class="pt"><h3>Visitarnos</h3><p>Av. Principal 123 · Tu ciudad.</p><span class="go">Cómo llegar →</span></div></a>
+    </div>
+  </div>
+</section>
+
+<!-- ================= CONTACTO ================= -->
+<section class="sec contact" id="contacto">
+  <div class="wrap contact-grid">
+    <div class="visit rv" data-gallery="agencia">
+      <img src="img/fiesta-4.jpg" alt="Agencia">
+      <div class="eyebrow">Te esperamos</div>
+      <h3>Vení a<br>manejarlo.</h3>
+      <div class="branch"><div>Av. Principal 123<small>Tu ciudad</small></div><a href="#contacto">Cómo llegar</a></div>
+      <div class="branch"><div>Sucursal centro<small>Tu ciudad</small></div><a href="#contacto">Cómo llegar</a></div>
+      <div class="branch"><div>WhatsApp 0000 00-0000<small>Teléfono 0000 00-0000</small></div><a class="js-wa" href="#">Escribir</a></div>
+      <div class="branch"><div>contacto@ejemplo.com<small>Redes sociales de tu marca</small></div><a href="mailto:contacto@ejemplo.com">Enviar mail</a></div>
+    </div>
+    <form class="lead rv" id="leadForm">
+      <div class="seg" id="seg">
+        <button type="button" class="active" data-mode="comprar">Quiero comprar</button>
+        <button type="button" data-mode="vender">Quiero vender</button>
+        <button type="button" data-mode="consignar">Consignar</button>
+      </div>
+      <h3 id="formTitle">¿Cuál te llevás?</h3>
+      <p id="formSub">Dejanos tus datos y te respondemos por WhatsApp.</p>
+      <div class="row">
+        <div class="fld"><label for="fName">Nombre</label><input id="fName" required placeholder="Tu nombre"></div>
+        <div class="fld"><label for="fPhone">Teléfono</label><input id="fPhone" type="tel" required placeholder="Tu teléfono"></div>
+      </div>
+      <div class="fld"><label for="fCar" id="fCarLabel">¿Qué vehículo te interesa?</label><input id="fCar" placeholder="Ej: Toyota Hilux 2.8 SR"></div>
+      <div class="fld"><label for="fMsg">Mensaje</label><textarea id="fMsg" placeholder="Contanos un poco más…"></textarea></div>
+      <button class="btn btn-dark" type="submit">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.5 3.5A11.8 11.8 0 0 0 1.9 17.7L.3 23.7l6.1-1.6A11.8 11.8 0 0 0 23.8 12a11.7 11.7 0 0 0-3.3-8.5ZM12 21.6a9.7 9.7 0 0 1-5-1.4l-.3-.2-3.7 1 1-3.6-.2-.4A9.8 9.8 0 1 1 12 21.6Zm5.4-7.3c-.3-.1-1.8-.9-2-1s-.5-.1-.7.1-.8 1-.9 1.2-.3.2-.6 0a8 8 0 0 1-4-3.5c-.3-.5.3-.5.9-1.6.1-.2 0-.4 0-.5l-.9-2.2c-.2-.6-.5-.5-.7-.5h-.6a1.1 1.1 0 0 0-.8.4 3.4 3.4 0 0 0-1 2.5 5.9 5.9 0 0 0 1.2 3.1 13.4 13.4 0 0 0 5.2 4.6c1.9.8 2.7.9 3.6.7a3.1 3.1 0 0 0 2-1.4 2.5 2.5 0 0 0 .2-1.4c-.1-.1-.3-.2-.6-.3Z"/></svg>
+        Enviar por WhatsApp</button>
+    </form>
+  </div>
+</section>
+
+<!-- ================= FOOTER ================= -->
+<footer>
+  <div class="foot-cta">
+    <img src="img/hero.jpg" alt="" loading="lazy">
+    <div class="wrap">
+      <div class="eyebrow light">Entrega inmediata</div>
+      <h2>Tu próximo auto<br>te está esperando.</h2>
+      <p>Escribinos ahora y te mandamos fotos, precio y cuotas del que te guste. Respondemos al toque.</p>
+      <div class="hero-ctas"><a href="#" class="btn btn-light js-wa"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.5 3.5A11.8 11.8 0 0 0 1.9 17.7L.3 23.7l6.1-1.6A11.8 11.8 0 0 0 23.8 12a11.7 11.7 0 0 0-3.3-8.5ZM12 21.6a9.7 9.7 0 0 1-5-1.4l-.3-.2-3.7 1 1-3.6-.2-.4A9.8 9.8 0 1 1 12 21.6Zm5.4-7.3c-.3-.1-1.8-.9-2-1s-.5-.1-.7.1-.8 1-.9 1.2-.3.2-.6 0a8 8 0 0 1-4-3.5c-.3-.5.3-.5.9-1.6.1-.2 0-.4 0-.5l-.9-2.2c-.2-.6-.5-.5-.7-.5h-.6a1.1 1.1 0 0 0-.8.4 3.4 3.4 0 0 0-1 2.5 5.9 5.9 0 0 0 1.2 3.1 13.4 13.4 0 0 0 5.2 4.6c1.9.8 2.7.9 3.6.7a3.1 3.1 0 0 0 2-1.4 2.5 2.5 0 0 0 .2-1.4c-.1-.1-.3-.2-.6-.3Z"/></svg>Escribinos por WhatsApp</a><a href="#stock" class="btn btn-ghost">Ver todo el stock</a></div>
+    </div>
+  </div>
+  <div class="wrap foot-main">
+    <div class="foot-brand">
+      <a href="#top" class="logo" aria-label="Grupo Amplifia Automotores"><span class="bm bm-line"><span class="bm-top"><b>GRUPO</b> <b class="c">AMPLIFIA</b></span><span class="bm-sub"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" aria-hidden="true"><circle cx="12" cy="12" r="9.6"/><path d="M2.7 10.6c3.1.8 5.6 1.2 9.3 1.2s6.2-.4 9.3-1.2"/><circle cx="12" cy="13.2" r="2.1" fill="currentColor" stroke="none"/><path d="M12 15.3v6.3"/></svg>DEMO CONCESIONARIA</span></span></a>
+      <p>Usados revisados y 0km con financiación hasta el 100%. Tomamos tu usado como parte de pago.</p>
+      
+    </div>
+    <div class="foot-col"><h5>Comprar</h5><a href="#stock">Stock disponible</a><a href="#destacados">Destacados</a><a href="#financiacion">Financiación</a><a href="#stock">0km</a></div>
+    <div class="foot-col"><h5>Vender</h5><a href="#vender">Tasar mi auto</a><a href="#vender">Parte de pago</a><a href="#vender">Consignación</a></div>
+    <div class="foot-col"><h5>Visitanos</h5><span>Av. Principal 123</span><span>Tu ciudad</span><a href="#" class="js-wa">WhatsApp 0000 00-0000</a></div>
+  </div>
+  <div class="wrap foot-bottom"><span>© 2026 Grupo Amplifia · Demo de sitio web.</span><span>Precios y disponibilidad sujetos a cambios · <a href="creditos.html">Créditos de imágenes</a> · <a href="admin.html">Acceso administrador</a></span></div>
+</footer>
+
+<a class="wa js-wa" href="#" aria-label="Escribinos por WhatsApp">
+  <svg width="30" height="30" viewBox="0 0 24 24" fill="#fff"><path d="M20.5 3.5A11.8 11.8 0 0 0 1.9 17.7L.3 23.7l6.1-1.6A11.8 11.8 0 0 0 23.8 12a11.7 11.7 0 0 0-3.3-8.5ZM12 21.6a9.7 9.7 0 0 1-5-1.4l-.3-.2-3.7 1 1-3.6-.2-.4A9.8 9.8 0 1 1 12 21.6Zm5.4-7.3c-.3-.1-1.8-.9-2-1s-.5-.1-.7.1-.8 1-.9 1.2-.3.2-.6 0a8 8 0 0 1-4-3.5c-.3-.5.3-.5.9-1.6.1-.2 0-.4 0-.5l-.9-2.2c-.2-.6-.5-.5-.7-.5h-.6a1.1 1.1 0 0 0-.8.4 3.4 3.4 0 0 0-1 2.5 5.9 5.9 0 0 0 1.2 3.1 13.4 13.4 0 0 0 5.2 4.6c1.9.8 2.7.9 3.6.7a3.1 3.1 0 0 0 2-1.4 2.5 2.5 0 0 0 .2-1.4c-.1-.1-.3-.2-.6-.3Z"/></svg>
+</a>
+
+<!-- ================= VISOR DE FOTOS ================= -->
+<div class="lb" id="lb" aria-hidden="true" role="dialog" aria-modal="true">
+  <div class="lb-top">
+    <div class="lb-title" id="lbTitle"></div>
+    <div class="lb-top-r">
+      <span class="lb-count" id="lbCount"></span>
+      <a class="btn btn-light" id="lbAsk" target="_blank" rel="noopener" style="height:44px">Consultar</a>
+      <button class="lb-btn" id="lbClose" aria-label="Cerrar"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    </div>
+  </div>
+  <div class="lb-stage" id="lbStage">
+    <img id="lbImg" alt="">
+    <button class="lb-btn lb-prev" id="lbPrev" aria-label="Anterior"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M15 6l-6 6 6 6"/></svg></button>
+    <button class="lb-btn lb-next" id="lbNext" aria-label="Siguiente"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M9 6l6 6-6 6"/></svg></button>
+  </div>
+  <div class="lb-thumbs" id="lbThumbs"></div>
+</div>
+
+<script src="data.js?v=3"></script>
+<script>
+const WHATSAPP = "5490000000000"; // número de ejemplo
+const wa = text => `https://wa.me/${WHATSAPP}?text=${encodeURIComponent(text)}`;
+const ars = n => "$ " + Math.round(n).toLocaleString("es-AR");
+const seq = (key, n) => Array.from({length:n}, (_,i)=>`img/${key}-${i+1}.jpg`);
+const pick = (key, ns) => ns.map(n=>`img/${key}-${n}.jpg`);
+
+/* ====== GALERÍAS CON FOTOS REALES (IG / reels de Grupo Amplifia) ====== */
+const GALLERIES = {
+  taos:   {title:"Volkswagen Taos", sub:"Comfortline 250 TSI · 2025", imgs:pick("taos",[4,3,6,7,8,5])},
+  fiesta: {title:"Ford Fiesta", sub:"Titanium 1.6 Powershift · 2014 · 69.000 km", imgs:pick("fiesta",[4,3,5])},
+  amarok: {title:"Volkswagen Amarok", sub:"Comfortline 4x2 · 2021 · 56.000 km", imgs:pick("amarok",[3])},
+  hilux:  {title:"Toyota Hilux", sub:"2.8 SR 4x2 MT · 2025 · 20.000 km", imgs:seq("hilux",1)},
+  siena:  {title:"Fiat Siena", sub:"1.4 EL Attractive · 2017 · 68.000 km", imgs:pick("siena",[2])},
+  agencia:{title:"Grupo Amplifia", sub:"Tu ciudad", imgs:["img/siena-2.jpg","img/taos-4.jpg","img/fiesta-4.jpg","img/amarok-3.jpg"]},
+};
+
+/* ====== STOCK · se carga desde data.js (lo administra admin.html) ====== */
+let STOCK = DEMOAPP.defaults();
+const TYPES = DEMOAPP.TYPES;
+let BRANDS = [];
+const fmtKm = km => km==null || km==="" ? "Km a consultar" : +km===0 ? "0 km" : (+km).toLocaleString("es-AR")+" km";
+const carImgs = c => c.photos && c.photos.length ? c.photos : ["img/favicon.png"];
+const relSort = (a,b) => (a.sold?1:0)-(b.sold?1:0) || (b.featured?1:0)-(a.featured?1:0) || (carImgs(b).length>1?1:0)-(carImgs(a).length>1?1:0) || (b.created||0)-(a.created||0);
+const live = () => STOCK.filter(c => !c.sold);
+const byId = id => STOCK.find(c => c.id === id);
+const isIlus = c => /\/ilus\//.test(carImgs(c)[0]);
+
+/* ====== VISOR DE FOTOS ====== */
+const lb = document.getElementById("lb"), lbImg = document.getElementById("lbImg"), lbThumbs = document.getElementById("lbThumbs");
+let lbList = [], lbIdx = 0;
+function openLB(imgs, title, sub, ask, start=0){
+  lbList = imgs;
+  document.getElementById("lbTitle").innerHTML = `${title}<small>${sub||""}</small>`;
+  document.getElementById("lbAsk").href = wa(`Hola Grupo Amplifia! Me interesa el ${ask||title}. ¿Sigue disponible?`);
+  lbThumbs.innerHTML = imgs.length>1 ? imgs.map((s,k)=>`<button data-k="${k}" aria-label="Foto ${k+1}"><img src="${s}" alt=""></button>`).join("") : "";
+  const multi = imgs.length>1 ? "" : "none";
+  document.getElementById("lbPrev").style.display = document.getElementById("lbNext").style.display = multi;
+  showLB(start);
+  lb.classList.add("open"); lb.setAttribute("aria-hidden","false"); document.body.style.overflow = "hidden";
+}
+function showLB(k){
+  lbIdx = (k + lbList.length) % lbList.length;
+  const src = lbList[lbIdx];
+  lbImg.style.opacity = 0;
+  const pre = new Image(); pre.onload = () => { lbImg.src = src; lbImg.style.opacity = 1; }; pre.src = src;
+  document.getElementById("lbCount").textContent = lbList.length>1 ? `${lbIdx+1} / ${lbList.length}` : "";
+  [...lbThumbs.children].forEach((t,j)=>t.classList.toggle("on", j===lbIdx));
+  const t = lbThumbs.children[lbIdx]; if (t) lbThumbs.scrollTo({left:t.offsetLeft - lbThumbs.clientWidth/2 + t.clientWidth/2, behavior:"smooth"});
+}
+function closeLB(){ lb.classList.remove("open"); lb.setAttribute("aria-hidden","true"); document.body.style.overflow = ""; }
+const openGallery = key => { const g = GALLERIES[key]; openLB(g.imgs, g.title, g.sub, `${g.title} ${g.sub.split(" · ").slice(0,2).join(" ")}`); };
+const openCar = c => c && openLB(carImgs(c), `${c.brand} ${c.name}`, `${c.year} · ${fmtKm(c.km)} · ${c.sold?"Vendido":c.price?ars(c.price)+" entrega + cuotas":"Consulte precio"}${c.desc?" · "+c.desc:""}${isIlus(c)?" · Foto 1: imagen ilustrativa del modelo · Foto 2: la unidad real":""}`, `${c.brand} ${c.name} ${c.year}`);
+document.getElementById("lbClose").onclick = closeLB;
+document.getElementById("lbPrev").onclick = () => showLB(lbIdx-1);
+document.getElementById("lbNext").onclick = () => showLB(lbIdx+1);
+lbThumbs.addEventListener("click", e => { const b=e.target.closest("button"); if(b) showLB(+b.dataset.k); });
+document.getElementById("lbStage").addEventListener("click", e => { if (e.target.id==="lbStage") closeLB(); });
+addEventListener("keydown", e => {
+  if (!lb.classList.contains("open")) return;
+  if (e.key==="Escape") closeLB();
+  if (e.key==="ArrowRight") showLB(lbIdx+1);
+  if (e.key==="ArrowLeft") showLB(lbIdx-1);
+});
+let tx = null;
+lb.addEventListener("touchstart", e => tx = e.touches[0].clientX, {passive:true});
+lb.addEventListener("touchend", e => { if (tx===null) return; const dx = e.changedTouches[0].clientX - tx; if (Math.abs(dx)>50 && lbList.length>1) showLB(lbIdx + (dx<0?1:-1)); tx = null; });
+
+/* Showcases y bloques que abren galería al tocar la foto */
+document.querySelectorAll("[data-gallery]").forEach(el => el.addEventListener("click", e => {
+  if (e.target.closest("a, button, form, input, .branch")) return;
+  openGallery(el.dataset.gallery);
+}));
+
+document.querySelectorAll("[data-open]").forEach(b => b.addEventListener("click", () => openGallery(b.dataset.open)));
+document.querySelectorAll(".js-wa-car").forEach(a => { a.href = wa(`Hola Grupo Amplifia! Me interesa el ${a.dataset.car}. ¿Sigue disponible?`); a.target="_blank"; a.rel="noopener"; });
+
+/* ====== CARRUSEL RECIÉN LLEGADOS (unidades marcadas como destacadas en el panel) ====== */
+const rail = document.getElementById("rail");
+function renderRail(){
+  const feat = live().filter(c => c.featured).sort(relSort);
+  rail.closest("section").style.display = feat.length ? "" : "none";
+  rail.innerHTML = feat.map(c => { const n = carImgs(c).length, w = c.name.split(" "); return `
+  <article class="tall" data-id="${c.id}">
+    <img src="${carImgs(c)[0]}" alt="${c.brand} ${c.name}" loading="lazy">
+    <span class="pill"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="12" cy="12" r="3"/></svg>${n} ${n>1?"fotos":"foto"}</span>
+    <div class="tall-info">
+      <div class="eyebrow">${c.type} · ${c.year}</div>
+      <h3>${c.brand} ${w[0]}</h3>
+      <p>${w.slice(1).join(" ") || c.type} · ${fmtKm(c.km)}</p>
+      <div class="tall-row"><div class="price">${c.price?`<small>Entrega + cuotas</small>${ars(c.price)}`:`<small>Precio</small>Consulte`}</div>
+      <a class="btn btn-light" style="height:42px;padding:0 18px;font-size:14px" target="_blank" rel="noopener" href="${wa(`Hola Grupo Amplifia! Me interesa el ${c.brand} ${c.name} ${c.year}. ¿Sigue disponible?`)}">Consultar</a></div>
+    </div>
+  </article>`; }).join("");
+  applyTilt(rail);
+  setupRail();
+}
+rail.addEventListener("click", e => { if (e.target.closest("a")) return; const t = e.target.closest(".tall"); if (t) openCar(byId(t.dataset.id)); });
+const railStep = () => (rail.querySelector(".tall") ? rail.querySelector(".tall").offsetWidth : 400) + 18;
+document.getElementById("railPrev").onclick = () => rail.scrollBy({left:-railStep(), behavior:"smooth"});
+document.getElementById("railNext").onclick = () => rail.scrollBy({left: railStep(), behavior:"smooth"});
+
+function setupRail(){
+  const r = document.getElementById("rail"), sec = r.closest("section");
+  const can = matchMedia("(min-width:1081px)").matches && !matchMedia("(prefers-reduced-motion: reduce)").matches;
+  sec.classList.toggle("pinned", can);
+  r.style.transform = "";
+  if (!can){ sec.style.height = ""; window.__railDist = 0; return; }
+  requestAnimationFrame(() => {
+    window.__railDist = Math.max(0, r.scrollWidth - innerWidth);
+    sec.style.height = (innerHeight + window.__railDist) + "px";
+  });
+}
+addEventListener("resize", () => setupRail());
+
+/* ====== STOCK EN TARJETAS ====== */
+const grid = document.getElementById("grid");
+let fType = "", fBrand = "", fYear = 0, sort = "rel", showAll = false;
+const PAGE = 9;
+const ic = {
+  cal:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 11h18"/></svg>',
+  km:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="13" r="8"/><path d="M12 13l4-4"/></svg>',
+  cam:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="12" cy="12" r="3"/></svg>',
+  zoom:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-5-5"/></svg>'
+};
+const soldLast = (a,b) => (a.sold?1:0)-(b.sold?1:0);
+function render(){
+  let l = STOCK.filter(c => (!fType || (fType==="0km" ? c.km===0 : c.type===fType)) && (!fBrand || c.brand===fBrand) && c.year >= fYear);
+  if (sort==="rel")  l.sort(relSort);
+  if (sort==="asc")  l.sort((a,b)=>soldLast(a,b) || (a.price||1e12)-(b.price||1e12));
+  if (sort==="desc") l.sort((a,b)=>soldLast(a,b) || b.price-a.price);
+  if (sort==="year") l.sort((a,b)=>soldLast(a,b) || b.year-a.year);
+  if (sort==="km")   l.sort((a,b)=>soldLast(a,b) || a.km-b.km);
+  const total = l.length, avail = l.filter(c=>!c.sold).length, more = document.getElementById("more");
+  document.getElementById("count").textContent = `${avail} ${avail===1?"unidad disponible":"unidades disponibles"}${fBrand?" · "+fBrand:""}`;
+  more.parentElement.style.display = total > PAGE ? "" : "none";
+  more.textContent = showAll ? "Ver menos" : `Ver las ${total} unidades`;
+  if (!showAll) l = l.slice(0, PAGE);
+  grid.innerHTML = l.length ? l.map(c => { const n = carImgs(c).length; return `
+    <article class="card${c.sold?" sold":""}">
+      <div class="card-img" data-id="${c.id}">
+        <img src="${carImgs(c)[0]}" alt="${c.brand} ${c.name}" loading="lazy">
+        <span class="badge ${c.sold?"sold":c.km===0?"okm":""}">${c.sold?"VENDIDO":c.km===0?"0KM":"USADO"}</span>
+        <span class="pill">${n>1 ? ic.cam + n + " fotos" : ic.zoom + "Ampliar"}</span>${isIlus(c) ? '<span class="ilus">Imagen ilustrativa</span>' : ""}
+      </div>
+      <div class="card-body">
+        <div class="card-brand">${c.brand}</div>
+        <div class="card-title">${c.name}</div>
+        <div class="card-meta"><span>${ic.cal}${c.year}</span><span>${ic.km}${fmtKm(c.km)}</span><span>${c.type}</span></div>
+        <div class="card-foot">${c.sold
+          ? `<div class="price" style="color:var(--muted)"><small>Estado</small>Vendido</div>`
+          : `<div class="price ${c.price?"":"ask"}">${c.price ? `<small>Entrega + cuotas</small>${ars(c.price)}` : `<small>Precio</small>Consulte`}</div>
+          <a class="btn btn-outline" target="_blank" rel="noopener" href="${wa(`Hola Grupo Amplifia! Me interesa el ${c.brand} ${c.name} ${c.year} (${fmtKm(c.km)}). ¿Sigue disponible?`)}">Consultar</a>`}
+        </div>
+      </div>
+    </article>`; }).join("") : `<div class="empty">No hay unidades con ese filtro. <a href="#" id="reset" style="text-decoration:underline">Ver todo el stock</a></div>`;
+  const r = document.getElementById("reset"); if (r) r.onclick = e => { e.preventDefault(); setFilters("", "", 0); };
+  applyTilt(grid);
+  revealCards();
+}
+grid.addEventListener("click", e => { const im = e.target.closest(".card-img"); if (im) openCar(byId(im.dataset.id)); });
+const filters = document.getElementById("filters");
+const plural = t => ({"Sedán":"Sedanes","Monovolumen":"Monovolúmenes","Utilitario":"Utilitarios"})[t] || t+"s";
+function buildFilters(){
+  const presentTypes = TYPES.filter(t => STOCK.some(c=>c.type===t));
+  filters.innerHTML = `<div class="chips">` + [["","Todos"],["0km","0km"],...presentTypes.map(t=>[t, plural(t)])]
+    .map(([v,l])=>`<button class="chip${v===fType?" active":""}" data-f="${v}">${l}</button>`).join("") + `</div>` +
+    `<div class="push"><select id="fBrandSel"><option value="">Todas las marcas</option>${BRANDS.map(b=>`<option${b===fBrand?" selected":""}>${b}</option>`).join("")}</select>
+     <select id="sort"><option value="rel">Destacados</option><option value="asc">Menor entrega</option><option value="desc">Mayor entrega</option><option value="year">Más nuevos</option><option value="km">Menos km</option></select></div>`;
+  document.getElementById("sort").value = sort;
+  filters.querySelectorAll(".chip").forEach(c => c.onclick = () => setFilters(c.dataset.f, fBrand, fYear));
+  document.getElementById("fBrandSel").onchange = e => setFilters(fType, e.target.value, fYear);
+  document.getElementById("sort").onchange = e => { sort = e.target.value; render(); };
+}
+function setFilters(t, b, y){
+  fType = t; fBrand = b; fYear = y; showAll = false;
+  filters.querySelectorAll(".chip").forEach(c=>c.classList.toggle("active", c.dataset.f===t));
+  document.getElementById("fBrandSel").value = b;
+  render();
+}
+document.getElementById("more").onclick = () => { showAll = !showAll; render(); if (!showAll) document.getElementById("stock").scrollIntoView(); };
+
+/* Tarjetas que aparecen con cortina, de a una */
+const ioCards = "IntersectionObserver" in window ? new IntersectionObserver(es => es.forEach(e => {
+  if (!e.isIntersecting) return; ioCards.unobserve(e.target);
+  setTimeout(() => e.target.classList.add("seen"), (+e.target.dataset.k % 3) * 120);
+}), {threshold:.15}) : null;
+function revealCards(){
+  grid.querySelectorAll(".card:not(.seen)").forEach((c,k) => { c.dataset.k = k; ioCards ? ioCards.observe(c) : c.classList.add("seen"); });
+}
+
+/* Inclinación 3D al pasar el mouse (también en tarjetas nuevas que carga el panel) */
+function applyTilt(root){
+  if (!matchMedia("(hover:hover)").matches || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  (root||document).querySelectorAll(".tall, .why-card, .st-media, .card").forEach(el => {
+    if (el.dataset.tilt) return; el.dataset.tilt = 1;
+    el.classList.add("tilt");
+    const max = el.classList.contains("card") ? 4 : 7;
+    el.addEventListener("mousemove", e => {
+      const r = el.getBoundingClientRect(), px = (e.clientX - r.left)/r.width - .5, py = (e.clientY - r.top)/r.height - .5;
+      el.style.transform = `perspective(1000px) rotateY(${px*max}deg) rotateX(${-py*max}deg) translateY(-4px)`;
+    });
+    el.addEventListener("mouseleave", () => el.style.transform = "");
+  });
+}
+
+
+/* ====== PORTADAS GRANDES (autos marcados "Portada grande" en el panel) ====== */
+const showEls = [...document.querySelectorAll("[data-show]")];
+const kmShort = km => km==null || km==="" ? "—" : +km===0 ? "0 km" : +km >= 1000 ? Math.round(km/1000)+" mil" : km;
+const priceShort = p => p >= 1e6 ? "$ " + (p/1e6).toLocaleString("es-AR", {maximumFractionDigits:1}) + " M" : ars(p);
+function renderShows(){
+  const list = live().filter(c => c.showcase).sort((a,b) => (b.created||0)-(a.created||0)).slice(0,2);
+  showEls.forEach((el, i) => {
+    const c = list[i];
+    el.style.display = c ? "" : "none";
+    if (!c || el.dataset.id === c.id + "|" + (c.updated||"")) return;
+    el.dataset.id = c.id + "|" + (c.updated||"");
+    el.dataset.car = c.id;
+    const w = c.name.split(" "), n = carImgs(c).length;
+    el.querySelector(":scope > img").src = carImgs(c)[0];
+    el.querySelector(":scope > img").alt = `${c.brand} ${c.name}`;
+    el.querySelector(".eyebrow").textContent = `Destacado · ${c.type} ${c.year}`;
+    const h = el.querySelector("h2"); h.textContent = `${c.brand} ${w[0]}`;
+    if (typeof splitWords === "function" && h.classList.contains("split")) { h.classList.remove("split","go"); splitWords(h); requestAnimationFrame(() => h.classList.add("go")); }
+    el.querySelector(".show-top p").textContent = [w.slice(1).join(" "), c.desc].filter(Boolean).join(" · ");
+    el.querySelector(".zh").textContent = n > 1 ? `Tocá la foto para ver las ${n} fotos` : "Tocá la foto para verla en grande";
+    el.querySelector(".specs").innerHTML =
+      `<div><b>${c.year}</b>modelo</div><div><b>${kmShort(c.km)}</b>kilómetros</div>` +
+      `<div><b>${c.price ? priceShort(c.price) : "Consultá"}</b>${c.price ? "entrega + cuotas" : "precio"}</div>`;
+    el.querySelector('[data-act="ask"]').href = wa(`Hola Grupo Amplifia! Me interesa el ${c.brand} ${c.name} ${c.year}. ¿Sigue disponible?`);
+  });
+}
+showEls.forEach(el => el.addEventListener("click", e => {
+  if (e.target.closest("a") || (e.target.closest("button") && !e.target.closest('[data-act="gal"]'))) return;
+  openCar(byId(el.dataset.car));
+}));
+
+/* ====== Refresca todo lo que depende del stock ====== */
+function refreshAll(){
+  BRANDS = [...new Set(live().map(c=>c.brand))].sort();
+  const n = live().length;
+  document.getElementById("heroUnits").textContent = n;
+  const su = document.getElementById("stUnits"); su.dataset.count = n; if (su.textContent !== "0") su.textContent = n;
+  const sb = document.getElementById("stBrands"); sb.dataset.count = BRANDS.length; if (sb.textContent !== "0") sb.textContent = BRANDS.length;
+  const mq = document.getElementById("marquee"); if (mq) mq.innerHTML = [...BRANDS,...BRANDS].map(b=>`<span>${b}</span>`).join("");
+  buildFilters(); render(); renderRail(); renderShows();
+}
+refreshAll();
+const reload = () => DEMOAPP.all().then(cars => { STOCK = cars; refreshAll(); });
+reload();
+DEMOAPP.onChange(reload);
+
+/* ====== CALCULADORA ====== */
+const rPrice = document.getElementById("rPrice"), rDown = document.getElementById("rDown");
+let n = 36;
+const paint = r => r.style.setProperty("--p", ((r.value-r.min)/(r.max-r.min)*100)+"%");
+function calc(){
+  const price = +rPrice.value, down = price*rDown.value/100, fin = price-down, i = .45/12;
+  const cuota = fin*i/(1-Math.pow(1+i,-n));
+  document.getElementById("oPrice").textContent = ars(price);
+  document.getElementById("oDown").textContent = `${rDown.value}% · ${ars(down)}`;
+  document.getElementById("oFin").textContent = ars(fin);
+  document.getElementById("oCuota").textContent = ars(cuota);
+  paint(rPrice); paint(rDown);
+}
+rPrice.oninput = rDown.oninput = calc;
+document.querySelectorAll("#cuotas .chip").forEach(b => b.onclick = () => {
+  n = +b.dataset.n; document.querySelectorAll("#cuotas .chip").forEach(x=>x.classList.toggle("active",x===b)); calc();
+});
+calc();
+
+/* ====== FORMULARIO → WHATSAPP ====== */
+const MODES = {
+  comprar:{t:"¿Cuál te llevás?", s:"Dejanos tus datos y te respondemos al toque por WhatsApp.", l:"¿Qué vehículo te interesa?", p:"Ej: Toyota Hilux 2.8 SR"},
+  vender:{t:"Tasá tu usado gratis.", s:"Contanos qué tenés y te pasamos un valor en minutos.", l:"Tu vehículo (marca, modelo, año, km)", p:"Ej: Peugeot 208 2019, 60.000 km"},
+  consignar:{t:"Lo vendemos por vos.", s:"Lo publicamos, lo mostramos y te avisamos cuando se vende.", l:"Tu vehículo (marca, modelo, año, km)", p:"Ej: Jeep Renegade 2020, 45.000 km"},
+};
+let mode = "comprar";
+function setMode(m){
+  mode = m; const d = MODES[m];
+  document.querySelectorAll("#seg button").forEach(b=>b.classList.toggle("active", b.dataset.mode===m));
+  document.getElementById("formTitle").textContent = d.t;
+  document.getElementById("formSub").textContent = d.s;
+  document.getElementById("fCarLabel").textContent = d.l;
+  document.getElementById("fCar").placeholder = d.p;
+}
+document.querySelectorAll("#seg button").forEach(b => b.onclick = () => setMode(b.dataset.mode));
+document.querySelectorAll("a[data-mode]").forEach(a => a.addEventListener("click", () => setMode(a.dataset.mode)));
+document.getElementById("leadForm").addEventListener("submit", e => {
+  e.preventDefault();
+  const v = id => document.getElementById(id).value.trim();
+  window.open(wa(`Hola Grupo Amplifia! Soy ${v("fName")} (${v("fPhone")}). Quiero ${mode}. Vehículo: ${v("fCar")||"-"}. ${v("fMsg")}`), "_blank");
+});
+document.querySelectorAll(".js-wa").forEach(a => { a.href = wa("Hola Grupo Amplifia! Quería hacer una consulta."); a.target="_blank"; a.rel="noopener"; });
+
+/* ====== NAV, MENÚ, REVEAL, PARALLAX, CONTADORES ====== */
+const nav = document.getElementById("nav"), mm = document.getElementById("mobileMenu");
+let lastY = 0;
+const onScroll = () => {
+  const y = scrollY;
+  nav.classList.toggle("solid", y > innerHeight*0.6);
+  lastY = y;
+  document.querySelectorAll("[data-parallax]").forEach(img => {
+    const r = img.parentElement.getBoundingClientRect();
+    if (r.bottom>0 && r.top<innerHeight) img.style.transform = `translateY(${(r.top/innerHeight)*-8}%)`;
+  });
+};
+addEventListener("scroll", onScroll, {passive:true}); onScroll();
+document.getElementById("burger").onclick = () => { mm.classList.toggle("open"); nav.classList.add("solid"); };
+mm.querySelectorAll("a").forEach(a => a.onclick = () => mm.classList.remove("open"));
+
+const io = new IntersectionObserver(es => es.forEach(e => {
+  if (!e.isIntersecting) return;
+  e.target.classList.add("shown"); io.unobserve(e.target);
+  const b = e.target.querySelector("[data-count]");
+  if (b){ const end=+b.dataset.count, suf=b.dataset.suffix||"", t0=performance.now();
+    const tick = t => { const k=Math.min(1,(t-t0)/1400); b.textContent = Math.round(end*(1-Math.pow(1-k,3))) + suf; if(k<1) requestAnimationFrame(tick); };
+    requestAnimationFrame(tick); }
+}), {threshold:.15});
+document.querySelectorAll(".rv").forEach((el,i) => { el.style.transitionDelay = (i%4)*80+"ms"; io.observe(el); });
+const io2 = new IntersectionObserver(es => es.forEach(e => e.target.classList.toggle("in-view", e.isIntersecting)), {threshold:.2});
+document.querySelectorAll(".show").forEach(s => io2.observe(s));
+
+/* ====== Ópticas traseras: alinear el brillo con la foto de portada ====== */
+const heroImg = document.getElementById("heroImg"), tailFx = document.getElementById("tailFx");
+function fitTail(){
+  const W = heroImg.clientWidth, H = heroImg.clientHeight, iw = heroImg.naturalWidth || 2200, ih = heroImg.naturalHeight || 1464;
+  const k = Math.max(W/iw, H/ih), w = iw*k, h = ih*k;
+  Object.assign(tailFx.style, {width:w+"px", height:h+"px", left:(W-w)/2+"px", top:(H-h)/2+"px"});
+}
+heroImg.complete ? fitTail() : heroImg.addEventListener("load", fitTail);
+// Vapor: bocanadas que salen de cada caño de escape (posiciones en % de la foto)
+[[63.2, 75.2], [79.4, 71.6]].forEach(([x, y], e) => {
+  for (let k = 0; k < 22; k++){
+    const p = document.createElement("i"); p.className = "puff";
+    const r = (a, b) => a + Math.random()*(b-a);
+    p.style.cssText = `left:${x + r(-.4,.4)}%;top:${y}%;--dur:${r(3.2,5.2).toFixed(2)}s;--delay:${(k*0.22 + e*0.11 - 4).toFixed(2)}s;--rot:${r(-25,25).toFixed(0)}deg;` +
+      `--dx:${r(-160,90).toFixed(0)}%;--dy:${r(-380,-200).toFixed(0)}%;--s:${r(2.6,4.4).toFixed(2)};--o:${r(.45,.75).toFixed(2)}`;
+    tailFx.appendChild(p);
+  }
+});
+addEventListener("resize", fitTail);
+
+/* ====== Faros del Camaro: alinear el brillo con la foto y encender al aparecer ====== */
+const stImg = document.querySelector("#stBg img"), hlBox = document.getElementById("hlBox"), stGlow = document.getElementById("stGlow");
+function fitHL(){
+  const W = stGlow.clientWidth, H = stGlow.clientHeight, iw = stImg.naturalWidth || 2200, ih = stImg.naturalHeight || 1300;
+  const k = Math.max(W/iw, H/ih), w = iw*k, h = ih*k;
+  Object.assign(hlBox.style, {width:w+"px", height:h+"px", left:(W-w)*0.60+"px", top:(H-h)*0.55+"px"});
+}
+stImg.complete ? fitHL() : stImg.addEventListener("load", fitHL);
+addEventListener("resize", fitHL);
+new IntersectionObserver((es, o) => es.forEach(e => { if (e.isIntersecting){ e.target.classList.add("lit"); o.disconnect(); } }), {threshold:.35}).observe(document.querySelector(".statement"));
+
+/* ====== EFECTOS (inspirados en Rivian y las referencias) ====== */
+const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+// Pantalla de carga con el logo
+const loader = document.getElementById("loader");
+const endLoader = () => setTimeout(() => loader.classList.add("done"), reduce ? 0 : 900);
+if (document.readyState === "complete") endLoader(); else addEventListener("load", endLoader);
+setTimeout(() => loader.classList.add("done"), 3000); // por si alguna imagen tarda
+
+// Títulos que entran palabra por palabra
+function splitWords(el){
+  const walk = node => [...node.childNodes].forEach(n => {
+    if (n.nodeType === 3){
+      const frag = document.createDocumentFragment();
+      n.textContent.split(/(\s+)/).forEach(t => {
+        if (!t) return;
+        if (/^\s+$/.test(t)) { frag.appendChild(document.createTextNode(" ")); return; }
+        const w = document.createElement("span"); w.className = "w";
+        const i = document.createElement("span"); i.textContent = t; w.appendChild(i); frag.appendChild(w);
+      });
+      n.replaceWith(frag);
+    } else if (n.nodeType === 1 && n.tagName !== "BR") walk(n);
+  });
+  walk(el); el.classList.add("split");
+  el.querySelectorAll(".w > span").forEach((s,k) => s.style.transitionDelay = (k*55)+"ms");
+}
+const heads = [...document.querySelectorAll(".hero h1, .sec-head h2, .show-top h2, .bleed h2, .fin-copy h2")];
+if (!reduce) {
+  heads.forEach(splitWords);
+  const ioS = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting){ e.target.classList.add("go"); ioS.unobserve(e.target); } }), {threshold:.3});
+  heads.forEach(h => h.closest(".hero") ? setTimeout(()=>h.classList.add("go"), 1000) : ioS.observe(h));
+}
+
+// Scroll: barra de progreso, parallax de portada y showcases que se expanden
+const prog = document.getElementById("progress");
+const heroMedia = document.querySelector(".hero-media"), heroContent = document.querySelector(".hero-content");
+const shows = [...document.querySelectorAll(".show")], stBg = document.getElementById("stBg");
+let ticking = false;
+function fx(){
+  ticking = false;
+  const y = scrollY, vh = innerHeight;
+  prog.style.transform = `scaleX(${y / (document.documentElement.scrollHeight - vh)})`;
+  if (y < vh * 1.2){
+    heroMedia.style.transform = `translateY(${y*0.35}px)`;
+    heroContent.style.transform = `translateY(${y*0.18}px)`;
+    heroContent.style.opacity = Math.max(0, 1 - y/(vh*0.7));
+  }
+  document.querySelectorAll(".card:not(.seen)").forEach(c => { const r = c.getBoundingClientRect(); if (r.top < vh*0.92 && r.bottom > 0) c.classList.add("seen"); });
+  const railS = rail.closest("section");
+  if (railS.classList.contains("pinned") && window.__railDist){
+    const rr = railS.getBoundingClientRect(), p = Math.min(1, Math.max(0, -rr.top / window.__railDist));
+    rail.style.transform = `translate3d(${-p * window.__railDist}px,0,0)`;
+    document.getElementById("railProg").style.transform = `scaleX(${p})`;
+  }
+  document.querySelectorAll(".bb-row").forEach(row => {
+    const r = row.parentElement.getBoundingClientRect();
+    if (r.bottom > 0 && r.top < vh) row.style.transform = `translate3d(${-row.scrollWidth*0.28 + (vh - r.top) * 0.45 * +row.dataset.dir}px,0,0)`;
+  });
+  const steps = document.querySelectorAll(".story-steps .st");
+  if (steps.length){
+    let best = 0, bd = 1e9;
+    steps.forEach((st,k) => { const r = st.getBoundingClientRect(), d = Math.abs(r.top + r.height/2 - vh/2); if (d < bd){ bd = d; best = k; } });
+    steps.forEach((st,k) => st.classList.toggle("on", k===best));
+    document.querySelectorAll("#storyMedia img").forEach((im,k) => im.classList.toggle("on", k===best));
+    document.getElementById("storyBar").style.transform = `translateX(${best*100}%)`;
+  }
+  const sr = stBg.parentElement.getBoundingClientRect();
+  if (sr.bottom > 0 && sr.top < vh) stBg.style.transform = document.getElementById("stGlow").style.transform = `translateY(${-sr.top * 0.09}px)`;
+  shows.forEach(s => {
+    const r = s.getBoundingClientRect();
+    if (r.bottom < 0 || r.top > vh) return;
+    const p = Math.min(1, Math.max(0, (vh - r.top) / vh));      // 0 al entrar, 1 cuando llena la pantalla
+    const inset = (1-p) * 7, radius = (1-p) * 36;
+    s.style.clipPath = `inset(${inset}% ${inset*1.4}% ${inset}% ${inset*1.4}% round ${radius}px)`;
+    s.querySelector(":scope > img").style.transform = `scale(${1.15 - p*0.15}) translateY(${(r.top/vh)*-6}%)`;
+    const top = s.querySelector(".show-top"); top.style.transform = `translateY(${(1-p)*60}px)`; top.style.opacity = .2 + p*.8;
+  });
+}
+if (!reduce){ addEventListener("scroll", () => { if (!ticking){ ticking = true; requestAnimationFrame(fx); } }, {passive:true}); fx(); }
+
+applyTilt();
+
+// Carrusel arrastrable con el mouse
+let drag = null;
+rail.addEventListener("mousedown", e => { drag = {x:e.pageX, s:rail.scrollLeft, moved:false}; });
+addEventListener("mousemove", e => { if (!drag) return; const dx = e.pageX - drag.x; if (Math.abs(dx) > 5){ drag.moved = true; rail.classList.add("dragging"); } rail.scrollLeft = drag.s - dx; });
+addEventListener("mouseup", () => { if (!drag) return; setTimeout(()=>rail.classList.remove("dragging"), 0); drag = null; });
+
+/* ====== MOVIMIENTOS EXTRA ====== */
+const fine = matchMedia("(hover:hover) and (pointer:fine)").matches && !reduce;
+let mx = 0, my = 0, rx = 0, ry = 0, cx = innerWidth/2, cy = innerHeight/2;
+if (fine){
+  const dot = document.getElementById("curDot"), ring = document.getElementById("curRing");
+  addEventListener("mousemove", e => {
+    cx = e.clientX; cy = e.clientY; document.body.classList.add("has-cursor");
+    dot.style.transform = `translate(${cx}px,${cy}px)`;
+    mx = cx/innerWidth - .5; my = cy/innerHeight - .5;
+    const t = e.target;
+    document.body.classList.toggle("cur-view", !!t.closest(".card-img, .tall, .show, .visit > img") && !t.closest("a, button, .btn"));
+    document.body.classList.toggle("cur-link", !!t.closest("a, button, select, input, textarea, .chip"));
+  }, {passive:true});
+  document.addEventListener("mouseleave", () => document.body.classList.remove("has-cursor"));
+  (function loop(){
+    rx += (cx - rx) * .18; ry += (cy - ry) * .18;
+    ring.style.transform = `translate(${rx}px,${ry}px)`;
+    // Portada: el auto se mueve apenas con el mouse
+    if (scrollY < innerHeight) document.querySelector(".hero-zoom").style.translate = `${mx * -22}px ${my * -14}px`;
+    requestAnimationFrame(loop);
+  })();
+  // Botones magnéticos
+  document.querySelectorAll(".btn").forEach(b => {
+    b.classList.add("mag");
+    b.addEventListener("mousemove", e => {
+      const r = b.getBoundingClientRect();
+      b.style.transform = `translate(${(e.clientX - r.left - r.width/2) * .25}px,${(e.clientY - r.top - r.height/2) * .35}px)`;
+    });
+    b.addEventListener("mouseleave", () => b.style.transform = "");
+  });
+}
+// Marcas: se inclinan según la velocidad del scroll
+const brandsEl = document.querySelector(".brands") || document.createElement("div");
+let lastSY = scrollY, skew = 0;
+(function sk(){
+  const v = scrollY - lastSY; lastSY = scrollY;
+  skew += (Math.max(-12, Math.min(12, v * .35)) - skew) * .12;
+  brandsEl.style.transform = `skewX(${-skew}deg)`;
+  requestAnimationFrame(sk);
+})();
+</script>
+<script src="assistant.js?v=6"></script>
+</body>
+</html>

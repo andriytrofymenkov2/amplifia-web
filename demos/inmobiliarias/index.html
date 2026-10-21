@@ -1,0 +1,1526 @@
+<!doctype html>
+<html lang="es-AR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Grupo Amplifia · Río Gallegos</title>
+<meta name="description" content="Casas, departamentos y terrenos en venta y alquiler en Río Gallegos. Mapa interactivo con todas las propiedades de Grupo Amplifia.">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#0f0e0c">
+<link rel="icon" href="img/logo-icono-c.svg">
+<link rel="preload" as="image" href="img/hero/portada-4-d.jpg" media="(min-width:761px)">
+<link rel="preload" as="image" href="img/hero/portada-4-m.jpg" media="(max-width:760px)">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Saira+Extra+Condensed:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css">
+<style>
+:root{
+  --ink:#0f0e0c; --ink-2:#161511; --ink-3:#1e1c17;
+  --line:rgba(243,237,226,.12); --line-2:rgba(243,237,226,.24);
+  --cream:#f3ede2; --muted:rgba(243,237,226,.64); --faint:rgba(243,237,226,.42);
+  --sand:#d8c6a1; --sand-2:#b89f72;
+  --display:"Saira Extra Condensed","Arial Narrow",sans-serif;
+  --body:"Montserrat",system-ui,sans-serif;
+  --pad:clamp(16px,4vw,64px);
+  --ease:cubic-bezier(.2,.7,.1,1);
+  --wa:#25D366; --wa-2:#1ebe5a; --fb:#1877F2;
+  --ig:linear-gradient(45deg,#feda75 0%,#fa7e1e 25%,#d62976 50%,#962fbf 75%,#4f5bd5 100%);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%;overflow-x:clip}
+body{background:var(--ink);color:var(--cream);font:400 16px/1.6 var(--body);overflow-x:clip}
+body.lock{overflow:hidden}
+img{display:block;max-width:100%}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+.display{font-family:var(--display);font-weight:600;text-transform:uppercase;letter-spacing:.005em;line-height:.88}
+.eyebrow{font-size:12px;font-weight:600;letter-spacing:.24em;text-transform:uppercase;color:var(--sand)}
+body:after{content:"";position:fixed;inset:0;pointer-events:none;z-index:200;opacity:.05;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+
+/* ---------- loader ---------- */
+#loader{position:fixed;inset:0;z-index:300;background:var(--ink);display:grid;place-items:center;transition:opacity .6s, visibility .7s}
+#loader .ld{display:grid;justify-items:center;gap:clamp(26px,4vh,40px)}
+#loader .lg{display:flex;align-items:flex-end;gap:clamp(16px,2vw,28px)}
+#loader .lg .i{height:clamp(130px,22vh,220px);clip-path:inset(100% 0 0 0);animation:rise .8s var(--ease) forwards}
+#loader .lg .t{display:grid;gap:clamp(8px,1.4vh,14px);clip-path:inset(0 100% 0 0);animation:wipe .7s .35s var(--ease) forwards}
+#loader .lg .t img:first-child{height:clamp(62px,10.5vh,106px)}
+#loader .lg .t img:last-child{height:clamp(13px,2.2vh,22px)}
+#loader .bar{width:clamp(220px,30vw,380px);height:2px;background:var(--line-2);overflow:hidden;border-radius:2px}
+#loader .bar i{display:block;height:100%;background:var(--sand);transform:scaleX(0);transform-origin:left;animation:load 1.5s .15s cubic-bezier(.6,.05,.3,1) forwards}
+@keyframes load{to{transform:scaleX(1)}}
+#loader.out{opacity:0;visibility:hidden}
+@keyframes rise{to{clip-path:inset(0 0 0 0)}}
+@keyframes wipe{to{clip-path:inset(0 0 0 0)}}
+
+/* ---------- header ---------- */
+header{position:fixed;inset:0 0 auto;z-index:50;display:flex;align-items:center;gap:28px;padding:18px var(--pad);transition:background .35s,border-color .35s,padding .35s;border-bottom:1px solid transparent}
+header.solid{background:rgba(15,14,12,.94);border-color:var(--line);padding-block:12px}
+.brand{display:flex;align-items:flex-end;gap:12px;flex:none}
+.brand .i{height:78px;transition:height .35s}
+.brand .w{display:grid;gap:5px}
+.brand .w img:first-child{height:46px;transition:height .35s}
+.brand .w img:last-child{height:11px;opacity:.95}
+header.solid .brand .i{height:56px}
+header.solid .brand .w img:first-child{height:33px}
+nav.main{margin-left:auto;display:flex;gap:34px;font-size:13px;font-weight:600;letter-spacing:.16em;text-transform:uppercase}
+nav.main a{opacity:.85;transition:opacity .2s;position:relative}
+nav.main a:after{content:"";position:absolute;left:0;right:0;bottom:-6px;height:1px;background:var(--sand);transform:scaleX(0);transform-origin:left;transition:transform .35s var(--ease)}
+nav.main a:hover{opacity:1}
+nav.main a:hover:after{transform:none}
+.h-cta{border-radius:999px;display:flex;align-items:center;gap:10px;background:var(--wa);color:#fff;box-shadow:0 0 0 0 rgba(37,211,102,.5),0 6px 22px rgba(37,211,102,.35);padding:15px 24px;font-size:13px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;transition:background .2s}
+.h-cta:hover{background:var(--wa-2);box-shadow:0 0 0 6px rgba(37,211,102,.18),0 8px 28px rgba(37,211,102,.5)}
+.h-cta svg{width:22px;height:22px}
+.h-ig{flex:none;width:50px;height:50px;border-radius:50%;display:grid;place-items:center;color:#e1306c;background:rgba(243,237,226,.06);border:1px solid var(--line-2);transition:transform .25s,box-shadow .25s,background .25s,color .25s}
+.h-ig.fb{color:#4d93ff}
+.h-ig:hover{background:var(--ig);color:#fff;border-color:transparent}
+.h-ig.fb:hover{background:var(--fb)}
+.h-ig:hover{transform:translateY(-2px);box-shadow:0 0 0 6px rgba(214,41,118,.18),0 10px 30px rgba(214,41,118,.5)}
+.h-ig.fb:hover{box-shadow:0 0 0 6px rgba(24,119,242,.2),0 10px 30px rgba(24,119,242,.5)}
+.h-ig svg{width:26px;height:26px}
+.h-ig.fb svg{width:30px;height:30px}
+.burger{display:none;width:50px;height:50px;place-items:center;margin-left:auto;border:1px solid var(--line-2);border-radius:50%}
+.burger span{display:block;width:20px;height:1.5px;background:var(--cream);box-shadow:0 6px 0 var(--cream)}
+#menu{position:fixed;inset:0;z-index:60;background:var(--ink);display:flex;flex-direction:column;justify-content:center;gap:4px;padding:var(--pad);transform:translateY(-100%);transition:transform .55s var(--ease)}
+#menu.open{transform:none}
+#menu a.big{font-family:var(--display);font-size:64px;font-weight:600;text-transform:uppercase;line-height:1}
+#menu .close{position:absolute;top:22px;right:var(--pad);font-size:13px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;border:1px solid var(--line-2);padding:14px 20px;border-radius:999px}
+#menu .m-foot{margin-top:30px;color:var(--muted);font-size:14px;line-height:1.7}
+
+/* ---------- hero ---------- */
+#top{position:relative;height:100svh;min-height:620px;overflow:hidden;background:#000}
+.slide{position:absolute;inset:0;opacity:0;transition:opacity 1.4s ease}
+.slide.on{opacity:1;z-index:1}
+.slide img{width:100%;height:100%;object-fit:cover;transform:scale(1.08)}
+.slide.on img{animation:kb 8s linear forwards}
+@keyframes kb{from{transform:scale(1.08)}to{transform:scale(1)}}
+#top:before{content:"";position:absolute;inset:0;z-index:2;pointer-events:none;
+  background:linear-gradient(180deg,rgba(15,14,12,.6) 0%,rgba(15,14,12,.08) 24%,rgba(15,14,12,.18) 42%,rgba(15,14,12,.72) 70%,rgba(15,14,12,.97) 100%),linear-gradient(90deg,rgba(15,14,12,.55),rgba(15,14,12,0) 60%)}
+.hero-in{position:absolute;inset:auto 0 0 0;z-index:3;padding:0 var(--pad) clamp(22px,3.4vh,40px)}
+.hero-top .tag p,.hero-meta .scroll-cue{text-shadow:0 2px 6px rgba(0,0,0,.35),0 8px 40px rgba(0,0,0,.55)}
+.hero-in .eyebrow{display:inline-block;font-size:clamp(14px,1.15vw,18px);font-weight:700;color:var(--sand);letter-spacing:.3em;text-shadow:0 2px 16px rgba(0,0,0,.7)}
+.hero-top .tag p{opacity:0;transform:translateY(30px);transition:opacity 1s .2s var(--ease),transform 1s .2s var(--ease)}
+.ready .hero-top .tag p{opacity:1;transform:none}
+.hero-top{display:flex;justify-content:space-between;align-items:flex-end;gap:30px;margin-bottom:clamp(18px,3vh,30px)}
+.hero-top .tag{max-width:none}
+.hero-top .tag p{font-family:var(--display);font-weight:600;text-transform:uppercase;font-size:clamp(46px,5.6vw,108px);line-height:.98;margin-top:18px;white-space:nowrap}
+.hero-top .tag p em{font-style:normal;color:var(--sand)}
+.wordmark{display:block;width:100%;height:auto;color:var(--cream)}
+.lockup{display:flex;align-items:flex-end;gap:clamp(14px,1.8vw,30px);filter:drop-shadow(0 4px 30px rgba(0,0,0,.45))}
+.lk-i{height:clamp(150px,27svh,290px);width:auto}
+.lk-t{display:grid;gap:clamp(10px,1.6svh,18px)}
+.lockup #wm{width:auto;height:clamp(84px,15svh,164px)}
+.lk-b{height:clamp(17px,3svh,34px);width:auto}
+.wordmark path{fill:var(--cream)}
+.wm-wrap{overflow:hidden}
+.wm-wrap .lockup{transform:translateY(104%);transition:transform 1.15s var(--ease)}
+.ready .wm-wrap .lockup{transform:none}
+.hero-meta{display:flex;align-items:center;gap:28px;margin-top:clamp(14px,2.2vh,24px);padding-top:clamp(12px,2vh,20px);border-top:1px solid var(--line-2);font-size:13px}
+.now{display:flex;align-items:center;gap:14px;min-width:0;max-width:62%}
+.now .k{font-size:10px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--sand);flex:none}
+.now .t{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:600}
+.now .arr{flex:none;width:34px;height:34px;border:1px solid var(--line-2);display:grid;place-items:center;transition:background .2s,color .2s}
+.now:hover .arr{background:var(--sand);color:var(--ink);border-color:var(--sand)}
+.bars{display:flex;gap:6px;flex:none;margin-left:auto}
+.bars button{width:34px;height:14px;position:relative}
+.bars button:before,.bars button i{content:"";position:absolute;left:0;right:0;top:6px;height:2px;background:var(--line-2)}
+.bars button i{background:var(--sand);transform:scaleX(0);transform-origin:left}
+.bars button.on i{animation:bar 6.5s linear forwards}
+@keyframes bar{to{transform:scaleX(1)}}
+.scroll-cue{display:flex;align-items:center;gap:10px;color:var(--muted);font-size:12px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;flex:none}
+.scroll-cue i{width:1px;height:28px;background:var(--line-2);position:relative;overflow:hidden}
+.scroll-cue i:after{content:"";position:absolute;inset:0;background:var(--sand);animation:cue 1.8s ease-in-out infinite}
+@keyframes cue{from{transform:translateY(-100%)}to{transform:translateY(100%)}}
+
+/* ---------- reveal ---------- */
+.rv{opacity:0;transform:translateY(30px);transition:opacity .8s var(--ease),transform .8s var(--ease)}
+.rv.in{opacity:1;transform:none}
+.words .w{display:inline-block;overflow:hidden;vertical-align:top;padding:.16em .04em .12em;margin:-.16em -.04em -.12em}
+.words .w>span{display:inline-block;transform:translateY(105%);transition:transform .9s var(--ease)}
+.words.in .w>span{transform:none}
+
+/* ---------- intro + puertas ---------- */
+.intro{display:flex;flex-direction:column;align-items:center;text-align:center;gap:22px;padding:clamp(80px,10vw,150px) var(--pad) clamp(30px,4vw,56px)}
+.intro h2{font-size:clamp(50px,7vw,124px);max-width:16ch;line-height:.98}
+.intro h2 em{font-style:normal;color:var(--sand)}
+.intro p{color:var(--muted);max-width:560px;font-size:clamp(18px,1.5vw,22px);line-height:1.5}
+.doors{display:flex;gap:3px;height:min(84vh,860px);padding:0 3px}
+.door{position:relative;flex:1;overflow:hidden;display:flex;align-items:flex-end;padding:clamp(22px,2.6vw,40px);transition:flex .8s var(--ease);min-width:0;background:var(--ink-3)}
+.doors:hover .door{flex:.82}
+.doors .door:hover{flex:1.5}
+.door>img,.door .dmap{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform 1.4s var(--ease)}
+.door:hover>img{transform:scale(1.04)}
+.door:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(15,14,12,0) 38%,rgba(15,14,12,.92));pointer-events:none}
+.door .in{position:relative;z-index:2;width:100%;display:flex;justify-content:space-between;align-items:flex-end;gap:14px;pointer-events:none}
+.door .n{display:block;font-size:16px;font-weight:600;color:var(--cream);margin-bottom:12px}
+.door .n b{color:var(--sand);font-weight:700}
+.door h3{font-size:clamp(64px,7.4vw,140px)}
+.door .arrow{width:68px;height:68px;border-radius:50%;border:1px solid var(--line-2);display:grid;place-items:center;flex:none;transition:background .3s,border-color .3s,color .3s;background:rgba(15,14,12,.35)}
+.door:hover .arrow{background:var(--sand);border-color:var(--sand);color:var(--ink)}
+.dmap{z-index:0;pointer-events:none;filter:saturate(.9)}
+.dmap .leaflet-control-container{display:none}
+
+/* ---------- section heads ---------- */
+section{position:relative}
+.s-head{display:flex;align-items:flex-end;justify-content:space-between;gap:28px;padding:clamp(90px,11vw,160px) var(--pad) clamp(26px,3.4vw,44px)}
+.s-head h2{font-size:clamp(64px,10vw,170px)}
+.s-head .side{max-width:400px;display:grid;gap:10px;justify-items:start}
+.s-head .side p{color:var(--muted);font-size:18px;line-height:1.55}
+.s-head.center{flex-direction:column;align-items:center;text-align:center;gap:18px}
+.s-head.center .side{justify-items:center;max-width:620px}
+.s-head.center .side p{font-size:clamp(18px,1.5vw,22px)}
+#venta .filters,#alquiler .filters{justify-content:center}
+.s-head .lead{color:var(--muted);font-size:clamp(18px,1.5vw,22px);line-height:1.5;max-width:620px}
+.count{font-size:13px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--sand)}
+
+/* ---------- destacadas ---------- */
+.rail{display:flex;gap:18px;overflow-x:auto;scroll-snap-type:x mandatory;scroll-padding-inline:var(--pad);padding:0 var(--pad) 10px;scrollbar-width:none;cursor:grab}
+.rail::-webkit-scrollbar{display:none}
+.feat{flex:0 0 clamp(300px,34vw,560px);scroll-snap-align:start;text-align:left}
+.feat .ph{aspect-ratio:4/5;overflow:hidden;position:relative;background:var(--ink-3)}
+.feat .ph img{width:100%;height:100%;object-fit:cover;transition:transform 1.4s var(--ease)}
+.feat:hover .ph img{transform:scale(1.045)}
+.feat .meta{padding-top:18px;display:grid;gap:6px}
+.feat .price{font-family:var(--display);font-size:clamp(40px,3.4vw,54px);font-weight:600;line-height:.95}
+.feat .price small{font-family:var(--body);font-size:13px;color:var(--muted);font-weight:500;margin-left:6px}
+.feat h4{font-size:18px;font-weight:600}
+.feat .where{color:var(--muted);font-size:15px}
+.rail-wrap{position:relative}
+/* flechas sobre las fotos, a media altura de la imagen (4:5 del ancho de la tarjeta) */
+.rail-nav{position:absolute;top:calc(clamp(300px,34vw,560px) * 1.25 / 2);transform:translateY(-50%);z-index:5;width:72px;height:72px;border-radius:50%;
+  background:rgba(243,237,226,.94);color:var(--ink);display:grid;place-items:center;box-shadow:0 14px 40px rgba(0,0,0,.5);transition:opacity .3s,transform .3s var(--ease),background .2s}
+.rail-nav:hover{background:var(--sand);transform:translateY(-50%) scale(1.08)}
+.rail-nav.prev{left:calc(var(--pad) - 20px)}
+.rail-nav.next{right:calc(var(--pad) - 20px)}
+.rail-nav.off{opacity:0;pointer-events:none}
+.rail-prog{margin:26px var(--pad) 0;height:3px;background:var(--line);border-radius:3px;overflow:hidden}
+.rail-prog i{display:block;height:100%;width:0;background:var(--sand);border-radius:3px;transition:width .25s}
+
+/* ---------- labels ---------- */
+.lbl{position:absolute;top:14px;left:14px;z-index:2;display:flex;gap:6px;flex-wrap:wrap}
+.lbl span{background:var(--ink);color:var(--cream);font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;padding:8px 13px;border-radius:999px}
+.lbl span.s{background:var(--sand);color:var(--ink)}
+
+/* ---------- mapa ---------- */
+.map-bar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;padding:0 var(--pad) 16px}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{border-radius:999px;border:1px solid var(--line-2);padding:12px 20px;font-size:14px;font-weight:600;letter-spacing:.05em;transition:background .2s,color .2s,border-color .2s;white-space:nowrap}
+.chip:hover{border-color:var(--cream)}
+.chip.on{background:var(--cream);color:var(--ink);border-color:var(--cream)}
+.chip .n{opacity:.55;margin-left:6px;font-weight:500}
+.map-shell{display:grid;grid-template-columns:420px 1fr;height:min(86vh,900px);border-block:1px solid var(--line);isolation:isolate}
+.m-list{overflow-y:auto;border-right:1px solid var(--line);scrollbar-width:thin;scrollbar-color:var(--line-2) transparent}
+.m-card{display:grid;grid-template-columns:132px 1fr;gap:16px;padding:14px 22px 14px 18px;border-bottom:1px solid var(--line);cursor:pointer;transition:background .2s;text-align:left;width:100%}
+.m-card:hover,.m-card.on{background:var(--ink-3)}
+.m-card.on{box-shadow:inset 3px 0 0 var(--sand)}
+.m-card .ph{aspect-ratio:4/3;overflow:hidden;background:var(--ink-3)}
+.m-card .ph img{width:100%;height:100%;object-fit:cover}
+.m-card .op{font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--sand)}
+.m-card .price{font-family:var(--display);font-size:28px;font-weight:600;line-height:1.05}
+.m-card .tt{font-size:15px;font-weight:600;line-height:1.35}
+.m-card .where{font-size:13px;color:var(--muted)}
+.map-wrap{position:relative;isolation:isolate}
+#map{height:100%;background:#1b1b1a}
+.map-hint{position:absolute;inset:0;z-index:520;display:grid;place-items:center;background:rgba(15,14,12,.55);opacity:0;pointer-events:none;transition:opacity .3s}
+.map-hint span{background:var(--ink);border:1px solid var(--line-2);border-radius:999px;padding:16px 26px;font-size:16px;font-weight:600}
+.map-hint.on{opacity:1}
+.zoom{position:absolute;right:18px;top:50%;transform:translateY(-50%);z-index:510;display:flex;flex-direction:column;align-items:center;gap:10px;background:var(--ink);border:1px solid var(--line-2);border-radius:999px;padding:10px 8px;box-shadow:0 14px 40px rgba(0,0,0,.5)}
+.zoom button{width:58px;height:58px;border-radius:50%;background:var(--cream);color:var(--ink);font:500 34px/1 var(--body);display:grid;place-items:center;transition:background .2s,transform .2s}
+.zoom button:hover{background:var(--sand);transform:scale(1.06)}
+.zoom button.fit{width:auto;height:auto;background:none;color:var(--muted);font:700 10px/1.2 var(--body);letter-spacing:.12em;text-transform:uppercase;padding:6px 4px;max-width:58px;text-align:center}
+.zoom button.fit:hover{color:var(--sand);background:none;transform:none}
+.zoom input{writing-mode:vertical-lr;direction:rtl;width:30px;height:150px;accent-color:var(--sand);cursor:pointer;margin:2px 0}
+.map-view{position:absolute;right:14px;top:14px;z-index:500;display:flex;gap:4px;padding:4px;background:var(--ink);border:1px solid var(--line-2);border-radius:999px}
+.map-view button{border-radius:999px;padding:11px 18px;font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.map-view button.on{background:var(--cream);color:var(--ink)}
+.pin{transform:translate(-50%,-100%);display:inline-block;white-space:nowrap;background:var(--sand);color:var(--ink);font:700 12px/1 var(--body);padding:8px 10px;position:relative;box-shadow:0 6px 18px rgba(0,0,0,.5);transition:transform .2s,background .2s}
+.pin:after{content:"";position:absolute;left:50%;bottom:-6px;transform:translateX(-50%);border:6px solid transparent;border-bottom:0;border-top-color:var(--sand)}
+.pin.alq{background:var(--ink);color:var(--cream);outline:1px solid var(--sand)}
+.pin.alq:after{border-top-color:var(--ink)}
+.pin.on,.pin:hover{background:var(--cream);color:var(--ink);transform:translate(-50%,-100%) scale(1.14)}
+.pin.on:after,.pin:hover:after{border-top-color:var(--cream)}
+.leaflet-marker-icon.pin-wrap{background:none;border:0}
+.hp{transform:translate(-50%,-100%);display:block;width:62px;height:62px;border-radius:14px;border:3px solid var(--sand);background:var(--ink);box-shadow:0 10px 24px rgba(0,0,0,.55);position:relative;transition:transform .25s var(--ease),border-color .2s;transform-origin:50% 100%}
+.hp img{width:100%;height:100%;object-fit:cover;border-radius:10px}
+.hp:after{content:"";position:absolute;left:50%;bottom:-9px;transform:translateX(-50%);border:7px solid transparent;border-bottom:0;border-top-color:var(--sand)}
+.hp.alq{border-color:var(--cream)}.hp.alq:after{border-top-color:var(--cream)}
+.hp:hover,.hp.on{transform:translate(-50%,-100%) scale(1.3)}
+.hp.on{border-color:#fff;box-shadow:0 0 0 6px rgba(216,198,161,.35),0 14px 30px rgba(0,0,0,.6)}
+.hp.on:after{border-top-color:#fff}
+.bpop .leaflet-popup-content-wrapper{background:var(--ink);color:var(--cream);border-radius:18px;padding:0;overflow:hidden;box-shadow:0 20px 50px rgba(0,0,0,.6);border:1px solid var(--line-2)}
+.bpop .leaflet-popup-content{margin:0;width:280px!important;font-family:var(--body)}
+.bpop .leaflet-popup-tip{background:var(--ink)}
+.bpop a.leaflet-popup-close-button{color:var(--cream)!important;font-size:22px!important;width:36px!important;height:36px!important;top:8px!important;right:8px!important;background:rgba(15,14,12,.7);border-radius:50%;display:grid;place-items:center;padding:0!important;z-index:2}
+.pop img{width:100%;aspect-ratio:4/3;object-fit:cover;display:block}
+.pop .b{padding:16px 18px 18px;display:grid;gap:4px}
+.pop .op{font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--sand)}
+.pop .pr{font-family:var(--display);font-size:34px;font-weight:600;line-height:1}
+.pop .tt{font-size:15px;font-weight:600;line-height:1.3}
+.pop .wh{font-size:13px;color:var(--muted)}
+.pop .btn{margin-top:12px;min-height:50px;font-size:12px;width:100%}
+.leaflet-marker-icon.pin-wrap.on{z-index:999!important}
+.mc{transform:translate(-50%,-50%);width:48px;height:48px;border-radius:50%;background:var(--sand);color:var(--ink);display:grid;place-items:center;font:700 15px var(--body);box-shadow:0 0 0 7px rgba(216,198,161,.28),0 8px 22px rgba(0,0,0,.5);transition:transform .2s}
+.mc:hover{transform:translate(-50%,-50%) scale(1.1)}
+.office{transform:translate(-50%,-50%);width:46px;height:46px;border-radius:50%;background:var(--cream);display:grid;place-items:center;box-shadow:0 0 0 6px rgba(243,237,226,.2)}
+.office img{height:28px}
+.leaflet-container{font-family:var(--body);background:#1b1b1a}
+.leaflet-control-attribution{background:rgba(15,14,12,.78)!important;color:var(--faint)!important;font-size:10px}
+.leaflet-control-attribution a{color:var(--muted)!important}
+.leaflet-bar a{background:var(--ink)!important;color:var(--cream)!important;border-color:var(--line)!important;border-radius:0!important;width:62px!important;height:62px!important;line-height:62px!important;font-size:32px!important;font-weight:400!important}
+.leaflet-bar a:hover{background:var(--sand)!important;color:var(--ink)!important}
+.leaflet-touch .leaflet-bar a{width:56px!important;height:56px!important;line-height:56px!important}
+.leaflet-bar{border:1px solid var(--line-2)!important;border-radius:14px!important;overflow:hidden}
+.map-legend{position:absolute;left:14px;bottom:24px;z-index:500;display:flex;gap:18px;align-items:center;background:var(--ink);border:1px solid var(--line);padding:11px 18px;font-size:13px;color:var(--muted);border-radius:999px}
+.map-legend i{display:inline-block;width:12px;height:12px;margin-right:7px;vertical-align:-1px;border:2px solid var(--sand);border-radius:3px}
+.map-legend i.a{border-color:var(--cream)}
+.map-legend i.o{border-radius:50%;background:var(--cream);border-color:var(--cream)}
+
+/* ---------- grilla ---------- */
+.filters{display:flex;flex-wrap:wrap;gap:10px 24px;align-items:center;justify-content:space-between;padding:0 var(--pad) 28px}
+.filters .g{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.filters select{background:transparent;color:var(--cream);border:1px solid var(--line-2);font:600 14px var(--body);padding:12px 18px;border-radius:999px}
+.filters select option{background:var(--ink)}
+.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(26px,2.6vw,40px) clamp(14px,1.6vw,24px);padding:0 var(--pad)}
+.card{cursor:pointer;text-align:left;display:block;width:100%}
+.card .ph{aspect-ratio:4/3;overflow:hidden;position:relative;background:var(--ink-3)}
+.card .ph img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:opacity .6s,transform 1.4s var(--ease)}
+.card .ph img.b{opacity:0}
+.card:hover .ph img.b{opacity:1}
+.card:hover .ph img{transform:scale(1.035)}
+.card .cnt{border-radius:999px;position:absolute;right:12px;bottom:12px;z-index:2;font-size:12px;font-weight:600;background:rgba(15,14,12,.82);padding:6px 9px;display:flex;gap:6px;align-items:center}
+.card .body{padding-top:16px;display:grid;gap:5px}
+.card .row1{display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap}
+.card .price{font-family:var(--display);font-size:clamp(34px,2.7vw,44px);font-weight:600;line-height:.95}
+.card .price small{font-family:var(--body);font-size:12px;font-weight:500;color:var(--muted);margin-left:5px}
+.card .alt{font-size:14px;color:var(--sand);font-weight:600}
+.card h4{font-size:17px;font-weight:600;line-height:1.35}
+.card .where{font-size:15px;color:var(--muted)}
+.specs{display:flex;gap:18px;flex-wrap:wrap;font-size:14px;color:var(--muted);margin-top:8px;padding-top:12px;border-top:1px solid var(--line)}
+.specs span{display:flex;align-items:center;gap:6px}
+.specs svg{width:15px;height:15px;stroke:var(--sand);fill:none;stroke-width:1.4}
+.empty{padding:40px var(--pad);color:var(--muted)}
+.more{display:flex;justify-content:center;padding:44px var(--pad) 0}
+.btn{position:relative;isolation:isolate;overflow:hidden;display:inline-flex;align-items:center;justify-content:center;gap:14px;min-height:60px;padding:0 30px;border-radius:999px;font-size:13px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;border:1px solid var(--line-2);color:var(--cream);transition:color .35s,border-color .35s}
+.btn:before{content:"";position:absolute;inset:0;z-index:-1;background:var(--cream);border-radius:inherit;transform:translateY(102%);transition:transform .45s var(--ease)}
+.btn:after{content:"";width:18px;height:18px;flex:none;background:currentColor;transition:transform .35s var(--ease);-webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2'%3E%3Cpath d='M5 12h14M13 6l6 6-6 6'/%3E%3C/svg%3E") center/contain no-repeat;mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2'%3E%3Cpath d='M5 12h14M13 6l6 6-6 6'/%3E%3C/svg%3E") center/contain no-repeat}
+.btn:hover{color:var(--ink);border-color:var(--cream)}
+.btn:hover:before{transform:none}
+.btn:hover:after{transform:translateX(4px)}
+.btn.sand{background:var(--sand);color:var(--ink);border-color:var(--sand)}
+.btn.noar:after{display:none}
+.btn.xl{min-height:76px;padding:0 40px;font-size:15px}
+.btn svg.ic{width:22px;height:22px;flex:none}
+.btn.wabtn{background:var(--wa);border-color:var(--wa);color:#fff;letter-spacing:.02em;text-transform:none;font-size:14px;font-weight:600;min-height:46px;padding:0 20px;gap:10px;flex:none;box-shadow:0 6px 22px rgba(37,211,102,.3)}
+.btn.wabtn:after{display:none}
+.btn.wabtn svg.ic{width:18px;height:18px}
+.btn.wabtn:before{background:var(--wa-2)}
+.btn.wabtn:hover{color:#fff;border-color:var(--wa-2);box-shadow:0 0 0 6px rgba(37,211,102,.16),0 12px 36px rgba(37,211,102,.5)}
+
+/* ---------- franja ---------- */
+.strip{overflow:hidden;border-block:1px solid var(--line);margin-top:clamp(90px,11vw,160px);padding:24px 0;white-space:nowrap}
+.strip div{display:inline-block;animation:marq 40s linear infinite;font-family:var(--display);font-size:clamp(44px,5.6vw,92px);font-weight:600;text-transform:uppercase;line-height:1}
+.strip span{color:var(--sand);margin:0 .45em}
+@keyframes marq{to{transform:translateX(-50%)}}
+
+/* ---------- vender ---------- */
+#vender{margin-top:clamp(90px,11vw,160px);min-height:92vh;display:flex;align-items:center;overflow:hidden}
+#vender picture{position:absolute;inset:0}
+#vender img#v-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+#vender:before{content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(90deg,rgba(15,14,12,.94) 0%,rgba(15,14,12,.74) 46%,rgba(15,14,12,.2) 100%)}
+#vender .v-in{position:relative;z-index:2;padding:90px var(--pad);max-width:940px}
+#vender h2{font-size:clamp(54px,7.4vw,128px);line-height:1.06;margin:16px 0 28px}
+#vender p{color:rgba(243,237,226,.82);max-width:580px;margin-bottom:44px;font-size:clamp(18px,1.4vw,22px);line-height:1.55}
+#vender .v-in{max-width:1400px}
+.steps-row{display:flex;align-items:flex-start;gap:clamp(20px,3vw,48px)}
+.steps-row .btn.wabtn{margin-top:-23px}
+.steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(16px,2.4vw,40px);flex:1 1 0;min-width:0}
+.steps div{border-top:2px solid var(--sand);padding-top:20px;font-size:clamp(17px,1.3vw,20px);color:rgba(243,237,226,.8);line-height:1.5}
+.steps i{display:block;font-style:normal;font-family:var(--display);font-size:22px;font-weight:600;color:var(--sand);letter-spacing:.06em;margin-bottom:6px}
+.steps b{display:block;font-family:var(--display);font-size:clamp(40px,3.8vw,62px);color:var(--cream);font-weight:600;text-transform:uppercase;line-height:.95;margin-bottom:10px}
+
+/* ---------- contacto ---------- */
+#contacto .cgrid{display:grid;grid-template-columns:1.1fr 1fr;gap:clamp(30px,5vw,80px);padding:0 var(--pad)}
+.c-list{display:grid;border-top:1px solid var(--line);align-content:start}
+.c-list a,.c-list div{display:flex;justify-content:space-between;gap:20px;padding:21px 0;border-bottom:1px solid var(--line);font-size:15px;align-items:baseline}
+.c-list span{color:var(--muted);font-size:11px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;flex:none}
+.c-list a:hover b{color:var(--sand)}
+.c-list b{font-weight:500;text-align:right}
+.wa-band{display:flex;align-items:center;justify-content:space-between;gap:30px;margin:0 var(--pad);padding:clamp(26px,3.4vw,52px) clamp(24px,3.6vw,60px);background:var(--sand);color:var(--ink);border-radius:28px;transition:background .35s}
+.wa-band:hover{background:var(--cream)}
+.wa-band .l{display:grid;gap:10px;min-width:0}
+.wa-band .k{display:flex;align-items:center;gap:12px;font-size:clamp(15px,1.3vw,19px);font-weight:700;letter-spacing:.12em;text-transform:uppercase}
+.wa-band .k svg{width:26px;height:26px}
+.wa-band .num{font-size:clamp(64px,10vw,170px);line-height:.85;white-space:nowrap}
+.wa-band .go{flex:none;width:clamp(76px,8vw,128px);aspect-ratio:1;border-radius:50%;background:var(--ink);color:var(--cream);display:grid;place-items:center;transition:transform .45s var(--ease)}
+.wa-band:hover .go{transform:rotate(45deg)}
+.c3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(24px,3vw,56px);padding:clamp(50px,6vw,90px) var(--pad) 0}
+.c3>div{border-top:1px solid var(--line-2);padding-top:22px;display:grid;gap:8px;align-content:start}
+.c3 .v{font-family:var(--display);font-size:clamp(36px,3.2vw,52px);font-weight:600;text-transform:uppercase;line-height:.95;margin-top:6px}
+.c3 .s{font-size:18px;color:var(--muted);line-height:1.5}
+.c3 .lnk{margin-top:8px;color:var(--sand);font-weight:600;font-size:17px}
+.c3 .row{display:flex;justify-content:space-between;gap:14px;align-items:baseline;padding:12px 0;border-bottom:1px solid var(--line);font-size:17px;font-weight:500;flex-wrap:wrap}
+.c3 .row span{font-size:12px;color:var(--muted);letter-spacing:.14em;text-transform:uppercase;font-weight:600}
+.c3 .row:hover{color:var(--sand)}
+.c-about{display:grid;gap:clamp(36px,4vw,60px);justify-items:center;padding:clamp(80px,9vw,140px) var(--pad) 0}
+.about-in{display:grid;gap:22px;justify-items:center;text-align:center;max-width:1040px}
+.about{font-size:clamp(28px,3.2vw,52px);line-height:1.22;font-weight:500;letter-spacing:-.01em}
+.about em{font-style:normal;color:var(--sand)}
+.c-map{width:100%;aspect-ratio:21/8;border-radius:28px;overflow:hidden;border:1px solid var(--line)}
+.c-map{position:relative}
+#omap{width:100%;height:100%;background:#1b1b1a}
+.o-card{position:absolute;left:clamp(14px,2vw,28px);bottom:clamp(14px,2vw,28px);z-index:500;display:flex;align-items:center;gap:16px;background:rgba(15,14,12,.92);border:1px solid var(--line-2);border-radius:20px;padding:14px 14px 14px 18px;flex-wrap:wrap}
+.o-card img{height:46px}
+.o-card div{display:grid;gap:2px}
+.o-card b{font-size:16px}
+.o-card span{font-size:14px;color:var(--muted)}
+.o-card .btn{min-height:46px;padding:0 20px;font-size:12px}
+.o-pin{transform:translate(-50%,-100%);width:64px;height:64px;border-radius:50% 50% 50% 0;rotate:-45deg;background:var(--sand);display:grid;place-items:center;box-shadow:0 0 0 10px rgba(216,198,161,.25),0 12px 30px rgba(0,0,0,.5)}
+.o-pin img{height:34px;rotate:45deg}
+.soc{display:inline-flex;align-items:center;gap:10px;border:1px solid var(--line-2);border-radius:999px;padding:14px 22px;font-size:14px;font-weight:600;transition:background .25s,color .25s,border-color .25s,transform .3s,box-shadow .3s}
+.soc:hover{background:var(--cream);color:var(--ink);border-color:var(--cream)}
+.soc svg{width:22px;height:22px;flex:none}
+.m-soc{display:flex;gap:10px;margin-top:30px}
+.socials{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:14px var(--pad) 0}
+.soc.big{border-radius:24px;padding:28px 30px;gap:18px;font-size:16px;font-weight:500;justify-content:center;text-align:left;border:0;color:#fff}
+.soc.big svg{width:48px;height:48px}
+.soc.big.fb svg{width:54px;height:54px}
+.soc.big span{display:grid;gap:2px;color:rgba(255,255,255,.88)}
+.soc.big b{font-family:var(--display);font-size:clamp(32px,3vw,48px);font-weight:600;text-transform:uppercase;line-height:1;color:#fff}
+.soc.big.ig{background:var(--ig);box-shadow:0 10px 34px rgba(214,41,118,.3)}
+.soc.big.fb{background:var(--fb);box-shadow:0 10px 34px rgba(24,119,242,.3)}
+.soc.big:hover{transform:translateY(-3px);color:#fff}
+.soc.big.ig:hover{background:var(--ig);box-shadow:0 0 0 6px rgba(214,41,118,.18),0 16px 44px rgba(214,41,118,.55)}
+.soc.big.fb:hover{background:var(--fb);box-shadow:0 0 0 6px rgba(24,119,242,.2),0 16px 44px rgba(24,119,242,.55)}
+footer{padding:clamp(90px,10vw,150px) var(--pad) 34px}
+.f-top{display:flex;align-items:center;justify-content:space-between;gap:30px 40px;flex-wrap:wrap;padding-bottom:40px;border-bottom:1px solid var(--line)}
+.f-logo{display:flex;align-items:flex-end;gap:16px}
+.f-logo .i{height:clamp(84px,8vw,120px)}
+.f-logo span{display:grid;gap:8px}
+.f-logo .w{height:clamp(46px,4.6vw,70px)}
+.f-logo .b{height:clamp(11px,1.1vw,16px)}
+.f-nav{display:flex;gap:28px;flex-wrap:wrap;font-size:13px;font-weight:600;letter-spacing:.16em;text-transform:uppercase}
+.f-nav a{opacity:.8}.f-nav a:hover{opacity:1;color:var(--sand)}
+.f-soc{display:flex;gap:12px}
+.sb{width:58px;height:58px;border-radius:50%;display:grid;place-items:center;color:#fff;transition:transform .25s,box-shadow .25s}
+.sb svg{width:30px;height:30px}
+.sb.fb-c svg{width:34px;height:34px}
+.sb{border:1px solid var(--line-2);background:rgba(243,237,226,.05)}
+.sb.wa-c{color:var(--wa)}
+.sb.ig-c{color:#e1306c}
+.sb.fb-c{color:#4d93ff}
+.sb.wa-c:hover{background:var(--wa);color:#fff;border-color:transparent}
+.sb.ig-c:hover{background:var(--ig);color:#fff;border-color:transparent}
+.sb.fb-c:hover{background:var(--fb);color:#fff;border-color:transparent}
+.sb:hover{transform:translateY(-3px)}
+.sb.wa-c:hover{box-shadow:0 0 0 6px rgba(37,211,102,.18),0 12px 30px rgba(37,211,102,.55)}
+.sb.ig-c:hover{box-shadow:0 0 0 6px rgba(214,41,118,.18),0 12px 30px rgba(214,41,118,.55)}
+.sb.fb-c:hover{box-shadow:0 0 0 6px rgba(24,119,242,.2),0 12px 30px rgba(24,119,242,.55)}
+footer .legal{display:flex;justify-content:space-between;gap:30px;padding-top:24px;font-size:12px;color:var(--faint);line-height:1.6}
+footer .legal p{max-width:760px}
+footer .legal{align-items:center}
+.agents{display:inline-flex;align-items:center;gap:8px;flex:none;border:1px solid var(--line-2);border-radius:999px;padding:11px 18px;font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);transition:color .2s,border-color .2s,background .2s}
+.agents:hover{color:var(--ink);background:var(--sand);border-color:var(--sand)}
+
+/* ---------- whatsapp ---------- */
+.wa{border-radius:50%;position:fixed;right:18px;bottom:18px;z-index:40;width:64px;height:64px;background:var(--wa);color:#fff;display:grid;place-items:center;box-shadow:0 10px 30px rgba(37,211,102,.45);transition:transform .3s,opacity .3s;animation:waglow 2.6s ease-out infinite}
+@keyframes waglow{0%{box-shadow:0 0 0 0 rgba(37,211,102,.55),0 10px 30px rgba(37,211,102,.45)}70%{box-shadow:0 0 0 16px rgba(37,211,102,0),0 10px 30px rgba(37,211,102,.45)}100%{box-shadow:0 0 0 0 rgba(37,211,102,0),0 10px 30px rgba(37,211,102,.45)}}
+.wa:hover{transform:translateY(-3px)}
+.wa svg{width:34px;height:34px}
+body.lock .wa,body.hero-on .wa{opacity:0;pointer-events:none}
+
+/* ---------- ficha ---------- */
+#ficha{position:fixed;inset:0;z-index:100;background:var(--ink);overflow-y:auto;overscroll-behavior:contain;transform:translateY(100%);transition:transform .6s var(--ease);visibility:hidden}
+#ficha.open{transform:none;visibility:visible}
+.f-top{position:sticky;top:0;z-index:5;display:flex;justify-content:space-between;align-items:center;padding:12px var(--pad);background:rgba(15,14,12,.95);border-bottom:1px solid var(--line)}
+.f-top .brand .i{height:40px}.f-top .brand .w img:first-child{height:23px}
+.f-top .acts{display:flex;gap:8px}
+.f-top button{border-radius:999px;border:1px solid var(--line-2);padding:13px 20px;font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;display:flex;gap:8px;align-items:center}
+.gal{position:relative;background:#000}
+.gal-track{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;height:min(80vh,860px)}
+.gal-track::-webkit-scrollbar{display:none}
+.gal-track figure{flex:0 0 100%;scroll-snap-align:center;height:100%}
+.gal-track img{width:100%;height:100%;object-fit:cover;cursor:zoom-in}
+.gal.full{position:fixed;inset:0;z-index:150}
+.gal.full .gal-track{height:100svh}
+.gal.full img{object-fit:contain;cursor:zoom-out}
+.gal .nav{border-radius:50%;position:absolute;top:50%;transform:translateY(-50%);width:62px;height:62px;background:rgba(15,14,12,.78);display:grid;place-items:center;z-index:3;transition:background .2s}
+.gal .nav:hover{background:var(--cream);color:var(--ink)}
+.gal .nav.p{left:16px}.gal .nav.n{right:16px}
+.gal .count{border-radius:999px;position:absolute;left:16px;bottom:16px;z-index:3;background:rgba(15,14,12,.82);padding:9px 15px;font-size:14px;font-weight:600}
+.gal .x{display:none;position:absolute;top:16px;right:16px;z-index:3;width:50px;height:50px;background:rgba(15,14,12,.82);place-items:center}
+.gal.full .x{display:grid}
+.thumbs{display:flex;gap:6px;padding:8px var(--pad) 0;overflow-x:auto;scrollbar-width:none}
+.thumbs button{flex:0 0 100px;aspect-ratio:4/3;opacity:.45;transition:opacity .2s;outline-offset:-2px}
+.thumbs button.on{opacity:1;outline:2px solid var(--sand)}
+.thumbs img{width:100%;height:100%;object-fit:cover}
+.f-body{display:grid;grid-template-columns:minmax(0,1fr) 420px;gap:clamp(30px,5vw,80px);padding:clamp(34px,4vw,60px) var(--pad) 90px}
+.f-main{min-width:0}
+.f-main h1{font-size:clamp(48px,6.4vw,104px);margin:14px 0 12px;overflow-wrap:break-word}
+.f-main .addr{color:var(--muted);font-size:17px;display:flex;gap:8px;align-items:center}
+.f-main h3{font-size:11px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:var(--sand);margin:48px 0 16px}
+.f-main .desc{font-size:18px;line-height:1.8;color:rgba(243,237,226,.86);max-width:760px}
+.f-specs{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--line);border-left:1px solid var(--line);margin-top:32px}
+.f-specs div{border-right:1px solid var(--line);border-bottom:1px solid var(--line);padding:18px}
+.f-specs b{display:block;font-family:var(--display);font-size:38px;font-weight:600;line-height:1}
+.f-specs span{font-size:11px;color:var(--muted);letter-spacing:.1em;text-transform:uppercase}
+.feats{list-style:none;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));border-top:1px solid var(--line);max-width:760px}
+.feats li{display:flex;align-items:center;gap:14px;padding:16px 0;border-bottom:1px solid var(--line);font-family:var(--display);font-size:clamp(22px,1.9vw,28px);font-weight:600;text-transform:uppercase;line-height:1.05}
+.feats li:nth-child(odd){padding-right:20px}
+.feats li:before{content:"";width:8px;height:8px;background:var(--sand);flex:none}
+.servs{list-style:none;display:flex;flex-wrap:wrap;gap:10px 26px;max-width:760px}
+.servs li{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--muted)}
+.servs svg{width:16px;height:16px;fill:none;stroke:var(--sand);stroke-width:2}
+.f-map{aspect-ratio:16/8;border:1px solid var(--line);overflow:hidden;border-radius:20px}
+.f-map iframe{width:100%;height:100%;border:0}
+.f-map-note{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:12px;font-size:14px;color:var(--muted)}
+.f-map-note a{color:var(--sand);font-weight:600}
+.f-side{position:sticky;top:110px;align-self:start;border:1px solid var(--line);padding:32px;border-radius:24px}
+.f-side .op{font-size:11px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--sand)}
+.f-side .price{font-family:var(--display);font-size:clamp(56px,5.2vw,80px);font-weight:600;line-height:.95;margin:10px 0 6px}
+.f-side .price small{font-size:22px;color:var(--muted)}
+.f-side .alt{border-top:1px solid var(--line);margin-top:18px;padding-top:16px}
+.f-side .alt b{font-family:var(--display);font-size:36px;font-weight:600;display:block;line-height:1;margin-top:6px}
+.f-side .note{font-size:15px;color:var(--muted);margin-top:8px}
+.f-side .ctas{display:grid;gap:8px;margin-top:26px}
+.f-side .ctas .btn{justify-content:center}
+.btn.wabtn.big{min-height:62px;font-size:16px;width:100%}
+.btn.wabtn.big svg.ic{width:22px;height:22px}
+.f-side .call{text-align:center;font-size:15px;color:var(--muted);margin-top:4px}
+.f-side .call a{color:var(--cream);font-weight:600;text-decoration:underline;text-underline-offset:3px}
+.f-side .ref{margin-top:18px;font-size:11px;color:var(--faint);letter-spacing:.08em}
+.sim{padding:0 var(--pad) 120px}
+.sim .grid{padding:0}
+.f-bar{display:none}
+
+/* ---------- responsive ---------- */
+@media (max-width:1180px){
+  nav.main{display:none}
+  .h-cta{margin-left:auto}
+  .burger{display:grid;margin-left:0}
+  .grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .map-shell{grid-template-columns:340px 1fr}
+  .f-body{grid-template-columns:minmax(0,1fr) 360px}
+}
+@media (max-width:760px){
+  body{font-size:14px}
+  header{padding:12px 16px;gap:12px}
+  .brand .i{height:50px}.brand .w img:first-child{height:29px}.brand .w img:last-child{height:7px}
+  header.solid .brand .i{height:42px}header.solid .brand .w img:first-child{height:24px}
+  .h-cta{padding:0;width:50px;height:50px;justify-content:center}
+  .h-cta .tx{display:none}
+  .hero-top{flex-direction:column;align-items:flex-start;gap:0}
+  .hero-meta .scroll-cue{display:none}
+  .hero-top .tag p{font-size:clamp(34px,11.4vw,48px)}
+  .hero-meta{gap:16px}
+  .hero-meta .btn{flex:1;white-space:nowrap;padding:0 18px;font-size:12px;letter-spacing:.1em}
+  .intro{gap:14px}
+  .doors{flex-direction:column;height:auto;gap:3px}
+  .door,.doors:hover .door,.doors .door:hover{flex:none;height:58svh}
+  .door .arrow{width:52px;height:52px}
+  .s-head{flex-direction:column;align-items:flex-start;gap:16px}
+  .grid,.sim .grid{grid-template-columns:minmax(0,1fr)}
+  .feat{flex-basis:84vw}
+  .rail-nav{display:none}
+  .rail-prog{margin-top:18px}
+  .map-bar{flex-direction:column;align-items:stretch}
+  .chips{flex-wrap:nowrap;overflow-x:auto;min-width:0;scrollbar-width:none;margin-right:-16px;padding-right:16px}
+  .chips::-webkit-scrollbar,.filters .g::-webkit-scrollbar{display:none}
+  .map-shell{display:block;height:80svh;position:relative}
+  .map-wrap{height:100%}
+  .m-list{position:absolute;left:0;right:0;bottom:12px;z-index:600;display:flex;gap:10px;overflow-x:auto;overflow-y:hidden;border:0;padding:0 16px;scroll-snap-type:x mandatory;scrollbar-width:none}
+  .m-card{flex:0 0 86%;scroll-snap-align:center;grid-template-columns:104px 1fr;background:var(--ink);border:1px solid var(--line-2);padding:10px}
+  .m-card.on{box-shadow:inset 0 3px 0 var(--sand)}
+  .map-legend{display:none}
+  .zoom{right:10px;top:40%;padding:6px;gap:6px}
+  .zoom input,.zoom .fit{display:none}
+  .zoom button{width:48px;height:48px;font-size:28px}
+  .filters{flex-direction:column;align-items:stretch;gap:8px}
+  .filters .g{flex-wrap:nowrap;overflow-x:auto;min-width:0;scrollbar-width:none;margin-right:-16px;padding-right:16px}
+  .steps{grid-template-columns:1fr;gap:26px}
+  .steps-row{flex-direction:column;align-items:flex-start}
+  .steps-row .btn.wabtn{margin-top:0}
+  .steps{width:100%}
+  .btn.xl{width:100%;padding:0 22px;font-size:13px}
+  .wa-band{flex-direction:column;align-items:flex-start;border-radius:22px;margin:0 12px}
+  .wa-band .num{font-size:clamp(54px,16vw,80px)}
+  .c3{grid-template-columns:minmax(0,1fr)}
+  .c-map{aspect-ratio:4/3}
+  #vender:before{background:linear-gradient(180deg,rgba(15,14,12,.55),rgba(15,14,12,.94))}
+  #contacto .cgrid{grid-template-columns:minmax(0,1fr)}
+  .c-list a,.c-list div{flex-direction:column;gap:4px}
+  .c-list b{text-align:left}
+  footer .legal{flex-direction:column}
+  .f-top{flex-direction:column;align-items:flex-start}
+  .f-nav{gap:18px}
+  .socials{grid-template-columns:1fr;margin:12px 12px 0}
+  .h-ig{width:46px;height:46px}
+  .h-ig.fb{display:none}
+  .brand .w img:last-child{display:none}
+  .gal-track{height:66svh}
+  .gal .nav{display:none}
+  .gal.full .nav{display:grid}
+  .thumbs{display:none}
+  .f-body{grid-template-columns:minmax(0,1fr);padding-bottom:40px}
+  .f-side{position:static;padding:22px}
+  .f-specs{grid-template-columns:repeat(2,1fr)}
+  .feats{grid-template-columns:minmax(0,1fr)}
+  .feats li:nth-child(odd){padding-right:0}
+  .f-side .ctas{display:none}
+  .f-bar{display:grid;grid-template-columns:1fr;gap:8px;position:sticky;bottom:0;z-index:6;padding:10px 16px calc(10px + env(safe-area-inset-bottom));background:rgba(15,14,12,.96);border-top:1px solid var(--line)}
+  .f-bar .btn{justify-content:center;padding:16px 14px}
+  .f-top button .tx{display:none}
+  .wa{width:54px;height:54px;right:14px;bottom:14px}
+}
+
+/* ---------- asistente Amplifia ---------- */
+.bot{position:fixed;right:16px;bottom:96px;z-index:120;display:flex;flex-direction:column-reverse;align-items:flex-end;gap:10px;pointer-events:none;opacity:0;transform:translateY(20px);transition:opacity .6s var(--ease),transform .6s var(--ease)}
+.ready .bot{opacity:1;transform:none}
+.bot-av{pointer-events:auto;position:relative;width:74px;height:74px;border-radius:50%;flex:none;cursor:pointer;
+  background:radial-gradient(circle at 30% 25%,#2a2720,#0f0e0c 70%);border:2px solid var(--sand);
+  box-shadow:0 14px 34px rgba(0,0,0,.55),inset 0 0 0 4px rgba(15,14,12,.9),inset 0 0 0 5px rgba(216,198,161,.35);
+  display:grid;place-items:center;overflow:hidden;animation:botfloat 4.5s ease-in-out infinite;transition:transform .3s}
+.bot-av:hover{transform:scale(1.06)}
+.bot-av img{height:44px;position:relative;z-index:1;filter:drop-shadow(0 0 8px rgba(216,198,161,.35))}
+.bot-av:before{content:"";position:absolute;inset:-40%;background:linear-gradient(115deg,transparent 40%,rgba(255,240,210,.55) 50%,transparent 60%);transform:translateX(-120%);animation:botshine 5s ease-in-out infinite;z-index:2}
+.bot-av:after{content:"";position:absolute;right:7px;bottom:7px;width:13px;height:13px;border-radius:50%;background:var(--wa);border:2px solid var(--ink);z-index:3}
+.bot-ring{position:absolute;right:0;bottom:0;width:74px;height:74px;border-radius:50%;pointer-events:none;border:2px solid var(--sand);opacity:0}
+.bot.talk .bot-ring{animation:botring 1.6s ease-out infinite}
+@keyframes botfloat{0%,100%{translate:0 0}50%{translate:0 -6px}}
+@keyframes botshine{0%,62%{transform:translateX(-120%)}82%,100%{transform:translateX(120%)}}
+@keyframes newsglow{0%{box-shadow:0 0 0 0 rgba(216,198,161,.6),0 14px 34px rgba(0,0,0,.55)}70%{box-shadow:0 0 0 14px rgba(216,198,161,0),0 14px 34px rgba(0,0,0,.55)}100%{box-shadow:0 0 0 0 rgba(216,198,161,0),0 14px 34px rgba(0,0,0,.55)}}
+@keyframes botring{from{transform:scale(1);opacity:.7}to{transform:scale(1.55);opacity:0}}
+.bot-say{pointer-events:auto;width:max-content;max-width:min(270px,calc(100vw - 40px));background:var(--cream);color:var(--ink);border-radius:18px 18px 6px 18px;padding:12px 16px;font-size:14px;font-weight:500;line-height:1.45;box-shadow:0 16px 40px rgba(0,0,0,.45);
+  opacity:0;transform:translateY(8px) scale(.96);transform-origin:right bottom;transition:opacity .35s,transform .35s var(--ease);margin-bottom:0;cursor:pointer;position:relative}
+.bot-say.on{opacity:1;transform:none}
+.bot-say b{display:block;font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:#8a744b;margin-bottom:4px}
+.bot-say .x{position:absolute;top:6px;right:8px;width:24px;height:24px;border-radius:50%;font-size:13px;color:#8a744b;display:grid;place-items:center}
+.bot-say .x:hover{background:rgba(15,14,12,.08)}
+.caret{display:inline-block;width:2px;height:1em;background:var(--ink);vertical-align:-2px;margin-left:2px;animation:caret .8s steps(1) infinite}
+@keyframes caret{50%{opacity:0}}
+body.lock .bot{opacity:0;pointer-events:none}
+body.lock.ficha-on .bot{opacity:1}
+body.lock.ficha-on .bot-av,body.lock.ficha-on .bot-say{pointer-events:auto}
+
+.chat{position:fixed;right:16px;bottom:186px;z-index:130;width:min(390px,calc(100vw - 32px));height:min(600px,calc(100svh - 220px));display:flex;flex-direction:column;
+  background:var(--ink);border:1px solid var(--line-2);border-radius:26px;overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,.65);
+  opacity:0;transform:translateY(20px) scale(.97);transform-origin:right bottom;pointer-events:none;transition:opacity .35s,transform .35s var(--ease)}
+.chat.open{opacity:1;transform:none;pointer-events:auto}
+.c-top{display:flex;align-items:center;gap:12px;padding:16px 18px;border-bottom:1px solid var(--line);background:linear-gradient(180deg,#1b1915,var(--ink))}
+.c-top .av{width:44px;height:44px;border-radius:50%;border:2px solid var(--sand);display:grid;place-items:center;background:#16140f}
+.c-top .av img{height:26px}
+.c-top b{display:block;font-size:16px}
+.c-top span{font-size:12px;color:var(--wa);font-weight:600}
+.c-top .cl{margin-left:auto;width:38px;height:38px;border-radius:50%;border:1px solid var(--line-2);font-size:16px}
+.c-top .cl:hover{background:var(--cream);color:var(--ink)}
+.c-msgs{flex:1;overflow-y:auto;padding:18px;display:flex;flex-direction:column;gap:10px;scrollbar-width:thin;scrollbar-color:var(--line-2) transparent}
+.m{max-width:86%;padding:12px 15px;border-radius:18px;font-size:15px;line-height:1.45;animation:min .3s var(--ease)}
+.m.b{background:var(--ink-3);border:1px solid var(--line);border-bottom-left-radius:6px;align-self:flex-start}
+.m.u{background:var(--sand);color:var(--ink);border-bottom-right-radius:6px;align-self:flex-end;font-weight:600}
+.m.typing{display:flex;gap:5px;padding:16px}
+.m.typing i{width:7px;height:7px;border-radius:50%;background:var(--muted);animation:dots 1s infinite}
+.m.typing i:nth-child(2){animation-delay:.15s}.m.typing i:nth-child(3){animation-delay:.3s}
+@keyframes dots{0%,100%{opacity:.25;transform:translateY(0)}50%{opacity:1;transform:translateY(-3px)}}
+@keyframes min{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.m a{color:var(--sand);font-weight:600;text-decoration:underline}
+.res{display:grid;gap:8px;align-self:stretch;animation:min .3s var(--ease)}
+.res button{display:grid;grid-template-columns:76px 1fr;gap:12px;align-items:center;text-align:left;background:var(--ink-2);border:1px solid var(--line);border-radius:16px;padding:8px;transition:border-color .2s,background .2s}
+.res button:hover{border-color:var(--sand);background:var(--ink-3)}
+.res img{width:76px;height:58px;object-fit:cover;border-radius:10px}
+.res b{display:block;font-family:var(--display);font-size:24px;font-weight:600;line-height:1}
+.res span{font-size:13px;color:var(--muted);line-height:1.3;display:block}
+.res .wa-l{display:flex;justify-content:center;align-items:center;gap:8px;background:var(--wa);color:#fff;border:0;border-radius:999px;padding:12px;font-weight:600;font-size:14px}
+.res .wa-l svg{width:18px;height:18px}
+.qs{display:flex;flex-wrap:wrap;gap:6px;padding:0 18px 12px}
+.qs button{border:1px solid var(--line-2);border-radius:999px;padding:9px 13px;font-size:13px;font-weight:600;transition:background .2s,color .2s}
+.qs button:hover{background:var(--cream);color:var(--ink)}
+.c-in{display:flex;gap:8px;padding:12px 14px 14px;border-top:1px solid var(--line)}
+.c-in input{flex:1;min-width:0;background:var(--ink-2);border:1px solid var(--line-2);border-radius:999px;padding:13px 18px;color:var(--cream);font:500 15px var(--body);outline:none}
+.c-in input:focus{border-color:var(--sand)}
+.c-in button{width:48px;height:48px;border-radius:50%;background:var(--sand);color:var(--ink);display:grid;place-items:center;flex:none}
+@media (max-width:760px){
+  .bot{right:12px;bottom:80px}
+  body.hero-on .bot{bottom:16px}
+  .hero-meta{padding-right:74px}
+  .hero-meta .bars{display:none}
+  .bot-say{display:none}
+  .bot.news .bot-av{box-shadow:0 0 0 0 rgba(216,198,161,.6),0 14px 34px rgba(0,0,0,.55);animation:botfloat 4.5s ease-in-out infinite,newsglow 1.8s ease-out infinite}
+  .bot.news .bot-av:after{background:var(--sand);width:15px;height:15px}
+  .bot-av,.bot-ring{width:60px;height:60px}
+  .bot-av img{height:36px}
+  .bot-say{font-size:14px;max-width:calc(100vw - 160px);margin-bottom:10px}
+  .chat{left:8px;right:8px;width:auto;bottom:146px;height:min(560px,calc(100svh - 170px))}
+  body.lock.ficha-on .bot{display:none}
+}
+
+
+/* ---------- efectos premium al hacer scroll ---------- */
+.rv{opacity:0;transform:translateY(42px);filter:blur(10px);transition:opacity 1.1s var(--ease),transform 1.1s var(--ease),filter 1.1s var(--ease)}
+.rv.in{opacity:1;transform:none;filter:none}
+.words .w>span{transform:translateY(110%) rotate(4deg);filter:blur(6px);transform-origin:left bottom;transition:transform 1.05s var(--ease),filter 1.05s var(--ease)}
+.words.in .w>span{transform:none;filter:none}
+/* fotos: cortina de abajo hacia arriba + zoom suave */
+.card.rv{filter:none}
+.card.rv .ph,.door.rv,.c-map.rv,.fx-clip{clip-path:inset(100% 0 0 0);transition:clip-path 1.3s var(--ease)}
+.card.rv.in .ph,.door.rv.in,.c-map.rv.in,.fx-clip.in{clip-path:inset(0 0 0 0)}
+.card.rv .ph img{scale:1.18;transition:scale 1.6s var(--ease),opacity .6s,transform 1.4s var(--ease)}
+.card.rv.in .ph img{scale:1}
+.door.rv{opacity:1;transform:none;filter:none}
+.door.rv>img{scale:1.2;transition:scale 1.8s var(--ease),transform 1.4s var(--ease)}
+.door.rv.in>img{scale:1}
+.door.rv .in{opacity:0;transform:translateY(30px);transition:opacity .9s .5s var(--ease),transform .9s .5s var(--ease)}
+.door.rv.in .in{opacity:1;transform:none}
+.map-shell.fx-clip{clip-path:inset(0 0 100% 0)}
+.map-shell.fx-clip.in{clip-path:inset(0 0 0 0)}
+/* líneas que se dibujan */
+.steps div{border-top-color:transparent!important;position:relative}
+.steps div:before{content:"";position:absolute;left:0;right:0;top:-2px;height:2px;background:var(--sand);transform:scaleX(0);transform-origin:left;transition:transform 1.2s var(--ease)}
+.steps-row.in .steps div:before{transform:scaleX(1)}
+.steps-row.in .steps div:nth-child(2):before{transition-delay:.15s}.steps-row.in .steps div:nth-child(3):before{transition-delay:.3s}
+.c3>div{border-top-color:transparent!important;position:relative}
+.c3>div:before{content:"";position:absolute;left:0;right:0;top:-1px;height:1px;background:var(--line-2);transform:scaleX(0);transform-origin:left;transition:transform 1.2s var(--ease)}
+.c3>div.in:before{transform:scaleX(1)}
+/* títulos gigantes: se cierran las letras al entrar */
+.s-head h2.words{letter-spacing:.06em;transition:letter-spacing 1.6s var(--ease)}
+.s-head h2.words.in{letter-spacing:.005em}
+/* portada: la frase sube renglón por renglón */
+.hero-top .tag p .ln{display:block;overflow:hidden;padding:.06em 0;margin:-.06em 0}
+.hero-top .tag p .ln>span{display:block;transform:translateY(105%);transition:transform 1.1s var(--ease)}
+.ready .hero-top .tag p .ln>span{transform:none}
+.ready .hero-top .tag p .ln:nth-child(2)>span{transition-delay:.12s}
+.hero-top .tag p{opacity:1!important;transform:none!important}
+.hero-in .eyebrow{opacity:0;transform:translateY(16px);transition:opacity .9s .35s var(--ease),transform .9s .35s var(--ease)}
+.ready .hero-in .eyebrow{opacity:1;transform:none}
+.hero-meta{opacity:0;transition:opacity 1s .6s var(--ease)}
+.ready .hero-meta{opacity:1}
+.hero-in{will-change:transform,opacity}
+/* pines del mapa caen al aparecer */
+.hp{animation:pindrop .7s var(--ease) both}
+@keyframes pindrop{from{opacity:0;translate:0 -26px}to{opacity:1;translate:0 0}}
+.strip div{will-change:transform}
+@media (prefers-reduced-motion:reduce){
+  .rv,.words .w>span,.card.rv .ph,.door.rv,.fx-clip{transition-duration:.01s!important;filter:none!important}
+}
+
+@media (prefers-reduced-motion:reduce){
+  .slide.on img{animation-duration:24s}
+  .strip div{animation-duration:90s}
+}
+</style>
+</head>
+<body class="hero-on">
+
+<div id="loader"><div class="ld"><div class="lg"><img class="i" src="img/logo-icono-c.svg" alt=""><div class="t"><img src="img/logo-grupo-c.svg" alt="Grupo"><img src="img/logo-amplifia-c.svg" alt="Bienes Raíces"></div></div><div class="bar"><i></i></div></div></div>
+<script>
+(function () {
+  var done = false;
+  function out() { if (done) return; done = true; document.getElementById("loader").classList.add("out"); document.body.classList.add("ready"); }
+  setTimeout(out, 1800);
+})();
+</script>
+
+<header id="hdr">
+  <a href="#top" class="brand" aria-label="Grupo Amplifia">
+    <img class="i" src="img/logo-icono-c.svg" alt="">
+    <span class="w"><img src="img/logo-grupo-c.svg" alt="Grupo"><img src="img/logo-amplifia-c.svg" alt="Bienes Raíces"></span>
+  </a>
+  <nav class="main">
+    <a href="#venta">Venta</a><a href="#alquiler">Alquiler</a><a href="#mapa">Mapa</a><a href="#vender">Tasaciones</a><a href="#contacto">Contacto</a>
+  </nav>
+  <a class="h-cta" data-wa="Hola Grupo Amplifia, quería hacer una consulta." target="_blank" rel="noopener" aria-label="WhatsApp">
+    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.5 14.4c-.3-.1-1.7-.8-2-.9-.3-.1-.5-.1-.7.1-.2.3-.8.9-.9 1.1-.2.2-.3.2-.6.1-.3-.1-1.2-.5-2.3-1.4-.9-.8-1.4-1.7-1.6-2-.2-.3 0-.5.1-.6l.4-.5c.2-.2.2-.3.3-.5.1-.2 0-.4 0-.5l-.9-2.2c-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.4s1 2.8 1.2 3c.1.2 2 3.1 4.9 4.3.7.3 1.2.5 1.6.6.7.2 1.3.2 1.8.1.6-.1 1.7-.7 1.9-1.4.2-.7.2-1.3.2-1.4-.1-.1-.3-.2-.6-.3zM12 21.8c-1.7 0-3.4-.5-4.9-1.3l-.4-.2-3.6.9 1-3.5-.2-.4C2.9 15.8 2.4 14 2.4 12.2 2.4 6.9 6.7 2.6 12 2.6c2.6 0 5 1 6.8 2.8 1.8 1.8 2.8 4.2 2.8 6.8 0 5.3-4.3 9.6-9.6 9.6zM20.2 3.8C18 1.6 15.1.4 12 .4 5.6.4.4 5.6.4 12c0 2 .5 4 1.6 5.8L.3 23.7l6-1.6c1.7.9 3.7 1.4 5.7 1.4 6.4 0 11.6-5.2 11.6-11.6 0-3.1-1.2-6-3.4-8.1z"/></svg>
+    <span class="tx">0000 000000</span>
+  </a>
+  
+  
+  <button class="burger" aria-label="Menú" onclick="menu(true)"><span></span></button>
+</header>
+
+<div data-lenis-prevent id="menu">
+  <button class="close" onclick="menu(false)">Cerrar ✕</button>
+  <a class="big" href="#venta" onclick="menu(false)">Venta</a>
+  <a class="big" href="#alquiler" onclick="menu(false)">Alquiler</a>
+  <a class="big" href="#mapa" onclick="menu(false)">Mapa</a>
+  <a class="big" href="#vender" onclick="menu(false)">Tasaciones</a>
+  <a class="big" href="#contacto" onclick="menu(false)">Contacto</a>
+  <div class="m-soc"><a class="soc" data-wa="Hola Grupo Amplifia, quería hacer una consulta." target="_blank" rel="noopener"><svg class="ic" viewBox="0 0 24 24" fill="currentColor"><path d="M17.5 14.4c-.3-.1-1.7-.8-2-.9-.3-.1-.5-.1-.7.1-.2.3-.8.9-.9 1.1-.2.2-.3.2-.6.1-.3-.1-1.2-.5-2.3-1.4-.9-.8-1.4-1.7-1.6-2-.2-.3 0-.5.1-.6l.4-.5c.2-.2.2-.3.3-.5.1-.2 0-.4 0-.5l-.9-2.2c-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.4s1 2.8 1.2 3c.1.2 2 3.1 4.9 4.3.7.3 1.2.5 1.6.6.7.2 1.3.2 1.8.1.6-.1 1.7-.7 1.9-1.4.2-.7.2-1.3.2-1.4-.1-.1-.3-.2-.6-.3zM12 21.8c-1.7 0-3.4-.5-4.9-1.3l-.4-.2-3.6.9 1-3.5-.2-.4C2.9 15.8 2.4 14 2.4 12.2 2.4 6.9 6.7 2.6 12 2.6c2.6 0 5 1 6.8 2.8 1.8 1.8 2.8 4.2 2.8 6.8 0 5.3-4.3 9.6-9.6 9.6zM20.2 3.8C18 1.6 15.1.4 12 .4 5.6.4.4 5.6.4 12c0 2 .5 4 1.6 5.8L.3 23.7l6-1.6c1.7.9 3.7 1.4 5.7 1.4 6.4 0 11.6-5.2 11.6-11.6 0-3.1-1.2-6-3.4-8.1z"/></svg>WhatsApp</a></div>
+  <div class="m-foot">Av. Principal 123 · Río Gallegos<br>Lunes a viernes de 11 a 16 hs · 0000 000000</div>
+  <a class="agents" href="admin.html" style="margin-top:22px;align-self:flex-start"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 018 0v3"/></svg>Acceso agentes</a>
+</div>
+
+<!-- HERO -->
+<section id="top">
+  <div id="slides"></div>
+  <div class="hero-in">
+    <div class="hero-top">
+      <div class="tag">
+        <span class="eyebrow">Inmobiliaria en Río Gallegos</span>
+        <p><span class="ln"><span>Tu próximo hogar,</span></span><span class="ln"><span><em>nuestra prioridad.</em></span></span></p>
+      </div>
+    </div>
+    <div class="hero-meta">
+      <a class="btn sand" href="#explorar">Explorar propiedades</a>
+      <a class="scroll-cue" href="#explorar"><i></i>Deslizá para ver más</a>
+      <div class="bars" id="bars"></div>
+    </div>
+  </div>
+</section>
+
+<!-- VENTA / ALQUILER / MAPA -->
+<section id="explorar">
+  <div class="intro">
+    <h2 class="display words" data-words>Encontrá tu lugar en <em>Río Gallegos</em></h2>
+    <p class="rv">Tu próxima casa te está esperando. Elegí cómo empezar a buscarla.</p>
+  </div>
+  <div class="doors">
+    <a class="door rv" href="#venta">
+      <img src="img/hero/door-venta.jpg" alt="Living de una casa en venta" loading="lazy">
+      <div class="in"><div><span class="n" id="d-venta"></span><h3 class="display">Venta</h3></div><span class="arrow"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M7 17L17 7M8 7h9v9"/></svg></span></div>
+    </a>
+    <a class="door rv" href="#alquiler" style="transition-delay:.12s">
+      <img src="img/hero/door-alquiler.jpg" alt="Casa en alquiler" loading="lazy">
+      <div class="in"><div><span class="n" id="d-alq"></span><h3 class="display">Alquiler</h3></div><span class="arrow"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M7 17L17 7M8 7h9v9"/></svg></span></div>
+    </a>
+    <a class="door rv" href="#mapa" style="transition-delay:.24s">
+      <div class="dmap" id="dmap"></div>
+      <div class="in"><div><span class="n"><b>Explorá</b> cada barrio de la ciudad</span><h3 class="display">Mapa</h3></div><span class="arrow"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M7 17L17 7M8 7h9v9"/></svg></span></div>
+    </a>
+  </div>
+</section>
+
+<!-- DESTACADAS -->
+<section id="destacadas">
+  <div class="s-head">
+    <h2 class="display words" data-words>Destacadas</h2>
+  </div>
+  <div class="rail-wrap">
+    <div class="rail" id="rail"></div>
+    <button class="rail-nav prev" id="rail-prev" aria-label="Anterior" onclick="railGo(-1)"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M15 5l-7 7 7 7"/></svg></button>
+    <button class="rail-nav next" id="rail-next" aria-label="Siguiente" onclick="railGo(1)"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 5l7 7-7 7"/></svg></button>
+  </div>
+  <div class="rail-prog"><i id="rail-bar"></i></div>
+</section>
+
+<!-- MAPA -->
+<section id="mapa">
+  <div class="s-head center">
+    <h2 class="display words" data-words>El mapa</h2>
+    <p class="rv lead">Cada foto es una propiedad. Elegila en la lista o tocala en el mapa para ver dónde está.</p>
+  </div>
+  <div class="map-bar">
+    <div class="chips" id="m-op"></div>
+    <div class="chips" id="m-tipo"></div>
+  </div>
+  <div class="map-shell fx-clip">
+    <div class="m-list" id="m-list" data-lenis-prevent></div>
+    <div class="map-wrap">
+      <div id="map"></div>
+      <div class="map-hint" id="map-hint"><span>Usá los botones + y − para acercar</span></div>
+      <div class="zoom" id="zoom" aria-label="Zoom del mapa">
+        <button data-z="in" aria-label="Acercar">+</button>
+        <input type="range" id="z-rng" step="1" aria-label="Nivel de zoom">
+        <button data-z="out" aria-label="Alejar">−</button>
+        <button data-z="fit" class="fit" aria-label="Ver todas">Ver todo</button>
+      </div>
+      <div class="map-view"><button class="on" data-v="sat">Satélite</button><button data-v="calles">Calles</button></div>
+      <div class="map-legend"><span><i></i>Venta</span><span><i class="a"></i>Alquiler</span><span><i class="o"></i>Oficina</span><span>Acercá con + y −</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- VENTA -->
+<section id="venta" data-op="venta">
+  <div class="s-head center"><h2 class="display words" data-words>Venta</h2><div class="side rv"><span class="count">Comprá con confianza</span><p>Casas, departamentos y terrenos en Río Gallegos. Muchas aptas crédito y con opciones de financiación.</p></div></div>
+  <div class="filters"></div>
+  <div class="grid"></div>
+  <div class="more"></div>
+</section>
+
+<!-- ALQUILER -->
+<section id="alquiler" data-op="alquiler">
+  <div class="s-head center"><h2 class="display words" data-words>Alquiler</h2><div class="side rv"><span class="count">Mudate ya</span><p>Propiedades listas para entrar. Consultá requisitos y coordiná tu visita por WhatsApp.</p></div></div>
+  <div class="filters"></div>
+  <div class="grid"></div>
+  <div class="more"></div>
+</section>
+
+<div class="strip" aria-hidden="true"><div id="strip"></div></div>
+
+<!-- VENDER -->
+<section id="vender">
+  <picture><source media="(max-width:760px)" srcset="img/hero/vender-m.jpg"><img src="img/hero/vender-d.jpg" alt="" loading="lazy" id="v-img"></picture>
+  <div class="v-in">
+    <span class="eyebrow rv">Tasaciones</span>
+    <h2 class="display words" data-words>¿Vendés o alquilás<br>tu propiedad?</h2>
+    <p class="rv">Tasamos con valores reales del mercado de Río Gallegos, la publicamos con fotos profesionales y te acompañamos hasta la firma.</p>
+    <div class="steps-row rv">
+    <div class="steps"><div><b>Tasación</b>Visitamos tu propiedad y te damos un valor real de mercado.</div><div><b>Publicación</b>Fotos, web, mapa, redes y portales.</div><div><b>Cierre</b>Coordinamos visitas, ofertas y escritura.</div></div>
+    <a class="btn wabtn" data-wa="Hola Grupo Amplifia, quiero tasar mi propiedad." target="_blank" rel="noopener"><svg class="ic" viewBox="0 0 24 24" fill="currentColor"><path d="M17.5 14.4c-.3-.1-1.7-.8-2-.9-.3-.1-.5-.1-.7.1-.2.3-.8.9-.9 1.1-.2.2-.3.2-.6.1-.3-.1-1.2-.5-2.3-1.4-.9-.8-1.4-1.7-1.6-2-.2-.3 0-.5.1-.6l.4-.5c.2-.2.2-.3.3-.5.1-.2 0-.4 0-.5l-.9-2.2c-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.4s1 2.8 1.2 3c.1.2 2 3.1 4.9 4.3.7.3 1.2.5 1.6.6.7.2 1.3.2 1.8.1.6-.1 1.7-.7 1.9-1.4.2-.7.2-1.3.2-1.4-.1-.1-.3-.2-.6-.3zM12 21.8c-1.7 0-3.4-.5-4.9-1.3l-.4-.2-3.6.9 1-3.5-.2-.4C2.9 15.8 2.4 14 2.4 12.2 2.4 6.9 6.7 2.6 12 2.6c2.6 0 5 1 6.8 2.8 1.8 1.8 2.8 4.2 2.8 6.8 0 5.3-4.3 9.6-9.6 9.6zM20.2 3.8C18 1.6 15.1.4 12 .4 5.6.4.4 5.6.4 12c0 2 .5 4 1.6 5.8L.3 23.7l6-1.6c1.7.9 3.7 1.4 5.7 1.4 6.4 0 11.6-5.2 11.6-11.6 0-3.1-1.2-6-3.4-8.1z"/></svg>Pedir tasación por WhatsApp</a>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACTO -->
+<section id="contacto">
+  <div class="s-head"><h2 class="display words" data-words>Hablemos</h2><div class="side rv"><p>Estamos en el centro de Río Gallegos. Escribinos, llamanos o vení a conocernos.</p></div></div>
+  <a class="wa-band rv" data-wa="Hola Grupo Amplifia, quería hacer una consulta." target="_blank" rel="noopener">
+    <span class="l"><span class="k"><svg class="ic" viewBox="0 0 24 24" fill="currentColor"><path d="M17.5 14.4c-.3-.1-1.7-.8-2-.9-.3-.1-.5-.1-.7.1-.2.3-.8.9-.9 1.1-.2.2-.3.2-.6.1-.3-.1-1.2-.5-2.3-1.4-.9-.8-1.4-1.7-1.6-2-.2-.3 0-.5.1-.6l.4-.5c.2-.2.2-.3.3-.5.1-.2 0-.4 0-.5l-.9-2.2c-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.4s1 2.8 1.2 3c.1.2 2 3.1 4.9 4.3.7.3 1.2.5 1.6.6.7.2 1.3.2 1.8.1.6-.1 1.7-.7 1.9-1.4.2-.7.2-1.3.2-1.4-.1-.1-.3-.2-.6-.3zM12 21.8c-1.7 0-3.4-.5-4.9-1.3l-.4-.2-3.6.9 1-3.5-.2-.4C2.9 15.8 2.4 14 2.4 12.2 2.4 6.9 6.7 2.6 12 2.6c2.6 0 5 1 6.8 2.8 1.8 1.8 2.8 4.2 2.8 6.8 0 5.3-4.3 9.6-9.6 9.6zM20.2 3.8C18 1.6 15.1.4 12 .4 5.6.4.4 5.6.4 12c0 2 .5 4 1.6 5.8L.3 23.7l6-1.6c1.7.9 3.7 1.4 5.7 1.4 6.4 0 11.6-5.2 11.6-11.6 0-3.1-1.2-6-3.4-8.1z"/></svg>Escribinos por WhatsApp</span><span class="num display">0000 000000</span></span>
+    <span class="go"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M7 17L17 7M8 7h9v9"/></svg></span>
+  </a>
+  <div class="socials rv">
+    
+    
+  </div>
+  <div class="c3 rv">
+    <div class="rv"><span class="eyebrow">Oficina</span><p class="v">Av. Principal 123</p><p class="s">Tu ciudad</p><a class="lnk" href="https://www.google.com/maps/search/?api=1&query=Av.+Principal+123+Río+Gallegos" target="_blank" rel="noopener">Cómo llegar ↗</a></div>
+    <div class="rv"><span class="eyebrow">Horarios</span><p class="v">Lunes a viernes</p><p class="s">De 11 a 16 hs. Otros días y horarios, con cita previa.</p></div>
+    <div class="rv"><span class="eyebrow">Contacto</span>
+      <a class="row" href="tel:+540000000000"><span>Teléfono</span>0000 000000</a>
+      <a class="row" href="mailto:contacto@ejemplo.com"><span>Email</span>contacto@ejemplo.com</a>
+      
+      
+    </div>
+  </div>
+  <div class="c-about">
+    <div class="about-in rv"><span class="eyebrow">Quiénes somos</span>
+      <p class="about">Somos un equipo de <em>jóvenes profesionales</em> que se capacita constantemente para acompañarte en cada paso: comprar, vender o alquilar en Río Gallegos.</p></div>
+    <div class="c-map rv"><div id="omap"></div><div class="o-card"><img src="img/logo-icono-c.svg" alt=""><div><b>Grupo Amplifia</b><span>Av. Principal 123, Río Gallegos</span></div><a class="btn sand" href="https://www.google.com/maps/dir/?api=1&destination=-51.6230,-69.2170" target="_blank" rel="noopener">Cómo llegar</a></div></div>
+  </div>
+</section>
+
+<footer>
+  <div class="f-top">
+    <a href="#top" class="f-logo" aria-label="Grupo Amplifia"><img class="i" src="img/logo-icono-c.svg" alt=""><span><img class="w" src="img/logo-grupo-c.svg" alt="Grupo"><img class="b" src="img/logo-amplifia-c.svg" alt="Bienes Raíces"></span></a>
+    <nav class="f-nav"><a href="#venta">Venta</a><a href="#alquiler">Alquiler</a><a href="#mapa">Mapa</a><a href="#vender">Tasaciones</a><a href="#contacto">Contacto</a></nav>
+    <div class="f-soc">
+      <a class="sb wa-c" data-wa="Hola Grupo Amplifia, quería hacer una consulta." target="_blank" rel="noopener" aria-label="WhatsApp"><svg class="ic" viewBox="0 0 24 24" fill="currentColor"><path d="M17.5 14.4c-.3-.1-1.7-.8-2-.9-.3-.1-.5-.1-.7.1-.2.3-.8.9-.9 1.1-.2.2-.3.2-.6.1-.3-.1-1.2-.5-2.3-1.4-.9-.8-1.4-1.7-1.6-2-.2-.3 0-.5.1-.6l.4-.5c.2-.2.2-.3.3-.5.1-.2 0-.4 0-.5l-.9-2.2c-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.4s1 2.8 1.2 3c.1.2 2 3.1 4.9 4.3.7.3 1.2.5 1.6.6.7.2 1.3.2 1.8.1.6-.1 1.7-.7 1.9-1.4.2-.7.2-1.3.2-1.4-.1-.1-.3-.2-.6-.3zM12 21.8c-1.7 0-3.4-.5-4.9-1.3l-.4-.2-3.6.9 1-3.5-.2-.4C2.9 15.8 2.4 14 2.4 12.2 2.4 6.9 6.7 2.6 12 2.6c2.6 0 5 1 6.8 2.8 1.8 1.8 2.8 4.2 2.8 6.8 0 5.3-4.3 9.6-9.6 9.6zM20.2 3.8C18 1.6 15.1.4 12 .4 5.6.4.4 5.6.4 12c0 2 .5 4 1.6 5.8L.3 23.7l6-1.6c1.7.9 3.7 1.4 5.7 1.4 6.4 0 11.6-5.2 11.6-11.6 0-3.1-1.2-6-3.4-8.1z"/></svg></a>
+      
+      
+    </div>
+  </div>
+  <div class="legal">
+    <p>Todas las medidas enunciadas son meramente orientativas; las medidas exactas serán las que se expresen en el respectivo título de propiedad. Fotos, imágenes y videos son ilustrativos y no contractuales. Precios orientativos y no contractuales. Ubicaciones en el mapa aproximadas.</p>
+    <p>© 2026 Grupo Amplifia · Av. Principal 123, Río Gallegos</p>
+    <a class="agents" href="admin.html"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 018 0v3"/></svg>Acceso agentes</a>
+  </div>
+</footer>
+
+<a class="wa" data-wa="Hola Grupo Amplifia, quería hacer una consulta." target="_blank" rel="noopener" aria-label="WhatsApp">
+  <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.5 14.4c-.3-.1-1.7-.8-2-.9-.3-.1-.5-.1-.7.1-.2.3-.8.9-.9 1.1-.2.2-.3.2-.6.1-.3-.1-1.2-.5-2.3-1.4-.9-.8-1.4-1.7-1.6-2-.2-.3 0-.5.1-.6l.4-.5c.2-.2.2-.3.3-.5.1-.2 0-.4 0-.5l-.9-2.2c-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.4s1 2.8 1.2 3c.1.2 2 3.1 4.9 4.3.7.3 1.2.5 1.6.6.7.2 1.3.2 1.8.1.6-.1 1.7-.7 1.9-1.4.2-.7.2-1.3.2-1.4-.1-.1-.3-.2-.6-.3zM12 21.8c-1.7 0-3.4-.5-4.9-1.3l-.4-.2-3.6.9 1-3.5-.2-.4C2.9 15.8 2.4 14 2.4 12.2 2.4 6.9 6.7 2.6 12 2.6c2.6 0 5 1 6.8 2.8 1.8 1.8 2.8 4.2 2.8 6.8 0 5.3-4.3 9.6-9.6 9.6zM20.2 3.8C18 1.6 15.1.4 12 .4 5.6.4.4 5.6.4 12c0 2 .5 4 1.6 5.8L.3 23.7l6-1.6c1.7.9 3.7 1.4 5.7 1.4 6.4 0 11.6-5.2 11.6-11.6 0-3.1-1.2-6-3.4-8.1z"/></svg>
+</a>
+
+
+<!-- ASISTENTE AMPLIFIA -->
+<div class="bot" id="bot">
+  <div class="bot-ring"></div>
+  <button class="bot-av" id="bot-av" aria-label="Abrir asistente de Grupo Amplifia"><img src="img/logo-icono-c.svg" alt=""></button>
+  <div class="bot-say" id="bot-say" role="status"><button class="x" aria-label="Cerrar">✕</button><b>Asistente Amplifia</b><span id="bot-txt"></span></div>
+</div>
+<div data-lenis-prevent class="chat" id="chat" role="dialog" aria-label="Chat con el asistente de Grupo Amplifia">
+  <div class="c-top"><div class="av"><img src="img/logo-icono-c.svg" alt=""></div><div><b>Asistente Amplifia</b><span>● En línea</span></div><button class="cl" id="chat-x" aria-label="Cerrar chat">✕</button></div>
+  <div class="c-msgs" id="c-msgs"></div>
+  <div class="qs" id="c-qs"></div>
+  <form class="c-in" id="c-form"><input id="c-input" placeholder="Ej: casa 3 dormitorios apto crédito" autocomplete="off"><button aria-label="Enviar"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button></form>
+</div>
+<template id="wa-ic"><svg class="ic" viewBox="0 0 24 24" fill="currentColor"><path d="M17.5 14.4c-.3-.1-1.7-.8-2-.9-.3-.1-.5-.1-.7.1-.2.3-.8.9-.9 1.1-.2.2-.3.2-.6.1-.3-.1-1.2-.5-2.3-1.4-.9-.8-1.4-1.7-1.6-2-.2-.3 0-.5.1-.6l.4-.5c.2-.2.2-.3.3-.5.1-.2 0-.4 0-.5l-.9-2.2c-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.4s1 2.8 1.2 3c.1.2 2 3.1 4.9 4.3.7.3 1.2.5 1.6.6.7.2 1.3.2 1.8.1.6-.1 1.7-.7 1.9-1.4.2-.7.2-1.3.2-1.4-.1-.1-.3-.2-.6-.3zM12 21.8c-1.7 0-3.4-.5-4.9-1.3l-.4-.2-3.6.9 1-3.5-.2-.4C2.9 15.8 2.4 14 2.4 12.2 2.4 6.9 6.7 2.6 12 2.6c2.6 0 5 1 6.8 2.8 1.8 1.8 2.8 4.2 2.8 6.8 0 5.3-4.3 9.6-9.6 9.6zM20.2 3.8C18 1.6 15.1.4 12 .4 5.6.4.4 5.6.4 12c0 2 .5 4 1.6 5.8L.3 23.7l6-1.6c1.7.9 3.7 1.4 5.7 1.4 6.4 0 11.6-5.2 11.6-11.6 0-3.1-1.2-6-3.4-8.1z"/></svg></template>
+
+<div data-lenis-prevent id="ficha" role="dialog" aria-modal="true" aria-label="Ficha de propiedad"></div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
+<script src="data.js"></script>
+<script src="store.js"></script>
+<script type="module">
+const WA = "5490000000000";
+const DATA = window.DEMODATA;
+const PROPS = (await DemoStore.load())
+  .filter(p => p.estado === "publicada" || p.estado === "reservada")
+  .map(p => ({ tags: [], servicios: [], fotos: [], ...p }))
+  .filter(p => p.fotos.length);
+const IMG = DemoStore.img;
+DemoStore.onChange(() => location.reload());
+const byId = Object.fromEntries(PROPS.map(p => [p.id, p]));
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const nf = n => n.toLocaleString("es-AR");
+const waLink = msg => `https://wa.me/${WA}?text=${encodeURIComponent(msg)}`;
+const hasOp = (p, op) => op === "venta" ? p.venta != null : op === "alquiler" ? p.alquiler != null : true;
+const opsOf = p => [p.venta != null && "venta", p.alquiler != null && "alquiler"].filter(Boolean);
+const plural = (n, s, pl) => `${n} ${n === 1 ? s : pl}`;
+// dirección + barrio sin repetir (ej.: "Barrio privado Camino del Sol · Barrio Camino del Sol")
+const place = p => p.dir.toLowerCase().includes(p.barrio.toLowerCase().replace(/^barrio\s+/, "")) ? p.dir : `${p.dir} · ${p.barrio}`;
+
+function priceTxt(p, op) {
+  if (op === "alquiler") return { big: "$ " + nf(p.alquiler), small: "por mes" };
+  return { big: (p.desde ? "Desde " : "") + "USD " + nf(p.venta), small: "" };
+}
+function shortPrice(p, op) {
+  if (op === "alquiler") return "$ " + (p.alquiler / 1e6).toLocaleString("es-AR", { maximumFractionDigits: 1 }) + " M/mes";
+  return "USD " + Math.round(p.venta / 1000) + " mil";
+}
+const ICON = {
+  dorm: '<svg viewBox="0 0 24 24"><path d="M3 18V7M3 14h18v4M21 14v-2a3 3 0 00-3-3h-7v5M7 11.5a1.5 1.5 0 100-.01"/></svg>',
+  banos: '<svg viewBox="0 0 24 24"><path d="M4 12h16v2a5 5 0 01-5 5H9a5 5 0 01-5-5v-2zM6 12V5a2 2 0 014 0M7 19l-1 2M17 19l1 2"/></svg>',
+  sup: '<svg viewBox="0 0 24 24"><path d="M4 4h16v16H4zM4 9h5V4M15 20v-5h5"/></svg>',
+  ter: '<svg viewBox="0 0 24 24"><path d="M3 20l5-12 4 7 3-4 6 9z"/></svg>',
+  cam: '<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 8h3l2-3h6l2 3h3v11H4zM12 16.5a3.5 3.5 0 100-7 3.5 3.5 0 000 7z"/></svg>',
+  pin: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 21s-7-6.2-7-11.5a7 7 0 0114 0C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>',
+};
+function specsHTML(p) {
+  const s = [];
+  if (p.dorm) s.push(`<span>${ICON.dorm}${p.dorm} dorm.</span>`);
+  if (p.banos) s.push(`<span>${ICON.banos}${plural(p.banos, "baño", "baños")}</span>`);
+  if (p.cub) s.push(`<span>${ICON.sup}${nf(p.cub)} m² cub.</span>`);
+  if (p.terreno) s.push(`<span>${ICON.ter}${nf(p.terreno)} m² terreno</span>`);
+  if (!s.length) s.push(`<span>${ICON.pin}${p.barrio}</span>`);
+  return `<div class="specs">${s.join("")}</div>`;
+}
+function labels(p, op) {
+  const l = [];
+  if (p.estado === "reservada") l.push(`<span class="s">Reservada</span>`);
+  if (opsOf(p).length > 1) l.push(`<span class="s">Venta y alquiler</span>`);
+  else l.push(`<span>${op === "alquiler" ? "Alquiler" : "Venta"}</span>`);
+  if (p.credito) l.push(`<span class="s">Apto crédito</span>`);
+  if (p.tags.includes("Financiado")) l.push(`<span class="s">Financiado</span>`);
+  return `<div class="lbl">${l.join("")}</div>`;
+}
+function cardHTML(p, op) {
+  const pr = priceTxt(p, op);
+  const alt = opsOf(p).length > 1 ? `<span class="alt">${op === "venta" ? "Alquiler " + priceTxt(p, "alquiler").big + "/mes" : "Venta " + priceTxt(p, "venta").big}</span>` : "";
+  return `<button class="card rv" data-id="${p.id}">
+    <div class="ph">${labels(p, op)}
+      <img src="${IMG(p.fotos[0], "m")}" alt="${p.titulo}" loading="lazy">
+      ${p.fotos[1] ? `<img class="b" src="${IMG(p.fotos[1], "m")}" alt="" loading="lazy">` : ""}
+      <span class="cnt">${ICON.cam}${p.fotos.length}</span>
+    </div>
+    <div class="body">
+      <div class="row1"><span class="price display">${pr.big}${pr.small ? `<small>${pr.small}</small>` : ""}</span>${alt}</div>
+      <h4>${p.titulo}</h4>
+      <span class="where">${place(p)}</span>
+      ${specsHTML(p)}
+    </div></button>`;
+}
+
+$$("[data-wa]").forEach(a => a.href = waLink(a.dataset.wa));
+
+
+/* ---------- títulos palabra por palabra + reveal ---------- */
+$$("[data-words]").forEach(h => {
+  const walk = n => [...n.childNodes].forEach(c => {
+    if (c.nodeType === 3) {
+      const f = document.createDocumentFragment();
+      c.textContent.split(/(\s+)/).forEach(w => {
+        if (!w.trim()) { f.appendChild(document.createTextNode(w)); return; }
+        const s = document.createElement("span"); s.className = "w"; s.innerHTML = `<span>${w}</span>`; f.appendChild(s);
+      });
+      c.replaceWith(f);
+    } else walk(c);
+  });
+  walk(h);
+  $$(".w>span", h).forEach((s, i) => s.style.transitionDelay = i * 70 + "ms");
+  h.classList.add("rv-w");
+});
+const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); } }), { rootMargin: "0px 0px -8% 0px" });
+const watch = (root = document) => $$(".rv:not(.in), .rv-w:not(.in)", root).forEach(el => io.observe(el));
+
+/* ---------- header + menú ---------- */
+const hdr = $("#hdr");
+function onScroll() {
+  hdr.classList.toggle("solid", scrollY > 60);
+  document.body.classList.toggle("hero-on", scrollY < innerHeight * .6);
+}
+addEventListener("scroll", onScroll, { passive: true });
+onScroll();
+function menu(o) { $("#menu").classList.toggle("open", o); document.body.classList.toggle("lock", o); }
+
+/* ---------- hero: fotos en alta de propiedades reales ---------- */
+// fotos de portada: solo fachadas. Reemplazables por img/hero/portada-N-d.jpg / -m.jpg
+const HERO = [{ img: "portada-4" }, { img: "portada-3" }, { img: "portada-2" }, { img: "portada-1" }];
+$("#slides").innerHTML = HERO.map((h, i) => `<div class="slide${i ? "" : " on"}"><picture>
+  <source media="(max-width:760px)" srcset="img/hero/${h.img}-m.jpg"><img src="img/hero/${h.img}-d.jpg" alt="" ${i ? 'loading="lazy"' : 'fetchpriority="high"'}></picture></div>`).join("");
+$("#bars").innerHTML = HERO.map((_, i) => `<button aria-label="Foto ${i + 1}" class="${i ? "" : "on"}"><i></i></button>`).join("");
+let hi = 0, ht;
+function heroShow(i) {
+  hi = i;
+  $$(".slide").forEach((s, k) => s.classList.toggle("on", k === i));
+  $$("#bars button").forEach((b, k) => { b.classList.remove("on"); void b.offsetWidth; b.classList.toggle("on", k === i); });
+  clearTimeout(ht); ht = setTimeout(() => heroShow((hi + 1) % HERO.length), 6500);
+}
+$$("#bars button").forEach((b, k) => b.onclick = () => heroShow(k));
+if (HERO.length) heroShow(0);
+
+/* ---------- conteos ---------- */
+$("#d-venta").innerHTML = `<b>Comprá</b> la casa que soñás`;
+$("#d-alq").innerHTML = `<b>Alquilá</b> y mudate ya`;
+$("#strip").innerHTML = ("Casas<span>·</span>Departamentos<span>·</span>Terrenos<span>·</span>Venta<span>·</span>Alquiler<span>·</span>Tasaciones<span>·</span>").repeat(4);
+
+/* ---------- destacadas ---------- */
+const FEAT = PROPS.filter(p => p.destacada);
+$("#rail").innerHTML = FEAT.map(p => {
+  const op = opsOf(p)[0], pr = priceTxt(p, op);
+  return `<button class="feat card rv" data-id="${p.id}" style="transition-delay:${(FEAT.indexOf(p) % 4) * .1}s"><div class="ph">${labels(p, op)}<img src="${IMG(p.fotos[0], "m")}" alt="${p.titulo}" loading="lazy"></div>
+    <div class="meta"><span class="price">${pr.big}${pr.small ? `<small>${pr.small}</small>` : ""}</span><h4>${p.titulo}</h4><span class="where">${p.barrio} · ${p.dir}</span></div></button>`;
+}).join("");
+function railGo(d) { const r = $("#rail"); r.scrollBy({ left: d * r.querySelector(".feat").offsetWidth * 1.04, behavior: "smooth" }); }
+// flechas que se ocultan en los extremos + barra de avance
+(() => {
+  const r = $("#rail");
+  const upd = () => {
+    const max = r.scrollWidth - r.clientWidth, k = max > 0 ? r.scrollLeft / max : 1;
+    $("#rail-bar").style.width = Math.max(8, (r.clientWidth / r.scrollWidth) * 100 + k * (100 - (r.clientWidth / r.scrollWidth) * 100)) + "%";
+    $("#rail-prev").classList.toggle("off", r.scrollLeft < 10);
+    $("#rail-next").classList.toggle("off", r.scrollLeft > max - 10);
+    const ph = r.querySelector(".ph");
+    if (ph) { const y = ph.getBoundingClientRect().top - r.getBoundingClientRect().top + ph.offsetHeight / 2; $("#rail-prev").style.top = $("#rail-next").style.top = y + "px"; }
+  };
+  r.addEventListener("scroll", upd, { passive: true }); addEventListener("resize", upd); upd(); setTimeout(upd, 800);
+})();
+(() => {
+  const r = $("#rail"); let down = false, x0, s0, moved = false;
+  r.addEventListener("pointerdown", e => { if (e.pointerType !== "mouse") return; down = true; moved = false; x0 = e.clientX; s0 = r.scrollLeft; r.style.scrollSnapType = "none"; });
+  addEventListener("pointermove", e => { if (!down) return; const dx = e.clientX - x0; if (Math.abs(dx) > 5) moved = true; r.scrollLeft = s0 - dx; });
+  addEventListener("pointerup", () => { if (!down) return; down = false; r.style.scrollSnapType = ""; });
+  r.addEventListener("click", e => { if (moved) { e.stopPropagation(); e.preventDefault(); } }, true);
+})();
+
+/* ---------- listados ---------- */
+const STATE = { venta: { tipo: "", dorm: 0, credito: false, orden: "desc", all: false }, alquiler: { tipo: "", dorm: 0, credito: false, orden: "desc", all: false } };
+function filtered(op) {
+  const s = STATE[op];
+  return PROPS.filter(p => hasOp(p, op) && (!s.tipo || p.tipo === s.tipo) && (!s.dorm || (p.dorm || 0) >= s.dorm) && (!s.credito || p.credito))
+    .sort((a, b) => s.orden === "asc" ? a[op] - b[op] : b[op] - a[op]);
+}
+function renderFilters(op) {
+  const sec = $("#" + op), s = STATE[op];
+  const tipos = ["", ...new Set(PROPS.filter(p => hasOp(p, op)).map(p => p.tipo))];
+  const showTipos = tipos.length > 2;
+  sec.querySelector(".filters").innerHTML = `
+    <div class="g">${showTipos ? tipos.map(t => `<button class="chip${s.tipo === t ? " on" : ""}" data-f="tipo" data-v="${t}">${t ? t + "s" : "Todas"}</button>`).join("") : ""}</div>
+    <div class="g">
+      ${[0, 2, 3].map(d => `<button class="chip${s.dorm === d ? " on" : ""}" data-f="dorm" data-v="${d}">${d ? d + "+ dormitorios" : "Cualquier tamaño"}</button>`).join("")}
+      ${op === "venta" ? `<button class="chip${s.credito ? " on" : ""}" data-f="credito">Apto crédito</button>` : ""}
+      <select data-f="orden" aria-label="Ordenar"><option value="desc"${s.orden === "desc" ? " selected" : ""}>Mayor precio</option><option value="asc"${s.orden === "asc" ? " selected" : ""}>Menor precio</option></select>
+    </div>`;
+}
+function renderList(op) {
+  renderFilters(op);
+  const sec = $("#" + op), l = filtered(op), s = STATE[op];
+  const lim = innerWidth < 760 ? 6 : 9;
+  const show = s.all ? l : l.slice(0, lim);
+  sec.querySelector(".grid").innerHTML = show.map(p => cardHTML(p, op)).join("");
+  $$(".grid .card", sec).forEach((c, i) => c.style.transitionDelay = (i % 3) * .1 + "s");
+  sec.querySelector(".more").innerHTML = !l.length ? `<p class="empty">No hay propiedades con esos filtros.</p>` :
+    l.length > show.length ? `<button class="btn" data-more>Ver todas</button>` : "";
+  watch(sec);
+}
+["venta", "alquiler"].forEach(op => {
+  const sec = $("#" + op);
+  sec.addEventListener("click", e => {
+    const f = e.target.closest("[data-f]"), s = STATE[op];
+    if (f && f.tagName === "BUTTON") {
+      if (f.dataset.f === "tipo") s.tipo = f.dataset.v;
+      if (f.dataset.f === "dorm") s.dorm = +f.dataset.v;
+      if (f.dataset.f === "credito") s.credito = !s.credito;
+      renderList(op);
+    }
+    if (e.target.closest("[data-more]")) { s.all = true; renderList(op); }
+  });
+  sec.addEventListener("change", e => { if (e.target.dataset.f === "orden") { STATE[op].orden = e.target.value; renderList(op); } });
+  renderList(op);
+});
+document.addEventListener("click", e => {
+  const c = e.target.closest(".card[data-id]");
+  if (c && !c.closest("#ficha")) openFicha(c.dataset.id);
+});
+
+/* ---------- mapa (Esri: sin clave y sin bloqueos) ---------- */
+const ESRI = "https://server.arcgisonline.com/ArcGIS/rest/services/";
+const esri = (s, o = {}) => L.tileLayer(ESRI + s + "/MapServer/tile/{z}/{y}/{x}", { maxZoom: 19, attribution: "Mapa &copy; Esri", ...o });
+const LAYERS = {
+  oscuro: () => L.layerGroup([esri("Canvas/World_Dark_Gray_Base", { maxNativeZoom: 16 }), esri("Canvas/World_Dark_Gray_Reference", { maxNativeZoom: 16 })]),
+  calles: () => esri("World_Street_Map"),
+  sat: () => L.layerGroup([esri("World_Imagery", { maxNativeZoom: 17 }), esri("Reference/World_Boundaries_and_Places", { maxNativeZoom: 17 })]),
+};
+// la rueda del mouse nunca mueve el mapa (el scroll de la página no lo acerca); en celular se mueve con dos dedos
+const map = L.map("map", { scrollWheelZoom: false, zoomControl: false, dragging: !L.Browser.mobile, tap: false, maxZoom: 18, minZoom: 11 }).setView([-51.63, -69.23], 13);
+let base = LAYERS.sat().addTo(map);
+// zoom: control grande (+ / barra / −) en el medio del borde; la rueda solo acerca con Ctrl, así la página siempre baja normal
+(() => {
+  const z = $("#zoom"), rng = $("#z-rng"), hint = $("#map-hint"); let ht;
+  rng.min = 11; rng.max = 18;
+  const sync = () => { rng.value = map.getZoom(); };
+  map.on("zoomend", sync); sync();
+  z.querySelector("[data-z='in']").onclick = () => map.zoomIn();
+  z.querySelector("[data-z='out']").onclick = () => map.zoomOut();
+  z.querySelector("[data-z='fit']").onclick = () => renderMap(true);
+  rng.addEventListener("input", () => map.setZoom(+rng.value));
+  map.getContainer().addEventListener("wheel", e => {
+    if (e.ctrlKey) { e.preventDefault(); e.deltaY < 0 ? map.zoomIn() : map.zoomOut(); return; }
+    hint.classList.add("on"); clearTimeout(ht); ht = setTimeout(() => hint.classList.remove("on"), 1400);
+  }, { passive: false });
+})();
+$$(".map-view button").forEach(b => b.onclick = () => {
+  $$(".map-view button").forEach(x => x.classList.toggle("on", x === b));
+  map.removeLayer(base); base = LAYERS[b.dataset.v]().addTo(map);
+});
+L.marker([DATA.oficina.lat, DATA.oficina.lng], {
+  icon: L.divIcon({ className: "pin-wrap", html: `<div class="office"><img src="img/logo-icono-k.svg" alt="Oficina"></div>`, iconSize: [0, 0] }),
+  zIndexOffset: -100, title: "Oficina · Av. Principal 123",
+}).addTo(map).on("click", () => $("#contacto").scrollIntoView());
+
+const cluster = L.markerClusterGroup({
+  showCoverageOnHover: false, maxClusterRadius: 46, spiderfyOnMaxZoom: true,
+  iconCreateFunction: c => L.divIcon({ className: "pin-wrap", html: `<div class="mc">${c.getChildCount()}</div>`, iconSize: [0, 0] }),
+}).addTo(map);
+const pinIcon = p => L.divIcon({ className: "pin-wrap", html: `<span class="hp${p.venta == null ? " alq" : ""}"><img src="${IMG(p.fotos[0], "s")}" alt=""></span>`, iconSize: [0, 0] });
+const pop = L.popup({ className: "bpop", offset: [0, -78], maxWidth: 280, minWidth: 280, autoPanPadding: [40, 40] });
+function showPop(p) {
+  const o = MS.op === "alquiler" ? "alquiler" : opsOf(p)[0], pr = priceTxt(p, o);
+  pop.setLatLng([p.lat, p.lng]).setContent(`<div class="pop"><img src="${IMG(p.fotos[0], "m")}" alt="">
+    <div class="b"><span class="op">${opsOf(p).map(x => x === "venta" ? "Venta" : "Alquiler").join(" · ")} · ${p.tipo}</span>
+    <span class="pr">${pr.big}</span><span class="tt">${p.titulo}</span><span class="wh">${place(p)}</span>
+    <button class="btn sand" data-open="${p.id}">Ver propiedad</button></div></div>`).openOn(map);
+}
+map.getContainer().addEventListener("click", e => { const b = e.target.closest("[data-open]"); if (b) openFicha(b.dataset.open); });
+map.on("popupclose", () => { $$(".hp.on").forEach(x => x.classList.remove("on")); });
+// lleva el mapa a la propiedad elegida en la lista y muestra su tarjeta
+function focusProp(id) {
+  const m = markers[id], p = byId[id];
+  setActive(id, false, true);
+  cluster.zoomToShowLayer(m, () => {
+    map.flyTo(m.getLatLng(), Math.max(map.getZoom(), 16), { duration: .8 });
+    map.once("moveend", () => { setActive(id, false, true); showPop(p); });
+  });
+}
+const markers = {};
+PROPS.forEach(p => {
+  const m = L.marker([p.lat, p.lng], { icon: pinIcon(p), title: p.titulo, riseOnHover: true });
+  m.on("click", () => { setActive(p.id, true); showPop(p); });
+  markers[p.id] = m;
+});
+const MS = { op: "todas", tipo: "" };
+const mapFiltered = () => PROPS.filter(p => hasOp(p, MS.op) && (!MS.tipo || p.tipo === MS.tipo));
+function renderMapChips() {
+  $("#m-op").innerHTML = [["todas", "Todas"], ["venta", "Venta"], ["alquiler", "Alquiler"]].map(([v, t]) => `<button class="chip${MS.op === v ? " on" : ""}" data-v="${v}">${t}</button>`).join("");
+  $("#m-tipo").innerHTML = ["", "Casa", "Departamento", "Terreno"].filter(t => !t || PROPS.some(p => p.tipo === t)).map(t => `<button class="chip${MS.tipo === t ? " on" : ""}" data-v="${t}">${t ? t + "s" : "Todo tipo"}</button>`).join("");
+}
+function renderMap(fit) {
+  renderMapChips();
+  const l = mapFiltered(), ids = new Set(l.map(p => p.id));
+  cluster.clearLayers();
+  cluster.addLayers(Object.entries(markers).filter(([id]) => ids.has(id)).map(([, m]) => m));
+  $("#m-list").innerHTML = l.map(p => {
+    const o = MS.op === "alquiler" ? "alquiler" : (p.venta != null ? "venta" : "alquiler"), pr = priceTxt(p, o);
+    return `<button class="m-card" data-id="${p.id}"><div class="ph"><img src="${IMG(p.fotos[0], "s")}" alt="" loading="lazy"></div>
+      <div><span class="op">${opsOf(p).map(x => x === "venta" ? "Venta" : "Alquiler").join(" · ")} · ${p.tipo}</span>
+      <div class="price">${pr.big}</div><div class="tt">${p.titulo}</div><div class="where">${p.barrio}</div></div></button>`;
+  }).join("");
+  if (fit && l.length) map.fitBounds(L.latLngBounds(l.map(p => [p.lat, p.lng])), { padding: innerWidth < 760 ? [40, 30] : [60, 60], maxZoom: 15 });
+}
+$("#m-op").onclick = e => { const b = e.target.closest("button"); if (b) { MS.op = b.dataset.v; renderMap(true); } };
+$("#m-tipo").onclick = e => { const b = e.target.closest("button"); if (b) { MS.tipo = b.dataset.v; renderMap(true); } };
+let activeId = null;
+function setActive(id, fromMap, hover) {
+  activeId = id;
+  $$(".hp.on").forEach(x => x.classList.remove("on"));
+  $$(".leaflet-marker-icon.on").forEach(x => x.classList.remove("on"));
+  const m = markers[id];
+  const mark = () => { const el = m && m.getElement(); if (el) { el.classList.add("on"); el.querySelector(".hp")?.classList.add("on"); } };
+  if (m && !fromMap && !hover && !m.getElement()) cluster.zoomToShowLayer(m, mark); else mark();
+  $$(".m-card").forEach(c => c.classList.toggle("on", c.dataset.id === id));
+  const card = $(`.m-card[data-id="${id}"]`), list = $("#m-list");
+  if (card && fromMap) {
+    if (innerWidth < 760) list.scrollTo({ left: card.offsetLeft - (list.clientWidth - card.offsetWidth) / 2, behavior: "smooth" });
+    else list.scrollTo({ top: card.offsetTop - 12, behavior: "smooth" });
+  }
+  if (!fromMap && !hover && m && m.getElement()) map.panTo(m.getLatLng(), { animate: true });
+}
+$("#m-list").addEventListener("click", e => {
+  const c = e.target.closest(".m-card"); if (c) focusProp(c.dataset.id);
+});
+$("#m-list").addEventListener("mouseover", e => { const c = e.target.closest(".m-card"); if (c && innerWidth >= 760 && c.dataset.id !== activeId) setActive(c.dataset.id, false, true); });
+let swT;
+$("#m-list").addEventListener("scroll", () => {
+  if (innerWidth >= 760) return;
+  clearTimeout(swT);
+  swT = setTimeout(() => {
+    const list = $("#m-list"), mid = list.scrollLeft + list.clientWidth / 2;
+    let best = null, bd = 1e9;
+    $$(".m-card", list).forEach(c => { const d = Math.abs(c.offsetLeft + c.offsetWidth / 2 - mid); if (d < bd) { bd = d; best = c; } });
+    if (best && best.dataset.id !== activeId) setActive(best.dataset.id, false, true);
+  }, 120);
+}, { passive: true });
+renderMap(true);
+new IntersectionObserver((es, o) => { if (es[0].isIntersecting) { map.invalidateSize(); renderMap(true); o.disconnect(); } }).observe($("#map"));
+
+/* mapa de la oficina (Quiénes somos) */
+(() => {
+  const o = [DATA.oficina.lat, DATA.oficina.lng];
+  const om = L.map("omap", { scrollWheelZoom: false, dragging: !L.Browser.mobile, tap: false, zoomControl: false, attributionControl: true }).setView(o, 16);
+  esri("World_Street_Map").addTo(om);
+  L.marker(o, { icon: L.divIcon({ className: "pin-wrap", html: `<div class="o-pin"><img src="img/logo-icono-k.svg" alt=""></div>`, iconSize: [0, 0] }) }).addTo(om);
+  new IntersectionObserver((es, ob) => { if (es[0].isIntersecting) { om.invalidateSize(); om.setView(o, 16); ob.disconnect(); } }).observe($("#omap"));
+})();
+
+/* mapa de la puerta "Mapa": vivo, sin interacción */
+(() => {
+  const dm = L.map("dmap", { zoomControl: false, attributionControl: false, dragging: false, scrollWheelZoom: false, doubleClickZoom: false, boxZoom: false, keyboard: false, touchZoom: false });
+  LAYERS.oscuro().addTo(dm);
+  const city = PROPS.filter(p => p.lat > -51.66);
+  const fit = () => dm.fitBounds(L.latLngBounds(city.map(p => [p.lat, p.lng])), { padding: [40, 40] });
+  fit();
+  city.forEach(p => {
+    L.circleMarker([p.lat, p.lng], { radius: 16, stroke: false, fillColor: "#d8c6a1", fillOpacity: .18, interactive: false }).addTo(dm);
+    L.circleMarker([p.lat, p.lng], { radius: 6, color: "#0f0e0c", weight: 2, fillColor: p.venta != null ? "#d8c6a1" : "#f3ede2", fillOpacity: 1, interactive: false }).addTo(dm);
+  });
+  new IntersectionObserver((es, o) => { if (es[0].isIntersecting) { dm.invalidateSize(); fit(); o.disconnect(); } }).observe($("#dmap"));
+})();
+
+/* ---------- ficha ---------- */
+const F = $("#ficha");
+let lastHash = "";
+function openFicha(id) { if (location.hash !== "#p/" + id) location.hash = "p/" + id; else renderFicha(id); }
+function closeFicha() { if (history.state && history.state.fromSite) history.back(); else location.hash = "mapa"; }
+function route() {
+  const m = location.hash.match(/^#p\/(.+)$/);
+  if (m && byId[m[1]]) renderFicha(m[1]);
+  else if (F.classList.contains("open")) { F.classList.remove("open"); document.body.classList.remove("lock"); $(".gal.full")?.classList.remove("full"); document.title = "Grupo Amplifia · Río Gallegos"; }
+}
+addEventListener("hashchange", () => { if (/^#p\//.test(location.hash) && !/^#p\//.test(lastHash)) history.replaceState({ fromSite: true }, ""); lastHash = location.hash; route(); });
+function renderFicha(id) {
+  const p = byId[id], ops = opsOf(p), op = ops[0], pr = priceTxt(p, op), altOp = ops[1];
+  // el código de referencia ayuda a la inmobiliaria a identificar la propiedad; no se muestra en la página
+  const code = p.ref && !p.ref.startsWith("DEMO") ? ` (código ${p.ref})` : "";
+  const msg = `Hola Grupo Amplifia, me interesa la propiedad "${p.titulo}" en ${p.dir}${code}. ¿Me pasan más información?`;
+  const gm = `https://www.google.com/maps/search/?api=1&query=${p.lat},${p.lng}`;
+  const specs = [p.dorm && [p.dorm, "Dormitorios"], p.banos && [p.banos, "Baños"], p.cub && [nf(p.cub) + " m²", "Cubiertos"], p.terreno && [nf(p.terreno) + " m²", "Terreno"], [p.tipo, "Tipo"], [p.barrio, "Barrio"]].filter(Boolean).slice(0, 4);
+  const sim = PROPS.filter(x => x.id !== p.id && hasOp(x, op) && x.tipo === p.tipo).sort((a, b) => Math.abs(a[op] - p[op]) - Math.abs(b[op] - p[op])).slice(0, 3);
+  F.innerHTML = `
+    <div class="f-top">
+      <a class="brand" href="#top" onclick="event.preventDefault();closeFicha()"><img class="i" src="img/logo-icono-c.svg" alt=""><span class="w"><img src="img/logo-grupo-c.svg" alt="Grupo"><img src="img/logo-amplifia-c.svg" alt=""></span></a>
+      <div class="acts">
+        <button onclick="shareP('${p.id}')"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 12v8h16v-8M12 3v13M7 8l5-5 5 5"/></svg><span class="tx">Compartir</span></button>
+        <button onclick="closeFicha()">Cerrar ✕</button>
+      </div>
+    </div>
+    <div class="gal" id="gal">
+      <div class="gal-track" id="g-track">${p.fotos.map((f, i) => `<figure><img src="${IMG(f, "l")}" alt="${p.titulo} – foto ${i + 1}" ${i > 1 ? 'loading="lazy"' : ""}></figure>`).join("")}</div>
+      <button class="nav p" aria-label="Anterior" onclick="galGo(-1)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M15 5l-7 7 7 7"/></svg></button>
+      <button class="nav n" aria-label="Siguiente" onclick="galGo(1)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M9 5l7 7-7 7"/></svg></button>
+      <span class="count" id="g-count">1 / ${p.fotos.length}</span>
+      <button class="x" aria-label="Cerrar foto" onclick="document.getElementById('gal').classList.remove('full')">✕</button>
+    </div>
+    <div class="thumbs" id="thumbs">${p.fotos.map((f, i) => `<button class="${i ? "" : "on"}" onclick="galTo(${i})"><img src="${IMG(f, "s")}" alt="" loading="lazy"></button>`).join("")}</div>
+    <div class="f-body">
+      <div class="f-main">
+        <span class="eyebrow">${ops.map(x => x === "venta" ? "Venta" : "Alquiler").join(" · ")} · ${p.tipo}</span>
+        <h1 class="display">${p.titulo}</h1>
+        <div class="addr">${ICON.pin}${place(p)} · Río Gallegos</div>
+        <div class="f-specs">${specs.map(([b, s]) => `<div><b>${b}</b><span>${s}</span></div>`).join("")}</div>
+        <h3>Descripción</h3>
+        <p class="desc">${p.desc || "Consultanos por más información de esta propiedad."}</p>
+        ${p.tags.length ? `<h3>Lo que la hace especial</h3><ul class="feats">${p.tags.map(t => `<li>${t}</li>`).join("")}</ul>` : ""}
+        ${p.servicios.length ? `<h3>Servicios</h3><ul class="servs">${p.servicios.map(t => `<li><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>${t}</li>`).join("")}</ul>` : ""}
+        <h3>Ubicación</h3>
+        <div class="f-map"><iframe loading="lazy" title="Ubicación" src="https://maps.google.com/maps?q=${p.lat},${p.lng}&z=15&output=embed"></iframe></div>
+        <div class="f-map-note"><span>Ubicación aproximada. La dirección exacta se informa al coordinar la visita.</span><a href="${gm}" target="_blank" rel="noopener">Abrir en Google Maps ↗</a></div>
+      </div>
+      <aside class="f-side">
+        <span class="op">${op === "venta" ? "Precio de venta" : "Alquiler mensual"}</span>
+        <div class="price">${pr.big}${pr.small ? ` <small>${pr.small}</small>` : ""}</div>
+        ${p.credito ? `<div class="note">Apta crédito hipotecario</div>` : ""}
+        ${p.nota ? `<div class="note">${p.nota}</div>` : ""}
+        ${altOp ? `<div class="alt"><span class="op">${altOp === "alquiler" ? "También en alquiler" : "También en venta"}</span><b>${priceTxt(p, altOp).big}${altOp === "alquiler" ? " / mes" : ""}</b></div>` : ""}
+        <div class="ctas">
+          <a class="btn wabtn big" href="${waLink(msg)}" target="_blank" rel="noopener"><svg class="ic" viewBox="0 0 24 24" fill="currentColor"><path d="M17.5 14.4c-.3-.1-1.7-.8-2-.9-.3-.1-.5-.1-.7.1-.2.3-.8.9-.9 1.1-.2.2-.3.2-.6.1-.3-.1-1.2-.5-2.3-1.4-.9-.8-1.4-1.7-1.6-2-.2-.3 0-.5.1-.6l.4-.5c.2-.2.2-.3.3-.5.1-.2 0-.4 0-.5l-.9-2.2c-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.4s1 2.8 1.2 3c.1.2 2 3.1 4.9 4.3.7.3 1.2.5 1.6.6.7.2 1.3.2 1.8.1.6-.1 1.7-.7 1.9-1.4.2-.7.2-1.3.2-1.4-.1-.1-.3-.2-.6-.3zM12 21.8c-1.7 0-3.4-.5-4.9-1.3l-.4-.2-3.6.9 1-3.5-.2-.4C2.9 15.8 2.4 14 2.4 12.2 2.4 6.9 6.7 2.6 12 2.6c2.6 0 5 1 6.8 2.8 1.8 1.8 2.8 4.2 2.8 6.8 0 5.3-4.3 9.6-9.6 9.6zM20.2 3.8C18 1.6 15.1.4 12 .4 5.6.4.4 5.6.4 12c0 2 .5 4 1.6 5.8L.3 23.7l6-1.6c1.7.9 3.7 1.4 5.7 1.4 6.4 0 11.6-5.2 11.6-11.6 0-3.1-1.2-6-3.4-8.1z"/></svg>Consultar por WhatsApp</a>
+          <p class="call">¿Preferís llamar? <a href="tel:+540000000000">0000 000000</a></p>
+        </div>
+      </aside>
+    </div>
+    ${sim.length ? `<div class="sim"><div class="s-head" style="padding-inline:0;padding-top:20px"><h2 class="display" style="font-size:clamp(42px,5vw,76px)">También te puede interesar</h2></div><div class="grid">${sim.map(x => cardHTML(x, op)).join("")}</div></div>` : ""}
+    <div class="f-bar"><a class="btn wabtn big" href="${waLink(msg)}" target="_blank" rel="noopener"><svg class="ic" viewBox="0 0 24 24" fill="currentColor"><path d="M17.5 14.4c-.3-.1-1.7-.8-2-.9-.3-.1-.5-.1-.7.1-.2.3-.8.9-.9 1.1-.2.2-.3.2-.6.1-.3-.1-1.2-.5-2.3-1.4-.9-.8-1.4-1.7-1.6-2-.2-.3 0-.5.1-.6l.4-.5c.2-.2.2-.3.3-.5.1-.2 0-.4 0-.5l-.9-2.2c-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.4s1 2.8 1.2 3c.1.2 2 3.1 4.9 4.3.7.3 1.2.5 1.6.6.7.2 1.3.2 1.8.1.6-.1 1.7-.7 1.9-1.4.2-.7.2-1.3.2-1.4-.1-.1-.3-.2-.6-.3zM12 21.8c-1.7 0-3.4-.5-4.9-1.3l-.4-.2-3.6.9 1-3.5-.2-.4C2.9 15.8 2.4 14 2.4 12.2 2.4 6.9 6.7 2.6 12 2.6c2.6 0 5 1 6.8 2.8 1.8 1.8 2.8 4.2 2.8 6.8 0 5.3-4.3 9.6-9.6 9.6zM20.2 3.8C18 1.6 15.1.4 12 .4 5.6.4.4 5.6.4 12c0 2 .5 4 1.6 5.8L.3 23.7l6-1.6c1.7.9 3.7 1.4 5.7 1.4 6.4 0 11.6-5.2 11.6-11.6 0-3.1-1.2-6-3.4-8.1z"/></svg>Consultar por WhatsApp</a></div>`;
+  F.scrollTop = 0;
+  F.classList.add("open");
+  document.body.classList.add("lock");
+  $$(".rv", F).forEach(x => x.classList.add("in"));
+  const tr = $("#g-track");
+  tr.addEventListener("scroll", () => {
+    const i = Math.round(tr.scrollLeft / tr.clientWidth);
+    $("#g-count").textContent = `${i + 1} / ${p.fotos.length}`;
+    $$("#thumbs button").forEach((b, k) => b.classList.toggle("on", k === i));
+  }, { passive: true });
+  tr.addEventListener("click", e => { if (e.target.tagName === "IMG") $("#gal").classList.toggle("full"); });
+  document.title = `${p.titulo} · Grupo Amplifia`;
+}
+function galTo(i) { const tr = $("#g-track"); tr.scrollTo({ left: i * tr.clientWidth, behavior: "smooth" }); }
+function galGo(d) { const tr = $("#g-track"); galTo(Math.round(tr.scrollLeft / tr.clientWidth) + d); }
+F.addEventListener("click", e => { const c = e.target.closest(".card[data-id]"); if (c) openFicha(c.dataset.id); });
+addEventListener("keydown", e => {
+  if (!F.classList.contains("open")) return;
+  if (e.key === "Escape") { if ($(".gal.full")) $("#gal").classList.remove("full"); else closeFicha(); }
+  if (e.key === "ArrowRight") galGo(1);
+  if (e.key === "ArrowLeft") galGo(-1);
+});
+async function shareP(id) {
+  const p = byId[id], url = location.href;
+  try { if (navigator.share) await navigator.share({ title: p.titulo, text: `${p.titulo} – Grupo Amplifia`, url }); else { await navigator.clipboard.writeText(url); alert("Link copiado"); } } catch (e) {}
+}
+
+
+/* ---------- asistente Amplifia: frases por sección + chat de búsqueda ---------- */
+(() => {
+  const bot = $("#bot"), say = $("#bot-say"), txt = $("#bot-txt"), chat = $("#chat"), msgs = $("#c-msgs");
+  const SAY = {
+    top: "¡Hola! Soy el asistente de Grupo Amplifia. ¿Buscás comprar o alquilar? Tocame y te ayudo a encontrar tu casa.",
+    explorar: "Podés buscar por venta, por alquiler o directo en el mapa. ¿Por dónde arrancamos?",
+    destacadas: "Estas son las propiedades destacadas. Deslizá para verlas todas.",
+    mapa: "Tocá cualquier foto del mapa y te llevo a esa casa. Usá + y − para acercar.",
+    venta: "Tip: activá el filtro “Apto crédito” para ver las que podés comprar con hipotecario.",
+    alquiler: "Contame qué buscás y te paso las opciones de alquiler que mejor te quedan.",
+    vender: "¿Tenés una propiedad para vender o alquilar? Pedí la tasación y un asesor te contacta.",
+    contacto: "¿Preferís hablar con una persona? Te paso directo con un asesor por WhatsApp.",
+    ficha: "¿Te gusta esta propiedad? Escribinos por WhatsApp y coordinamos la visita.",
+  };
+  const seen = new Set(); let tT, hideT, typing = false, pending = null;
+  const mobile = () => innerWidth < 760;
+  function speak(key, force) {
+    if (!SAY[key] || chat.classList.contains("open") || (seen.has(key) && !force)) return;
+    seen.add(key);
+    // en celular el globo taparía texto: se avisa con un punto dorado y el mensaje espera en el chat
+    if (mobile()) { pending = SAY[key]; bot.classList.add("news"); return; }
+    clearInterval(tT); clearTimeout(hideT);
+    const t = SAY[key]; let i = 0;
+    txt.innerHTML = '<i class="caret"></i>'; say.classList.add("on"); bot.classList.add("talk"); typing = true;
+    tT = setInterval(() => {
+      i += 2; txt.innerHTML = t.slice(0, i) + '<i class="caret"></i>';
+      if (i >= t.length) { clearInterval(tT); txt.textContent = t; typing = false; bot.classList.remove("talk"); hideT = setTimeout(() => say.classList.remove("on"), 5000); }
+    }, 28);
+  }
+  ["explorar", "destacadas", "mapa", "venta", "alquiler", "vender", "contacto"].forEach(id => {
+    const el = document.getElementById(id); if (!el) return;
+    new IntersectionObserver(es => { if (es[0].isIntersecting) speak(id); }, { threshold: .35 }).observe(el);
+  });
+  setTimeout(() => speak("top"), 2600);
+  // dentro de una ficha
+  const fobs = new MutationObserver(() => {
+    const open = F.classList.contains("open");
+    document.body.classList.toggle("ficha-on", open);
+    if (open) { seen.delete("ficha"); setTimeout(() => speak("ficha"), 1200); }
+  });
+  fobs.observe(F, { attributes: true, attributeFilter: ["class"] });
+
+  say.addEventListener("click", e => { if (e.target.closest(".x")) { say.classList.remove("on"); e.stopPropagation(); return; } openChat(); });
+  $("#bot-av").onclick = () => chat.classList.contains("open") ? closeChat() : openChat();
+  $("#chat-x").onclick = closeChat;
+  function openChat() {
+    say.classList.remove("on"); chat.classList.add("open"); bot.classList.remove("news");
+    if (!msgs.children.length) {
+      bubble("b", "¡Hola! 👋 Soy el asistente de Grupo Amplifia. Decime qué estás buscando y te muestro las propiedades que tenemos.");
+      quick(["Casas en venta", "Alquileres", "Apto crédito", "Quiero tasar mi propiedad", "Horarios y dirección", "Hablar con un asesor"]);
+    } else if (pending) bubble("b", pending);
+    pending = null;
+    setTimeout(() => $("#c-input").focus(), 300);
+  }
+  function closeChat() { chat.classList.remove("open"); }
+  function bubble(who, html) { const d = document.createElement("div"); d.className = "m " + who; d.innerHTML = html; msgs.appendChild(d); msgs.scrollTop = msgs.scrollHeight; return d; }
+  function quick(list) { $("#c-qs").innerHTML = list.map(q => `<button type="button">${q}</button>`).join(""); }
+  $("#c-qs").addEventListener("click", e => { const b = e.target.closest("button"); if (b) send(b.textContent); });
+  $("#c-form").addEventListener("submit", e => { e.preventDefault(); const v = $("#c-input").value.trim(); if (v) { $("#c-input").value = ""; send(v); } });
+
+  const waBtn = (label, text) => `<a class="wa-l" href="${waLink(text)}" target="_blank" rel="noopener">${$("#wa-ic").innerHTML}${label}</a>`;
+  function send(q) {
+    bubble("u", q.replace(/</g, "&lt;"));
+    const t = bubble("b typing", "<i></i><i></i><i></i>");
+    setTimeout(() => { t.remove(); answer(q); }, 650 + Math.random() * 400);
+  }
+  const norm = s => s.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "");
+  function answer(q) {
+    const n = norm(q);
+    if (/^(hola|buenas|buen dia|buenas tardes|buenas noches)\b/.test(n) && n.length < 20) { bubble("b", "¡Hola! ¿Qué estás buscando? Podés escribirme, por ejemplo, “departamento en alquiler” o “casa 3 dormitorios apto crédito”."); return; }
+    if (/gracias/.test(n)) { bubble("b", "¡De nada! Si querés seguir, contame qué otra cosa buscás. 🏡"); return; }
+    if (/horari|direcc|donde estan|oficina|ubicad/.test(n)) {
+      bubble("b", "Estamos en <b>Av. Principal 123</b>, Río Gallegos. Atendemos de <b>lunes a viernes de 11 a 16 hs</b>, y otros días con cita previa.");
+      const r = document.createElement("div"); r.className = "res"; r.innerHTML = waBtn("Coordinar por WhatsApp", "Hola Grupo Amplifia, quiero coordinar una visita a la oficina."); msgs.appendChild(r); msgs.scrollTop = msgs.scrollHeight; return;
+    }
+    if (/tasa|vender mi|vendo mi|alquilar mi|mi propiedad|mi casa|mi depart/.test(n)) {
+      bubble("b", "¡Genial! Tasamos tu propiedad con valores reales del mercado de Río Gallegos y te acompañamos hasta la firma. Escribinos y un asesor coordina la visita.");
+      const r = document.createElement("div"); r.className = "res"; r.innerHTML = waBtn("Pedir tasación", "Hola Grupo Amplifia, quiero tasar mi propiedad."); msgs.appendChild(r); msgs.scrollTop = msgs.scrollHeight; return;
+    }
+    if (/asesor|humano|persona|whatsapp|llamar|telefono|contact/.test(n)) {
+      bubble("b", "Te paso con un asesor de Grupo Amplifia. Respondemos por WhatsApp en horario de atención.");
+      const r = document.createElement("div"); r.className = "res"; r.innerHTML = waBtn("Hablar con un asesor", "Hola Grupo Amplifia, quería hacer una consulta."); msgs.appendChild(r); msgs.scrollTop = msgs.scrollHeight; return;
+    }
+    // búsqueda en las propiedades publicadas
+    let op = /alquil|renta|mensual/.test(n) ? "alquiler" : /compr|venta|vend|invert/.test(n) ? "venta" : "";
+    const tipo = /depart|depto|dpto|monoamb/.test(n) ? "Departamento" : /terreno|lote/.test(n) ? "Terreno" : /casa|chalet/.test(n) ? "Casa" : "";
+    const dm = n.match(/(\d)\s*(dorm|hab|amb|cuarto)/); const dorm = dm ? +dm[1] : 0;
+    const cred = /credit|hipotec/.test(n);
+    let max = 0; const pm = n.match(/(\d+(?:[.,]\d+)?)\s*(mil|k|millon|millones|m\b)/);
+    if (pm) { const v = parseFloat(pm[1].replace(",", ".")); max = /mill|^m$/.test(pm[2]) ? v * 1e6 : v * 1000; if (max >= 1e6 && !op) op = "alquiler"; }
+    const barrio = [...new Set(PROPS.map(p => p.barrio))].find(b => n.includes(norm(b).replace(/^barrio\s+/, "")));
+    if (!op && !tipo && !dorm && !cred && !max && !barrio) {
+      bubble("b", "Puedo buscarte propiedades por tipo, operación, dormitorios, precio o barrio. Probá con algo como “casa en venta 3 dormitorios” o “alquiler hasta 1 millón”.");
+      quick(["Casas en venta", "Alquileres", "Apto crédito", "Terrenos", "Hablar con un asesor"]); return;
+    }
+    let l = PROPS.filter(p => (!op || hasOp(p, op)) && (!tipo || p.tipo === tipo) && (!dorm || (p.dorm || 0) >= dorm) && (!cred || p.credito) && (!barrio || p.barrio === barrio)
+      && (!max || ((op || opsOf(p)[0]) === "alquiler" ? p.alquiler <= max : p.venta <= max)));
+    const desc = [tipo ? tipo.toLowerCase() + "s" : "propiedades", op === "alquiler" ? "en alquiler" : op === "venta" ? "en venta" : "", dorm ? `de ${dorm}+ dormitorios` : "", cred ? "aptas crédito" : "", barrio ? "en " + barrio : "", max ? "dentro de tu presupuesto" : ""].filter(Boolean).join(" ");
+    if (!l.length) {
+      bubble("b", `Ahora no tengo ${desc} publicadas. Te recomiendo dejarle tu búsqueda a un asesor: entran propiedades nuevas todo el tiempo.`);
+      const r = document.createElement("div"); r.className = "res"; r.innerHTML = waBtn("Avisarme cuando haya", `Hola Grupo Amplifia, estoy buscando ${desc}. ¿Me avisan si entra algo?`); msgs.appendChild(r); msgs.scrollTop = msgs.scrollHeight; return;
+    }
+    bubble("b", `Encontré estas ${desc} 👇 Tocá una para ver fotos, precio y ubicación.`);
+    const r = document.createElement("div"); r.className = "res";
+    r.innerHTML = l.slice(0, 4).map(p => { const o = op || opsOf(p)[0], pr = priceTxt(p, o); return `<button type="button" data-id="${p.id}"><img src="${IMG(p.fotos[0], "s")}" alt=""><span><b>${pr.big}</b>${p.titulo}<br>${p.barrio}</span></button>`; }).join("")
+      + (l.length > 4 ? waBtn(`Ver las demás con un asesor`, `Hola Grupo Amplifia, estoy buscando ${desc}.`) : "");
+    msgs.appendChild(r); msgs.scrollTop = msgs.scrollHeight;
+    quick(["Apto crédito", "Alquileres", "Terrenos", "Hablar con un asesor"]);
+  }
+  msgs.addEventListener("click", e => { const b = e.target.closest("[data-id]"); if (b) { if (innerWidth < 760) closeChat(); openFicha(b.dataset.id); } });
+})();
+
+/* ---------- efectos ligados al scroll ---------- */
+(() => {
+  // franja de palabras: acelera e inclina según la velocidad del scroll
+  const strip = $("#strip"); let x = 0, vel = 0, last = scrollY;
+  strip.style.animation = "none";
+  const W = () => strip.scrollWidth / 2;
+  (function loop() {
+    const y = scrollY, d = y - last; last = y;
+    vel += (d - vel) * .12;
+    x -= .6 + Math.min(Math.abs(vel) * .35, 14);
+    if (-x > W()) x += W();
+    strip.style.transform = `translate3d(${x}px,0,0) skewX(${Math.max(-10, Math.min(10, -vel * .35))}deg)`;
+    requestAnimationFrame(loop);
+  })();
+  // revelado: además del IntersectionObserver, un chequeo directo en cada scroll (nada queda oculto si se baja rápido)
+  const check = () => {
+    const h = innerHeight, w = innerWidth;
+    $$(".rv:not(.in), .rv-w:not(.in), .fx-clip:not(.in)").forEach(el => {
+      if (el.closest("#ficha")) return;
+      const r = el.getBoundingClientRect();
+      if (r.width && r.top < h * .92 && r.bottom > 0 && r.left < w && r.right > 0) el.classList.add("in");
+    });
+  };
+  addEventListener("scroll", check, { passive: true });
+  $("#rail").addEventListener("scroll", check, { passive: true });
+  addEventListener("resize", check);
+  setInterval(check, 500);
+  check();
+  // portada: el texto se eleva y desvanece suavemente al bajar (la foto no se mueve)
+  const hin = $(".hero-in");
+  addEventListener("scroll", () => {
+    const k = Math.min(scrollY / innerHeight, 1);
+    hin.style.transform = `translateY(${-k * 80}px)`;
+    hin.style.opacity = 1 - k * 1.2;
+  }, { passive: true });
+})();
+
+watch();
+lastHash = location.hash;
+route();
+Object.assign(window, { menu, railGo, closeFicha, shareP, galGo, galTo });
+</script>
+</body>
+</html>
