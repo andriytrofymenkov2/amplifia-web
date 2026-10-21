@@ -2314,3 +2314,96 @@ section:not(#hero):not(#manifiesto):not(#que-hacemos) :is(.prob-head .tiny:first
 @media (prefers-reduced-motion: reduce) {
   .tr-track { animation: none !important; }
 }
+
+/* Preguntas frecuentes ("Lo que suelen preguntarnos."): 6 tarjetas fijas en grilla limpia, sin movimiento ni recortes */
+.faq {
+  grid-template-columns: 1fr !important;
+  gap: clamp(28px, 4.5vh, 48px) !important;
+  padding: clamp(80px, 12vh, 130px) var(--pad) !important;
+  min-height: auto !important;
+  overflow: visible !important;
+}
+.faq-side {
+  position: static !important;
+  max-width: none;
+}
+.fq-rows,
+.fq-rows:not(.fq-swipe) {
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  gap: clamp(16px, 1.6vw, 24px) !important;
+  width: 100%;
+  -webkit-mask-image: none !important;
+  mask-image: none !important;
+  overflow: visible !important;
+}
+.fq-rows::before,
+.fq-rows::after,
+.fq-zoom {
+  display: none !important;
+}
+.fq-row,
+.fq-set {
+  display: contents !important;
+}
+.fq-card {
+  width: 100% !important;
+  min-width: 0 !important;
+  box-sizing: border-box !important;
+  padding: clamp(22px, 2vw, 30px) !important;
+  gap: 12px !important;
+  border-radius: 16px !important;
+  border: 1px solid rgba(239, 236, 229, 0.16) !important;
+  background: linear-gradient(180deg, #121212 0%, #090909 100%) !important;
+  cursor: default !important;
+  contain: none !important;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease !important;
+}
+.fq-card:hover {
+  border-color: rgba(215, 242, 74, 0.75) !important;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45), 0 0 24px rgba(215, 242, 74, 0.16) !important;
+  transform: translateY(-3px) !important;
+}
+.fq-card h3 {
+  font-size: clamp(20px, 1.5vw, 25px) !important;
+  line-height: 1.18 !important;
+  color: var(--lime) !important;
+  margin: 0;
+}
+.fq-card p {
+  font-size: clamp(14px, 1.02vw, 16px) !important;
+  line-height: 1.55 !important;
+  color: rgba(239, 236, 229, 0.84) !important;
+  opacity: 1 !important;
+  margin: 0;
+}
+@media (max-width: 1100px) and (min-width: 681px) {
+  .fq-rows,
+  .fq-rows:not(.fq-swipe) {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+}
+@media (max-width: 680px) {
+  .faq {
+    padding: clamp(64px, 10vh, 96px) var(--pad) !important;
+    gap: 24px !important;
+  }
+  .fq-rows,
+  .fq-rows:not(.fq-swipe) {
+    grid-template-columns: 1fr !important;
+    gap: 14px !important;
+  }
+  .fq-card {
+    padding: 20px 20px 22px !important;
+    gap: 10px !important;
+    border-radius: 14px !important;
+  }
+  .fq-card h3 {
+    font-size: 21px !important;
+    line-height: 1.2 !important;
+  }
+  .fq-card p {
+    font-size: 15px !important;
+    line-height: 1.52 !important;
+  }
+}

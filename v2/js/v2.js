@@ -164,7 +164,7 @@
     consultora: "Andriy lidera los procesos y Christian, las personas. Tocá el <b>+</b> para conocer su trayectoria.",
     proyectos: "<b>Líderes Aumentados</b>: lo adaptamos a tu organización y a tus desafíos.",
     clientes: "Tiempo Sur, MS Patagonia, SS Servicios, Farmacia La Franco y Siglo 21 ya confían en nosotros.",
-    faq: "¿Dudas sobre alcance, tiempos o costos? Poné el mouse sobre una pregunta: la respuesta está <b>acá</b>.",
+    faq: "¿Dudas sobre alcance, tiempos o costos? Acá respondemos las consultas <b>más frecuentes</b>.",
     contacto: "Contanos tu desafío: conversamos y te proponemos un camino <b>a la medida</b> de tu empresa."
   };
 
@@ -941,7 +941,7 @@
   /* ---------- preguntas frecuentes: cada fila se repite 3 veces (bucle sin huecos) y se desplaza en píxeles exactos ---------- */
   var fqTracks = [], fqRowsEl = $("#fqRows"), fqPhone = window.matchMedia("(max-width: 860px)").matches;
   /* celular: sin cinta en movimiento. Las seis preguntas, una sola vez y en orden, en un carrusel que se desliza con el dedo */
-  if (fqPhone && fqRowsEl) {
+  if (false && fqPhone && fqRowsEl) {
     var fqFirst = $(".fq-set", fqRowsEl);
     $$(".fq-row", fqRowsEl).forEach(function (row, i) { if (i) { $$(".fq-card", row).forEach(function (c) { fqFirst.appendChild(c); }); row.remove(); } });
     fqRowsEl.classList.add("fq-swipe");
@@ -956,7 +956,7 @@
     };
     fqRow.addEventListener("scroll", fqSync, { passive: true }); fqSync();
   }
-  if (!fqPhone) $$(".fq-row").forEach(function (row) {
+  if (false && !fqPhone) $$(".fq-row").forEach(function (row) {
     var set = $(".fq-set", row), track = document.createElement("div");
     track.className = "fq-track"; track.style.setProperty("--dur", row.getAttribute("data-speed") || "60s");
     row.appendChild(track); track.appendChild(set);
@@ -966,7 +966,7 @@
   function fqMeasure() {
     /* cada fila tiene tres preguntas distintas: las tarjetas se ensanchan lo justo para que una misma pregunta
        nunca aparezca dos veces a la vez en pantalla */
-    if (fqRowsEl && !fqPhone) fqRowsEl.style.setProperty("--fqw", Math.max(240, Math.ceil((fqRowsEl.clientWidth + 40) / 3) - 14) + "px");
+    if (false && fqRowsEl && !fqPhone) fqRowsEl.style.setProperty("--fqw", Math.max(240, Math.ceil((fqRowsEl.clientWidth + 40) / 3) - 14) + "px");
     fqTracks.forEach(function (t) { t.track.style.setProperty("--shift", "-" + t.set.offsetWidth + "px"); });
   }
   fqMeasure();
@@ -978,7 +978,7 @@
      Mouse o lápiz: al pasar. Táctil: con un toque. No depende de media queries de hover (notebooks táctiles, Safari, etc.) */
   (function fqLupa() {
     var zoom = $("#fqZoom"), rows = $("#fqRows"), cur = null, hideT = null, lastType = "mouse";
-    if (!zoom || !rows || fqPhone) return;
+    if (true || !zoom || !rows || fqPhone) return;
     function place(card) {
       var r = card.getBoundingClientRect();
       zoom.innerHTML = card.innerHTML;
