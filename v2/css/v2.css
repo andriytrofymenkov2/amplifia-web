@@ -2417,3 +2417,13 @@ section:not(#hero):not(#manifiesto):not(#que-hacemos) :is(.prob-head .tiny:first
     line-height: 1.52 !important;
   }
 }
+
+/* ===== Empresas con las que trabajamos: más aire arriba y abajo, filas más separadas ===== */
+.trust { padding: clamp(120px, 18vh, 190px) 0 clamp(130px, 20vh, 220px); }
+.trust-head { margin-bottom: clamp(8px, 2vh, 22px); }
+.tr-mq { margin-top: clamp(44px, 7vh, 84px); gap: clamp(26px, 3.2vw, 48px); }
+.trust::after { content: ""; position: absolute; left: var(--pad); right: var(--pad); bottom: 0; height: 1px; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.12), transparent); pointer-events: none; }
+@media (max-width: 860px) {
+  .trust { padding: 96px 0 110px; }
+  .tr-mq { margin-top: 34px; gap: 20px; }
+}
