@@ -38,7 +38,7 @@ var WEBS=[
 ];
 var ICO={trab:'<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M7 36a17 17 0 0 1 34 0"/><path d="M24 36l9-13"/><circle cx="24" cy="36" r="2.4" fill="currentColor" stroke="none"/><path d="M10 29l2 1M15 21l1.6 1.4M24 17v2M33 21l-1.6 1.4M38 29l-2 1" opacity=".5"/></svg>',plat:'<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="9" width="32" height="22" rx="2.5"/><path d="M4 38h40"/><path d="M15 26v-5M22 26v-9M29 26v-7M36 26v-11" opacity=".6"/></svg>',web:'<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 36l10-10 8 6 18-18"/><path d="M32 14h10v10"/><circle cx="16" cy="26" r="2" fill="currentColor" stroke="none"/><circle cx="24" cy="32" r="2" fill="currentColor" stroke="none"/></svg>'};
 var PH={"t-cc":["/Imagenes%20usadas/casos/ss_a.webp","/Imagenes%20usadas/casos/ss_b.webp"],"t-costa":["/Imagenes%20usadas/casos/costa_a.webp","/Imagenes%20usadas/casos/costa_2.webp"],"t-precio":["/Imagenes%20usadas/casos/ms_1.webp","/Imagenes%20usadas/casos/ms_2.webp"],"t-nave":["/Imagenes%20usadas/casos/layout_slp.webp"]};
-var BLK=[["trab","Resultados reales","Lo que hicimos y lo que cambió, caso por caso."],["plat","Sistemas a medida","Plataformas que ya funcionan en organizaciones reales."],["web","Presencia que vende","Páginas aumentadas que potencian tu negocio y tu marca."]];
+var BLK=[["plat","Sistemas a medida","Plataformas que ya funcionan en organizaciones reales."],["trab","Resultados reales","Lo que hicimos y lo que cambió, caso por caso."],["web","Presencia que vende","Páginas aumentadas que potencian tu negocio y tu marca."]];
 
 /* ---- pantallas simuladas ---- */
 var SHOT={"vientos":"/soluciones/vientos.webp?v=2","ampli":"/soluciones/ampli.webp?v=2","w-burger":"/soluciones/burger.webp?v=2","w-rgl":"/soluciones/rgl.webp?v=2","w-ride":"/soluciones/ride.webp?v=2","w-bloom":"/soluciones/bloom.webp?v=2"};
@@ -114,7 +114,7 @@ if(VIEW==="detalle"&&R.getElementById("ixd")){
 function rotor(n,stepOf,fn){var cur=0,t=0,live=false,hold=false;function arm(){clearTimeout(t);if(live&&!hold)t=setTimeout(function(){go((cur+1)%n)},stepOf(cur))}function go(i){cur=i;fn(i);arm()}
  return {go:go,hold:function(v){hold=v;arm()},get:function(){return cur},live:function(v){if(v===live)return;live=v;if(v&&!window["__"+n+fn])window["__"+n+fn]=1,go(cur);else arm()}}}
 if(VIEW==="home"){
- var views=[].slice.call(R.querySelectorAll(".view")),blks=[].slice.call(R.querySelectorAll(".blk")),cur="trab",rots={};
+ var views=[].slice.call(R.querySelectorAll(".view")),blks=[].slice.call(R.querySelectorAll(".blk")),cur="plat",rots={};
  var C=348.7,nd=R.querySelector(".ndl"),a1=R.querySelector(".a1"),a2=R.querySelector(".a2"),vv=R.querySelector(".rd .v"),uu=R.querySelector(".rd .u"),bb=R.querySelector(".rd .ba"),dl=R.getElementById("dial");
  var fmt=function(x){return Math.round(x).toLocaleString("es-AR")},raf=0;
  function fit(){vv.style.fontSize="";var mx=dl.clientWidth*.46,fs=parseFloat(getComputedStyle(vv).fontSize);while(vv.getBoundingClientRect().width>mx&&fs>9){fs-=1;vv.style.fontSize=fs+"px"}}
@@ -189,7 +189,7 @@ document.addEventListener("keydown",function(e){if(e.key==="Escape"&&csEl.classL
  [].slice.call(R.querySelectorAll(".sl-p,.dock")).forEach(function(el){function u(){el.classList.toggle("end",el.scrollLeft+el.clientWidth>=el.scrollWidth-10)}el.addEventListener("scroll",u,{passive:true});u();if(window.ResizeObserver)new ResizeObserver(u).observe(el)});
  function open(b){var oi=blks.findIndex(function(e){return e.dataset.b===cur}),ni=blks.findIndex(function(e){return e.dataset.b===b});R.querySelector(".stage").style.setProperty("--dir",ni<oi?-1:1);cur=b;blks.forEach(function(e){e.classList.toggle("on",e.dataset.b===b)});bubPos();views.forEach(function(e){e.classList.toggle("on",e.dataset.v===b)});Object.keys(rots).forEach(function(k){rots[k].live(k===b)});if(b==="plat"||b==="web"){var r=rots[b];r.go(r.get())}}
  blks.forEach(function(e){e.addEventListener("click",function(){open(e.dataset.b)})});
- var sec=R.querySelector(".sec"),started=false;new IntersectionObserver(function(es){var on=es[0].isIntersecting;if(on&&!started){started=true;open("trab")}else if(started){Object.keys(rots).forEach(function(k){rots[k].live(on&&k===cur)})}},{threshold:.15}).observe(R.querySelector(".stage"));
+ var sec=R.querySelector(".sec"),started=false;new IntersectionObserver(function(es){var on=es[0].isIntersecting;if(on&&!started){started=true;open("plat")}else if(started){Object.keys(rots).forEach(function(k){rots[k].live(on&&k===cur)})}},{threshold:.15}).observe(R.querySelector(".stage"));
 }
 
 if(window.ResizeObserver){var _rt=0;new ResizeObserver(function(){clearTimeout(_rt);_rt=setTimeout(function(){if(window.ScrollTrigger)ScrollTrigger.refresh()},300)}).observe(R.querySelector(".sec"))}
