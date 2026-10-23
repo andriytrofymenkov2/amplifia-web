@@ -2431,3 +2431,6 @@ section:not(#hero):not(#manifiesto):not(#que-hacemos) :is(.prob-head .tiny:first
 
 /* Barra y redes nunca se pisan: el ancho usa el viewport sin la barra de scroll (100%) y deja lugar a los 3 íconos */
 @media (min-width: 1500px) { .hdr { width: min(1180px, calc(100% - 2 * 150px)); } }
+
+/* Se quita el indicador "01 Inicio / 02 Manifiesto" de abajo a la izquierda */
+.rail { display: none !important; }
