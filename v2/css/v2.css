@@ -600,7 +600,7 @@ html[data-hdr="light"] .nav a.is-on { color: var(--olive); }
 /* Redes siempre arriba: en notebooks la barra se hace lugar y los íconos van a su derecha, más chicos */
 @media (min-width: 1500px) { .social { top: 34px; } }
 @media (max-width: 1499px) and (min-width: 861px) {
-  .hdr { left: 16px; transform: none; width: calc(100vw - 32px - 104px); }
+  .hdr { left: 16px; transform: none; width: calc(100% - 16px - 132px); }
   .social { flex-direction: row; gap: 7px; top: 36px; right: 16px; bottom: auto; opacity: 1 !important; transform: none !important; pointer-events: auto !important; }
   .social a { width: 27px; height: 27px; border-radius: 7px; }
   .nav { gap: clamp(12px, 1.3vw, 22px); font-size: 12px; letter-spacing: 0.04em; }
@@ -2428,3 +2428,6 @@ section:not(#hero):not(#manifiesto):not(#que-hacemos) :is(.prob-head .tiny:first
 }
 
 .tr-mq:hover .tr-track { animation-play-state: running !important; }
+
+/* Barra y redes nunca se pisan: el ancho usa el viewport sin la barra de scroll (100%) y deja lugar a los 3 íconos */
+@media (min-width: 1500px) { .hdr { width: min(1180px, calc(100% - 2 * 150px)); } }
