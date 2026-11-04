@@ -2434,3 +2434,16 @@ section:not(#hero):not(#manifiesto):not(#que-hacemos) :is(.prob-head .tiny:first
 
 /* Se quita el indicador "01 Inicio / 02 Manifiesto" de abajo a la izquierda */
 .rail { display: none !important; }
+
+/* ===== entrevista en los medios ===== */
+.press{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.35fr);gap:clamp(24px,4vw,64px);align-items:center;margin:clamp(110px,16vh,190px) var(--pad) clamp(40px,8vh,90px)}
+.press-t{font-family:var(--serif,"Instrument Serif",serif);font-weight:400;font-size:clamp(30px,3.4vw,54px);line-height:1.02;margin:14px 0 16px}
+.press-t em{color:var(--lime)}
+.press-s{color:rgba(243,239,230,.72);font-size:clamp(15px,1.1vw,18px);line-height:1.5;max-width:34ch}
+.press-v{position:relative;display:block;width:100%;aspect-ratio:16/9;border:1px solid rgba(215,242,74,.35);border-radius:22px;overflow:hidden;background:#000;padding:0;cursor:pointer}
+.press-v img{width:100%;height:100%;object-fit:cover;filter:brightness(.72);transition:filter .4s,transform .6s}
+.press-v:hover img{filter:brightness(.9);transform:scale(1.03)}
+.press-play{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);display:inline-flex;align-items:center;gap:12px;padding:14px 24px;border-radius:99px;background:var(--lime);color:#0b0b0b;font:600 16px Inter,system-ui,sans-serif;white-space:nowrap;box-shadow:0 0 40px rgba(215,242,74,.35)}
+.press-play i{width:0;height:0;border-left:12px solid #0b0b0b;border-top:7px solid transparent;border-bottom:7px solid transparent}
+.press-v.on{cursor:auto}.press-v iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+@media (max-width:860px){.press{grid-template-columns:1fr}.press-s{max-width:none}.press-v{border-radius:16px}}
