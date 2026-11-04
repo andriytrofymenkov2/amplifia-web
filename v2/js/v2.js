@@ -151,6 +151,9 @@
       }
     });
   });
+  /* el bloque de la entrevista vive dentro de Programas: Ampli cambia de frase al llegar y vuelve al subir */
+  if ($("#entrevista")) ScrollTrigger.create({ trigger: "#entrevista", start: "top 60%", end: "bottom 60px",
+    onToggle: function (self) { var id = self.isActive ? "entrevista" : (self.direction < 0 ? "proyectos" : null); if (id && id !== ampliShown) { ampliShown = id; ampliSay(id); } } });
   /* ---------- Ampli: dice una frase por sección (por ahora fijas; luego será un agente) ---------- */
   var AMPLI_LINES = {
     hero: "",
@@ -163,6 +166,7 @@
     servicios: "Diagnóstico, training o implementación: cada uno con <b>entregables concretos</b>.",
     consultora: "Andriy lidera los procesos y Christian, las personas. Tocá el <b>+</b> para conocer su trayectoria.",
     proyectos: "<b>Líderes Aumentados</b>: lo adaptamos a tu organización y a tus desafíos.",
+    entrevista: "Charlamos en la radio sobre <b>liderazgo e IA</b>. Tocá <b>Ver la entrevista</b> y escuchala.",
     clientes: "Tiempo Sur, MS Patagonia, SS Servicios, Farmacia La Franco y Siglo 21 ya confían en nosotros.",
     faq: "¿Dudas sobre alcance, tiempos o costos? Acá respondemos las consultas <b>más frecuentes</b>.",
     contacto: "Contanos tu desafío: conversamos y te proponemos un camino <b>a la medida</b> de tu empresa."
