@@ -2447,3 +2447,7 @@ section:not(#hero):not(#manifiesto):not(#que-hacemos) :is(.prob-head .tiny:first
 .press-play i{width:0;height:0;border-left:12px solid #0b0b0b;border-top:7px solid transparent;border-bottom:7px solid transparent}
 .press-v.on{cursor:auto}.press-v iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
 @media (max-width:860px){.press{grid-template-columns:1fr}.press-s{max-width:none}.press-v{border-radius:16px}}
+
+/* Servicios: el brillo al pasar el mouse va en una capa aparte (solo cambia la opacidad) para no repintar la tarjeta mientras se scrollea */
+.sva:not(.is-feat):hover{border-color:rgba(239,236,229,0.18);box-shadow:none}.sva:not(.is-feat)::after{content:"";position:absolute;inset:-1px;border-radius:inherit;border:1px solid rgba(215,242,74,0.6);box-shadow:0 0 30px rgba(215,242,74,0.12);opacity:0;transition:opacity .3s ease;pointer-events:none;will-change:opacity}.sva:not(.is-feat):hover::after{opacity:1}
+
