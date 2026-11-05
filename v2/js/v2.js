@@ -95,7 +95,8 @@
   function vwait(v) { vload(v); if (v._s === "wait") return; v._s = "wait"; v.pause(); }
   function vfree(v) {
     if (v._s === "free") return; v._s = "free"; v.pause();
-    if (v.getAttribute("src")) { v.removeAttribute("src"); v.load(); v.classList.remove("is-ready"); }
+    /* en compu el video queda cargado (pausado): descargarlo trababa un cuadro al bajar; en celular se libera para ahorrar memoria */
+    if (phone && v.getAttribute("src")) { v.removeAttribute("src"); v.load(); v.classList.remove("is-ready"); }
   }
   /* mientras se scrollea, el video se cambia por una foto fija de su cuadro actual (dibujar un video en movimiento es lo más caro) */
   function freeze(v) {
