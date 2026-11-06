@@ -1,0 +1,23 @@
+# Cloudflare Pages: cuánto tiempo guarda el navegador cada tipo de archivo.
+# Solo cambia la velocidad en las visitas repetidas; no toca nada de lo que se ve.
+# Las páginas (HTML) conservan la regla por defecto: se revisan siempre, así los cambios se ven al instante.
+
+# Nunca cambian: tipografías y librerías de terceros
+/v2/fonts/*
+  Cache-Control: public, max-age=31536000, immutable
+/v2/vendor/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# Código propio (se publica con ?v=NN, que cambia en cada versión)
+/v2/css/*
+  Cache-Control: public, max-age=86400, stale-while-revalidate=604800
+/v2/js/*
+  Cache-Control: public, max-age=86400, stale-while-revalidate=604800
+
+# Imágenes, logos, videos e íconos (a veces se reemplazan con el mismo nombre: por eso es más corto)
+/Imagenes*
+  Cache-Control: public, max-age=3600, stale-while-revalidate=86400
+/v2/icons/*
+  Cache-Control: public, max-age=3600, stale-while-revalidate=86400
+/v2/og/*
+  Cache-Control: public, max-age=3600, stale-while-revalidate=86400
